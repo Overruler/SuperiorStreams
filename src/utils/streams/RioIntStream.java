@@ -18,13 +18,13 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
-import utils.streams.functions.ExBiFunction;
-import utils.streams.functions.ExBiPredicate;
-import utils.streams.functions.ExIntBinaryOperator;
-import utils.streams.functions.ExObjIntConsumer;
-import utils.streams.functions.ExToDoubleBiFunction;
-import utils.streams.functions.ExToIntBiFunction;
-import utils.streams.functions.ExToLongBiFunction;
+import utils.streams.functions.IOBiFunction;
+import utils.streams.functions.IOBiPredicate;
+import utils.streams.functions.IOIntBinaryOperator;
+import utils.streams.functions.IOObjIntConsumer;
+import utils.streams.functions.IOToDoubleBiFunction;
+import utils.streams.functions.IOToIntBiFunction;
+import utils.streams.functions.IOToLongBiFunction;
 
 //*Q*
 public final class RioIntStream<A extends AutoCloseable> extends AbstractIntStream<IOException,
@@ -33,17 +33,18 @@ RioStream<A, Integer>,
 RioIntStream<A>,
 RioLongStream<A>,
 RioDoubleStream<A>,
-ExObjIntConsumer<A, IOException>,
-ExBiPredicate<A, Integer, IOException>,
-Function<A, ExIntBinaryOperator<IOException>>,
-ExBiFunction<A, Integer, ? extends IntStream, IOException>,
-ExBiFunction<A, Integer, ? extends LongStream, IOException>,
-ExBiFunction<A, Integer, ? extends DoubleStream, IOException>,
-ExToIntBiFunction<A, Integer, IOException>,
-ExToLongBiFunction<A, Integer, IOException>,
-ExToDoubleBiFunction<A, Integer, IOException>> {//*E*
+IOObjIntConsumer<A>,
+IOBiPredicate<A, Integer>,
+Function<A, IOIntBinaryOperator>,
+IOBiFunction<A, Integer, ? extends IntStream>,
+IOBiFunction<A, Integer, ? extends LongStream>,
+IOBiFunction<A, Integer, ? extends DoubleStream>,
+IOToIntBiFunction<A, Integer>,
+IOToLongBiFunction<A, Integer>,
+IOToDoubleBiFunction<A, Integer>> {//*E*
 
 	private final Supplier<AutoCloseableStrategy<A, IntStream>> supplierAC;
+
 	public RioIntStream(Supplier<A> allocator, Function<A, IntStream> converter, Consumer<A> releaser) {
 		this(CachedSupplier.create(() -> new AutoCloseableStrategy<>(
 		  allocator,
@@ -85,44 +86,44 @@ ExToDoubleBiFunction<A, Integer, IOException>> {//*E*
 	}
 	@Override
 	public Function<? super Integer, ? extends IntStream> castToIntStream(
-	  ExBiFunction<A, Integer, ? extends IntStream, IOException> mapper) {
+	  IOBiFunction<A, Integer, ? extends IntStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	@Override
 	public Function<? super Integer, ? extends LongStream> castToLongStream(
-	  ExBiFunction<A, Integer, ? extends LongStream, IOException> mapper) {
+	  IOBiFunction<A, Integer, ? extends LongStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	@Override
 	public Function<? super Integer, ? extends DoubleStream> castToDoubleStream(
-	  ExBiFunction<A, Integer, ? extends DoubleStream, IOException> mapper) {
+	  IOBiFunction<A, Integer, ? extends DoubleStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	@Override
-	public IntUnaryOperator castToInt(ExToIntBiFunction<A, Integer, IOException> mapper) {
+	public IntUnaryOperator castToInt(IOToIntBiFunction<A, Integer> mapper) {
 		return t -> mapper.uncheck(classOfE()).applyAsInt(getCached(), t);
 	}
 	@Override
-	public IntToLongFunction castToLong(ExToLongBiFunction<A, Integer, IOException> mapper) {
+	public IntToLongFunction castToLong(IOToLongBiFunction<A, Integer> mapper) {
 		return t -> mapper.uncheck(classOfE()).applyAsLong(getCached(), t);
 	}
 	@Override
-	public IntToDoubleFunction castToDouble(ExToDoubleBiFunction<A, Integer, IOException> mapper) {
+	public IntToDoubleFunction castToDouble(IOToDoubleBiFunction<A, Integer> mapper) {
 		return t -> mapper.uncheck(classOfE()).applyAsDouble(getCached(), t);
 	}
 	@Override
-  public IntBinaryOperator castToBinaryOperators(Function<A, ExIntBinaryOperator<IOException>> combiner) {
-  	return combiner.apply(getCached()).uncheck(classOfE());
-  }
+	public IntBinaryOperator castToBinaryOperators(Function<A, IOIntBinaryOperator> combiner) {
+		return combiner.apply(getCached()).uncheck(classOfE());
+	}
 	@Override
-	public IntConsumer castToConsumers(ExObjIntConsumer<A, IOException> action) {
+	public IntConsumer castToConsumers(IOObjIntConsumer<A> action) {
 		return t -> action.uncheck(classOfE()).accept(getCached(), t);
 	}
 	@Override
-	public IntPredicate castToPredicates(ExBiPredicate<A, Integer, IOException> test) {
+	public IntPredicate castToPredicates(IOBiPredicate<A, Integer> test) {
 		return t -> test.uncheck(classOfE()).test(getCached(), t);
 	}
-	public <R> RioStream<A, R> map(ExBiFunction<A, Integer, ? extends R, IOException> mapping) {
+	public <R> RioStream<A, R> map(IOBiFunction<A, Integer, ? extends R> mapping) {
 		return mapInternal(castToMapFunctions(mapping), cast());
 	}
 	public final @SafeVarargs <R> RioStream<A, R> map(IntFunction<? extends R> mapper, IntPredicate... allowed) {
@@ -130,7 +131,7 @@ ExToDoubleBiFunction<A, Integer, IOException>> {//*E*
 		  mapper,
 		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
-	public <R> RioStream<A, R> flatMap(ExBiFunction<A, Integer, ? extends Stream<? extends R>, IOException> mapper) {
+	public <R> RioStream<A, R> flatMap(IOBiFunction<A, Integer, ? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public final @SafeVarargs <R> RioStream<A, R> flatMap(
@@ -140,23 +141,23 @@ ExToDoubleBiFunction<A, Integer, IOException>> {//*E*
 		  mapper,
 		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(mapper, cast());
 	}
-	public <K> Map<K, int[]> toMap(ExBiFunction<A, Integer, ? extends K, IOException> classifier) throws IOException {
+	public <K> Map<K, int[]> toMap(IOBiFunction<A, Integer, ? extends K> classifier) throws IOException {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(
-	  ExBiFunction<A, Integer, ? extends K, IOException> classifier,
+	  IOBiFunction<A, Integer, ? extends K> classifier,
 	  Function<HashMap<K, L>, M> intoMap,
 	  Function<int[], L> intoList) throws IOException {
 		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
 	}
-	private <K> Function<ExBiFunction<A, Integer, ? extends K, IOException>, IntFunction<? extends K>> castToClassifier() {
+	private <K> Function<IOBiFunction<A, Integer, ? extends K>, IntFunction<? extends K>> castToClassifier() {
 		return c -> t -> c.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> Function<Integer, ? extends Stream<? extends R>> castToFlatMapFunctions(
-	  ExBiFunction<A, Integer, ? extends Stream<? extends R>, IOException> mapper) {
+	  IOBiFunction<A, Integer, ? extends Stream<? extends R>> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
-	private <R> IntFunction<? extends R> castToMapFunctions(ExBiFunction<A, Integer, ? extends R, IOException> mapping) {
+	private <R> IntFunction<? extends R> castToMapFunctions(IOBiFunction<A, Integer, ? extends R> mapping) {
 		return t -> mapping.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> Function<Function<IntStream, Stream<R>>, RioStream<A, R>> cast() {
