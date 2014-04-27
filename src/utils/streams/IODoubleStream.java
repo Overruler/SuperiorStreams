@@ -24,6 +24,7 @@ import utils.streams.functions.IODoublePredicate;
 import utils.streams.functions.IOToDoubleFunction;
 import utils.streams.functions.IOToIntFunction;
 import utils.streams.functions.IOToLongFunction;
+
 //*Q*
 public final class IODoubleStream extends AbstractDoubleStream<IOException,
 DoubleStream,
@@ -47,63 +48,54 @@ IOToDoubleFunction<Double>> {//*E*
 	<OLD> IODoubleStream(Supplier<OLD> older, Function<OLD, DoubleStream> converter) {
 		this(() -> converter.apply(older.get()));
 	}
-	@Override
-  public DoubleStream castToStream(DoubleStream stream) {
-  	return stream;
-  }
-	@Override
-	public Class<IOException> classOfE() {
+	protected @Override DoubleStream castToStream(DoubleStream stream) {
+		return stream;
+	}
+	protected @Override Class<IOException> classOfE() {
 		return IOException.class;
 	}
-	public @Override IOStream<Double> asOS(Function<DoubleStream, Stream<Double>> func) {
+	protected @Override IOStream<Double> asOS(Function<DoubleStream, Stream<Double>> func) {
 		return new IOStream<>(supplier, func);
 	}
-	public @Override IOIntStream asIS(Function<DoubleStream, IntStream> func) {
+	protected @Override IOIntStream asIS(Function<DoubleStream, IntStream> func) {
 		return new IOIntStream(supplier, func);
 	}
-	public @Override IOLongStream asLS(Function<DoubleStream, LongStream> func) {
+	protected @Override IOLongStream asLS(Function<DoubleStream, LongStream> func) {
 		return new IOLongStream(supplier, func);
 	}
-	public @Override IODoubleStream asSELF(Function<DoubleStream, DoubleStream> func) {
+	protected @Override IODoubleStream asSELF(Function<DoubleStream, DoubleStream> func) {
 		return new IODoubleStream(supplier, func);
 	}
-	@Override
-	public Function<? super Double, ? extends IntStream> castToIntStream(IODoubleFunction<? extends IntStream> mapper) {
+	protected @Override Function<? super Double, ? extends IntStream> castToIntStream(
+	  IODoubleFunction<? extends IntStream> mapper) {
 		return mapper.uncheck(classOfE())::apply;
 	}
-	@Override
-	public Function<? super Double, ? extends LongStream> castToLongStream(IODoubleFunction<? extends LongStream> mapper) {
+	protected @Override Function<? super Double, ? extends LongStream> castToLongStream(
+	  IODoubleFunction<? extends LongStream> mapper) {
 		return mapper.uncheck(classOfE())::apply;
 	}
-	@Override
-	public Function<? super Double, ? extends DoubleStream> castToDoubleStream(
+	protected @Override Function<? super Double, ? extends DoubleStream> castToDoubleStream(
 	  IODoubleFunction<? extends DoubleStream> mapper) {
 		return mapper.uncheck(classOfE())::apply;
 	}
-	@Override
-	public DoubleToIntFunction castToInt(IOToIntFunction<Double> mapper) {
+	protected @Override DoubleToIntFunction castToInt(IOToIntFunction<Double> mapper) {
 		return mapper.uncheck(classOfE())::applyAsInt;
 	}
-	@Override
-	public DoubleToLongFunction castToLong(IOToLongFunction<Double> mapper) {
+	protected @Override DoubleToLongFunction castToLong(IOToLongFunction<Double> mapper) {
 		return mapper.uncheck(classOfE())::applyAsLong;
 	}
-	@Override
-	public DoubleUnaryOperator castToDouble(IOToDoubleFunction<Double> mapper) {
+	protected @Override DoubleUnaryOperator castToDouble(IOToDoubleFunction<Double> mapper) {
 		return mapper.uncheck(classOfE())::applyAsDouble;
 	}
-	@Override
-  public DoubleBinaryOperator castToBinaryOperators(IODoubleBinaryOperator combiner) {
-  	return combiner.uncheck(classOfE());
-  }
-	@Override
-  public DoubleConsumer castToConsumers(IODoubleConsumer action) {
-  	return action.uncheck(classOfE());
-  }
-	@Override
-  public DoublePredicate castToPredicates(IODoublePredicate test) {
-  	return test.uncheck(classOfE());
-  }
+	protected @Override DoubleBinaryOperator castToBinaryOperators(IODoubleBinaryOperator combiner) {
+		return combiner.uncheck(classOfE());
+	}
+	protected @Override DoubleConsumer castToConsumers(IODoubleConsumer action) {
+		return action.uncheck(classOfE());
+	}
+	protected @Override DoublePredicate castToPredicates(IODoublePredicate test) {
+		return test.uncheck(classOfE());
+	}
 	public <R> IOStream<R> map(IODoubleFunction<? extends R> mapping) {
 		return mapInternal(castToMapFunctions(mapping), cast());
 	}
@@ -118,9 +110,11 @@ IOToDoubleFunction<Double>> {//*E*
 	public final @SafeVarargs <R> IOStream<R> flatMap(
 	  DoubleFunction<? extends Stream<? extends R>> mapper,
 	  DoublePredicate... allowed) {
-		return allowed != null && allowed.length > 0 ?
-			flatMapInternal(mapper::apply, filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) :
-				flatMapInternal(mapper::apply, cast());
+		return allowed != null && allowed.length > 0 ? flatMapInternal(
+		  mapper::apply,
+		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(
+		  mapper::apply,
+		  cast());
 	}
 	public <K> Map<K, double[]> toMap(IODoubleFunction<? extends K> classifier) throws IOException {
 		return toMapInternal(classifier, castToClassifier());
@@ -134,7 +128,7 @@ IOToDoubleFunction<Double>> {//*E*
 	private <K> Function<IODoubleFunction<? extends K>, DoubleFunction<? extends K>> castToClassifier() {
 		return c -> c.uncheck(classOfE());
 	}
-	private <R> Function<Double,? extends Stream<? extends R>> castToFlatMapFunctions(
+	private <R> Function<Double, ? extends Stream<? extends R>> castToFlatMapFunctions(
 	  IODoubleFunction<? extends Stream<? extends R>> mapper) {
 		return mapper.uncheck(classOfE())::apply;
 	}

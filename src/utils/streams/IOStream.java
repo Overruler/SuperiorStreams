@@ -49,57 +49,57 @@ IOToDoubleFunction<? super T>> {//*E*
 	<OLD> IOStream(Supplier<OLD> older, Function<OLD, Stream<T>> converter) {
 		super(older, converter);
 	}
-	public @Override Stream<T> castToStream(Stream<T> stream) {
-  	return stream;
-  }
-	public @Override Class<IOException> classOfE() {
+	protected @Override Class<IOException> classOfE() {
 		return IOException.class;
 	}
-	public @Override IOStream<T> asSELF(Function<Stream<T>, Stream<T>> func) {
-  	return new IOStream<>(supplier, func);
-  }
-	public @Override IOIntStream asIS(Function<Stream<T>, IntStream> func) {
-  	return new IOIntStream(supplier, func);
-  }
-	public @Override IOLongStream asLS(Function<Stream<T>, LongStream> func) {
-  	return new IOLongStream(supplier, func);
-  }
-	public @Override IODoubleStream asDS(Function<Stream<T>, DoubleStream> func) {
-  	return new IODoubleStream(supplier, func);
-  }
-	public @Override Function<? super T, ? extends IntStream> castToIntStream(
+	protected @Override Stream<T> castToStream(Stream<T> stream) {
+		return stream;
+	}
+	protected @Override IOStream<T> asSELF(Function<Stream<T>, Stream<T>> func) {
+		return new IOStream<>(supplier, func);
+	}
+	protected @Override IOIntStream asIS(Function<Stream<T>, IntStream> func) {
+		return new IOIntStream(supplier, func);
+	}
+	protected @Override IOLongStream asLS(Function<Stream<T>, LongStream> func) {
+		return new IOLongStream(supplier, func);
+	}
+	protected @Override IODoubleStream asDS(Function<Stream<T>, DoubleStream> func) {
+		return new IODoubleStream(supplier, func);
+	}
+	protected @Override Function<? super T, ? extends IntStream> castToIntStream(
 	  IOFunction<? super T, ? extends IntStream> mapper) {
 		return mapper.uncheck(classOfE());
 	}
-	public @Override Function<? super T, ? extends LongStream> castToLongStream(
+	protected @Override Function<? super T, ? extends LongStream> castToLongStream(
 	  IOFunction<? super T, ? extends LongStream> mapper) {
 		return mapper.uncheck(classOfE());
 	}
-	public @Override Function<? super T, ? extends DoubleStream> castToDoubleStream(
+	protected @Override Function<? super T, ? extends DoubleStream> castToDoubleStream(
 	  IOFunction<? super T, ? extends DoubleStream> mapper) {
 		return mapper.uncheck(classOfE());
 	}
-	public @Override ToIntFunction<? super T> castToInt(IOToIntFunction<? super T> mapper) {
-  	return mapper.uncheck(classOfE());
-  }
-	public @Override ToLongFunction<? super T> castToLong(IOToLongFunction<? super T> mapper) {
-  	return mapper.uncheck(classOfE());
-  }
-	public @Override ToDoubleFunction<? super T> castToDouble(IOToDoubleFunction<? super T> mapper) {
-  	return mapper.uncheck(classOfE());
-  }
-	public @Override BinaryOperator<T> castToBinaryOperators(IOBinaryOperator<T> combiner) {
-  	return combiner.uncheck(classOfE());
-  }
-	public @Override Comparator<? super T> castToComparators(Comparator<? super T> comparator) {
-  	return comparator;
-  }
-	public @Override Consumer<? super T> castToConsumers(IOConsumer<? super T> action) {
-  	return action.uncheck(classOfE());
-  }
-	public @Override Predicate<? super T> castToPredicates(IOPredicate<? super T> allowed) {
-  	return allowed.uncheck(classOfE());
-  }
+	protected @Override ToIntFunction<? super T> castToInt(IOToIntFunction<? super T> mapper) {
+		return mapper.uncheck(classOfE());
+	}
+	protected @Override ToLongFunction<? super T> castToLong(IOToLongFunction<? super T> mapper) {
+		return mapper.uncheck(classOfE());
+	}
+	protected @Override ToDoubleFunction<? super T> castToDouble(IOToDoubleFunction<? super T> mapper) {
+		return mapper.uncheck(classOfE());
+	}
+	protected @Override BinaryOperator<T> castToBinaryOperators(IOBinaryOperator<T> combiner) {
+		return combiner.uncheck(classOfE());
+	}
+	protected @Override Comparator<? super T> castToComparators(Comparator<? super T> comparator) {
+		return comparator;
+	}
+	protected @Override Consumer<? super T> castToConsumers(IOConsumer<? super T> action) {
+		return action.uncheck(classOfE());
+	}
+	protected @Override Predicate<? super T> castToPredicates(IOPredicate<? super T> allowed) {
+		return allowed.uncheck(classOfE());
+	}
 	public <R> IOStream<R> map(IOFunction<? super T, ? extends R> mapping) {
 		return mapInternal(castToMapFunctions(mapping), cast());
 	}

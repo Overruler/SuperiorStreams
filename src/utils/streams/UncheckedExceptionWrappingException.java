@@ -10,8 +10,7 @@ class UncheckedExceptionWrappingException extends RuntimeException {
 		super(e);
 		originalClass = Objects.requireNonNull(classOfE);
 	}
-	@Override
-	public final synchronized Throwable fillInStackTrace() {
+	public @Override final synchronized Throwable fillInStackTrace() {
 		return this;
 	}
 	static <E extends Exception> E unwrapCause(Class<E> classOfE, RuntimeException e) {

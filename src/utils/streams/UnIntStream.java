@@ -19,6 +19,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
 //*Q*
 public final class UnIntStream extends AbstractIntStream<RuntimeException,
 IntStream,
@@ -42,63 +43,54 @@ ToDoubleFunction<Integer>> {//*E*
 	<OLD> UnIntStream(Supplier<OLD> older, Function<OLD, IntStream> converter) {
 		this(() -> converter.apply(older.get()));
 	}
-	@Override
-  public IntStream castToStream(IntStream stream) {
-  	return stream;
-  }
-	@Override
-	public Class<RuntimeException> classOfE() {
+	protected @Override Class<RuntimeException> classOfE() {
 		return RuntimeException.class;
 	}
-	public @Override UnStream<Integer> asOS(Function<IntStream, Stream<Integer>> func) {
+	protected @Override IntStream castToStream(IntStream stream) {
+		return stream;
+	}
+	protected @Override UnStream<Integer> asOS(Function<IntStream, Stream<Integer>> func) {
 		return new UnStream<>(supplier, func);
 	}
-	public @Override UnIntStream asSELF(Function<IntStream, IntStream> func) {
+	protected @Override UnIntStream asSELF(Function<IntStream, IntStream> func) {
 		return new UnIntStream(supplier, func);
 	}
-	public @Override UnLongStream asLS(Function<IntStream, LongStream> func) {
+	protected @Override UnLongStream asLS(Function<IntStream, LongStream> func) {
 		return new UnLongStream(supplier, func);
 	}
-	public @Override UnDoubleStream asDS(Function<IntStream, DoubleStream> func) {
+	protected @Override UnDoubleStream asDS(Function<IntStream, DoubleStream> func) {
 		return new UnDoubleStream(supplier, func);
 	}
-	@Override
-	public Function<? super Integer, ? extends IntStream> castToIntStream(IntFunction<? extends IntStream> mapper) {
+	protected @Override Function<? super Integer, ? extends IntStream> castToIntStream(
+	  IntFunction<? extends IntStream> mapper) {
 		return mapper::apply;
 	}
-	@Override
-	public Function<? super Integer, ? extends LongStream> castToLongStream(IntFunction<? extends LongStream> mapper) {
+	protected @Override Function<? super Integer, ? extends LongStream> castToLongStream(
+	  IntFunction<? extends LongStream> mapper) {
 		return mapper::apply;
 	}
-	@Override
-	public Function<? super Integer, ? extends DoubleStream> castToDoubleStream(
+	protected @Override Function<? super Integer, ? extends DoubleStream> castToDoubleStream(
 	  IntFunction<? extends DoubleStream> mapper) {
 		return mapper::apply;
 	}
-	@Override
-	public IntUnaryOperator castToInt(ToIntFunction<Integer> mapper) {
+	protected @Override IntUnaryOperator castToInt(ToIntFunction<Integer> mapper) {
 		return mapper::applyAsInt;
 	}
-	@Override
-	public IntToLongFunction castToLong(ToLongFunction<Integer> mapper) {
+	protected @Override IntToLongFunction castToLong(ToLongFunction<Integer> mapper) {
 		return mapper::applyAsLong;
 	}
-	@Override
-	public IntToDoubleFunction castToDouble(ToDoubleFunction<Integer> mapper) {
+	protected @Override IntToDoubleFunction castToDouble(ToDoubleFunction<Integer> mapper) {
 		return mapper::applyAsDouble;
 	}
-	@Override
-  public IntBinaryOperator castToBinaryOperators(IntBinaryOperator combiner) {
-  	return combiner;
-  }
-	@Override
-  public IntConsumer castToConsumers(IntConsumer action) {
-  	return action;
-  }
-	@Override
-  public IntPredicate castToPredicates(IntPredicate test) {
-  	return test;
-  }
+	protected @Override IntBinaryOperator castToBinaryOperators(IntBinaryOperator combiner) {
+		return combiner;
+	}
+	protected @Override IntConsumer castToConsumers(IntConsumer action) {
+		return action;
+	}
+	protected @Override IntPredicate castToPredicates(IntPredicate test) {
+		return test;
+	}
 	public <R> UnStream<R> map(IntFunction<? extends R> mapping) {
 		return mapInternal(castToMapFunctions(mapping), cast());
 	}
@@ -113,9 +105,11 @@ ToDoubleFunction<Integer>> {//*E*
 	public final @SafeVarargs <R> UnStream<R> flatMap(
 	  IntFunction<? extends Stream<? extends R>> mapper,
 	  IntPredicate... allowed) {
-		return allowed != null && allowed.length > 0 ?
-			flatMapInternal(mapper::apply, filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) :
-				flatMapInternal(mapper::apply, cast());
+		return allowed != null && allowed.length > 0 ? flatMapInternal(
+		  mapper::apply,
+		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(
+		  mapper::apply,
+		  cast());
 	}
 	public <K> Map<K, int[]> toMap(IntFunction<? extends K> classifier) {
 		return toMapInternal(classifier, castToClassifier());
@@ -129,7 +123,7 @@ ToDoubleFunction<Integer>> {//*E*
 	private static <K> Function<IntFunction<? extends K>, IntFunction<? extends K>> castToClassifier() {
 		return c -> c;
 	}
-	private static <R> Function<Integer,? extends Stream<? extends R>> castToFlatMapFunctions(
+	private static <R> Function<Integer, ? extends Stream<? extends R>> castToFlatMapFunctions(
 	  IntFunction<? extends Stream<? extends R>> mapper) {
 		return mapper::apply;
 	}

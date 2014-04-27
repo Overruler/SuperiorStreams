@@ -62,68 +62,55 @@ ExToDoubleBiFunction<A, Double, E>> {//*E*
 		this.supplierAC = supplierAC;
 		this.classOfE = classOfE;
 	}
-	public A getCached() {
+	private A getCached() {
 		return supplierAC.get().resource;
 	}
-	public @Override DoubleStream castToStream(AutoCloseableStrategy<A, DoubleStream> strategy) {
-		return strategy.user;
-	}
-	public @Override Class<E> classOfE() {
+	protected @Override Class<E> classOfE() {
 		return classOfE;
 	}
-	@Override
-	public RexStream<E, A, Double> asOS(Function<DoubleStream, Stream<Double>> convert) {
+	protected @Override DoubleStream castToStream(AutoCloseableStrategy<A, DoubleStream> strategy) {
+		return strategy.user;
+	}
+	protected @Override RexStream<E, A, Double> asOS(Function<DoubleStream, Stream<Double>> convert) {
 		return new RexStream<>(classOfE, supplierAC, convert);
 	}
-	@Override
-	public RexIntStream<E, A> asIS(Function<DoubleStream, IntStream> convert) {
+	protected @Override RexIntStream<E, A> asIS(Function<DoubleStream, IntStream> convert) {
 		return new RexIntStream<>(classOfE, supplierAC, convert);
 	}
-	@Override
-	public RexLongStream<E, A> asLS(Function<DoubleStream, LongStream> convert) {
+	protected @Override RexLongStream<E, A> asLS(Function<DoubleStream, LongStream> convert) {
 		return new RexLongStream<>(classOfE, supplierAC, convert);
 	}
-	@Override
-	public RexDoubleStream<E, A> asSELF(Function<DoubleStream, DoubleStream> convert) {
+	protected @Override RexDoubleStream<E, A> asSELF(Function<DoubleStream, DoubleStream> convert) {
 		return new RexDoubleStream<>(classOfE, supplierAC, convert);
 	}
-	@Override
-	public Function<? super Double, ? extends IntStream> castToIntStream(
+	protected @Override Function<? super Double, ? extends IntStream> castToIntStream(
 	  ExBiFunction<A, Double, ? extends IntStream, E> mapper) {
 		return t -> mapper.uncheck(classOfE).apply(getCached(), t);
 	}
-	@Override
-	public Function<? super Double, ? extends LongStream> castToLongStream(
+	protected @Override Function<? super Double, ? extends LongStream> castToLongStream(
 	  ExBiFunction<A, Double, ? extends LongStream, E> mapper) {
 		return t -> mapper.uncheck(classOfE).apply(getCached(), t);
 	}
-	@Override
-	public Function<? super Double, ? extends DoubleStream> castToDoubleStream(
+	protected @Override Function<? super Double, ? extends DoubleStream> castToDoubleStream(
 	  ExBiFunction<A, Double, ? extends DoubleStream, E> mapper) {
 		return t -> mapper.uncheck(classOfE).apply(getCached(), t);
 	}
-	@Override
-	public DoubleToIntFunction castToInt(ExToIntBiFunction<A, Double, E> mapper) {
+	protected @Override DoubleToIntFunction castToInt(ExToIntBiFunction<A, Double, E> mapper) {
 		return t -> mapper.uncheck(classOfE).applyAsInt(getCached(), t);
 	}
-	@Override
-	public DoubleToLongFunction castToLong(ExToLongBiFunction<A, Double, E> mapper) {
+	protected @Override DoubleToLongFunction castToLong(ExToLongBiFunction<A, Double, E> mapper) {
 		return t -> mapper.uncheck(classOfE).applyAsLong(getCached(), t);
 	}
-	@Override
-	public DoubleUnaryOperator castToDouble(ExToDoubleBiFunction<A, Double, E> mapper) {
+	protected @Override DoubleUnaryOperator castToDouble(ExToDoubleBiFunction<A, Double, E> mapper) {
 		return t -> mapper.uncheck(classOfE).applyAsDouble(getCached(), t);
 	}
-	@Override
-	public DoubleConsumer castToConsumers(ExObjDoubleConsumer<A, E> action) {
+	protected @Override DoubleConsumer castToConsumers(ExObjDoubleConsumer<A, E> action) {
 		return t -> action.uncheck(classOfE).accept(getCached(), t);
 	}
-	@Override
-	public DoublePredicate castToPredicates(ExBiPredicate<A, Double, E> test) {
+	protected @Override DoublePredicate castToPredicates(ExBiPredicate<A, Double, E> test) {
 		return t -> test.uncheck(classOfE).test(getCached(), t);
 	}
-	@Override
-	public DoubleBinaryOperator castToBinaryOperators(Function<A, ExDoubleBinaryOperator<E>> combiner) {
+	protected @Override DoubleBinaryOperator castToBinaryOperators(Function<A, ExDoubleBinaryOperator<E>> combiner) {
 		return combiner.apply(getCached()).uncheck(classOfE);
 	}
 	public <R> RexStream<E, A, R> map(ExBiFunction<A, Double, ? extends R, E> mapping) {

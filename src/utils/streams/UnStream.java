@@ -42,55 +42,55 @@ ToDoubleFunction<? super T>> {//*E*
 	<OLD> UnStream(Supplier<OLD> older, Function<OLD, Stream<T>> converter) {
 		super(older, converter);
 	}
-	public @Override Stream<T> castToStream(Stream<T> stream) {
-		return stream;
-	}
-	public @Override Class<RuntimeException> classOfE() {
+	protected @Override Class<RuntimeException> classOfE() {
 		return RuntimeException.class;
 	}
-	public @Override UnStream<T> asSELF(Function<Stream<T>, Stream<T>> func) {
+	protected @Override Stream<T> castToStream(Stream<T> stream) {
+		return stream;
+	}
+	protected @Override UnStream<T> asSELF(Function<Stream<T>, Stream<T>> func) {
 		return new UnStream<>(supplier, func);
 	}
-	public @Override UnIntStream asIS(Function<Stream<T>, IntStream> func) {
+	protected @Override UnIntStream asIS(Function<Stream<T>, IntStream> func) {
 		return new UnIntStream(supplier, func);
 	}
-	public @Override UnLongStream asLS(Function<Stream<T>, LongStream> func) {
+	protected @Override UnLongStream asLS(Function<Stream<T>, LongStream> func) {
 		return new UnLongStream(supplier, func);
 	}
-	public @Override UnDoubleStream asDS(Function<Stream<T>, DoubleStream> func) {
+	protected @Override UnDoubleStream asDS(Function<Stream<T>, DoubleStream> func) {
 		return new UnDoubleStream(supplier, func);
 	}
-	public @Override Function<? super T, ? extends IntStream> castToIntStream(
+	protected @Override Function<? super T, ? extends IntStream> castToIntStream(
 	  Function<? super T, ? extends IntStream> mapper) {
 		return mapper;
 	}
-	public @Override Function<? super T, ? extends LongStream> castToLongStream(
+	protected @Override Function<? super T, ? extends LongStream> castToLongStream(
 	  Function<? super T, ? extends LongStream> mapper) {
 		return mapper;
 	}
-	public @Override Function<? super T, ? extends DoubleStream> castToDoubleStream(
+	protected @Override Function<? super T, ? extends DoubleStream> castToDoubleStream(
 	  Function<? super T, ? extends DoubleStream> mapper) {
 		return mapper;
 	}
-	public @Override ToIntFunction<? super T> castToInt(ToIntFunction<? super T> mapper) {
+	protected @Override ToIntFunction<? super T> castToInt(ToIntFunction<? super T> mapper) {
 		return mapper;
 	}
-	public @Override ToLongFunction<? super T> castToLong(ToLongFunction<? super T> mapper) {
+	protected @Override ToLongFunction<? super T> castToLong(ToLongFunction<? super T> mapper) {
 		return mapper;
 	}
-	public @Override ToDoubleFunction<? super T> castToDouble(ToDoubleFunction<? super T> mapper) {
+	protected @Override ToDoubleFunction<? super T> castToDouble(ToDoubleFunction<? super T> mapper) {
 		return mapper;
 	}
-	public @Override BinaryOperator<T> castToBinaryOperators(BinaryOperator<T> combiner) {
+	protected @Override BinaryOperator<T> castToBinaryOperators(BinaryOperator<T> combiner) {
 		return combiner;
 	}
-	public @Override Comparator<? super T> castToComparators(Comparator<? super T> comparator) {
+	protected @Override Comparator<? super T> castToComparators(Comparator<? super T> comparator) {
 		return comparator;
 	}
-	public @Override Consumer<? super T> castToConsumers(Consumer<? super T> action) {
+	protected @Override Consumer<? super T> castToConsumers(Consumer<? super T> action) {
 		return action;
 	}
-	public @Override Predicate<? super T> castToPredicates(Predicate<? super T> allowed) {
+	protected @Override Predicate<? super T> castToPredicates(Predicate<? super T> allowed) {
 		return allowed;
 	}
 	public <R> UnStream<R> map(Function<? super T, ? extends R> mapping) {

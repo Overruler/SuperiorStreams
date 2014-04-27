@@ -92,6 +92,12 @@ public class Lambda {
 		lines1.noneMatch(s -> s.isEmpty());
 		lines2.noneMatch(action2);
 		lines3.noneMatch(action2);
+		lines1.filter(action1);
+		lines1.filter(action2);
+		lines1.filter(s -> Files.isHidden(Paths.get(s)));
+		lines1.filter(s -> s.isEmpty());
+		lines2.filter(action2);
+		lines3.filter(action2);
 	}
 	private static void tests3(IOStream<String> lines1, UnStream<String> lines2, Stream<String> lines3) {
 		Function<String, Stream<Integer>> mapping1 = s2 -> s2.codePoints().boxed();

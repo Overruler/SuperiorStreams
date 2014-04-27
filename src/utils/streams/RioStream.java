@@ -60,72 +60,75 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 		super(supplierAC);
 		this.supplierAC = supplierAC;
 	}
-	public A getCached() {
+	private A getCached() {
 		return supplierAC.get().resource;
 	}
-	public @Override Stream<T> castToStream(AutoCloseableStrategy<A, Stream<T>> strategy) {
-		return strategy.user;
-	}
-	public @Override Class<IOException> classOfE() {
+	protected @Override Class<IOException> classOfE() {
 		return IOException.class;
 	}
-	public @Override RioStream<A, T> asSELF(Function<Stream<T>, Stream<T>> convert) {
+	protected @Override Stream<T> castToStream(AutoCloseableStrategy<A, Stream<T>> strategy) {
+		return strategy.user;
+	}
+	protected @Override RioStream<A, T> asSELF(Function<Stream<T>, Stream<T>> convert) {
 		return new RioStream<>(supplierAC, convert);
 	}
-	public @Override RioIntStream<A> asIS(Function<Stream<T>, IntStream> convert) {
+	protected @Override RioIntStream<A> asIS(Function<Stream<T>, IntStream> convert) {
 		return new RioIntStream<>(supplierAC, convert);
 	}
-	public @Override RioLongStream<A> asLS(Function<Stream<T>, LongStream> convert) {
+	protected @Override RioLongStream<A> asLS(Function<Stream<T>, LongStream> convert) {
 		return new RioLongStream<>(supplierAC, convert);
 	}
-	public @Override RioDoubleStream<A> asDS(Function<Stream<T>, DoubleStream> convert) {
+	protected @Override RioDoubleStream<A> asDS(Function<Stream<T>, DoubleStream> convert) {
 		return new RioDoubleStream<>(supplierAC, convert);
 	}
-	public @Override Function<? super T, ? extends IntStream> castToIntStream(
+	protected @SuppressWarnings("null") @Override Function<? super T, ? extends IntStream> castToIntStream(
 	  IOBiFunction<A, ? super T, ? extends IntStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
-	public @Override Function<? super T, ? extends LongStream> castToLongStream(
+	protected @SuppressWarnings("null") @Override Function<? super T, ? extends LongStream> castToLongStream(
 	  IOBiFunction<A, ? super T, ? extends LongStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
-	public @Override Function<? super T, ? extends DoubleStream> castToDoubleStream(
+	protected @SuppressWarnings("null") @Override Function<? super T, ? extends DoubleStream> castToDoubleStream(
 	  IOBiFunction<A, ? super T, ? extends DoubleStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
-	public @Override ToIntFunction<? super T> castToInt(IOToIntBiFunction<A, ? super T> mapper) {
+	protected @SuppressWarnings("null") @Override ToIntFunction<? super T> castToInt(
+	  IOToIntBiFunction<A, ? super T> mapper) {
 		return t -> mapper.uncheck(classOfE()).applyAsInt(getCached(), t);
 	}
-	public @Override ToLongFunction<? super T> castToLong(IOToLongBiFunction<A, ? super T> mapper) {
+	protected @SuppressWarnings("null") @Override ToLongFunction<? super T> castToLong(
+	  IOToLongBiFunction<A, ? super T> mapper) {
 		return t -> mapper.uncheck(classOfE()).applyAsLong(getCached(), t);
 	}
-	public @Override ToDoubleFunction<? super T> castToDouble(IOToDoubleBiFunction<A, ? super T> mapper) {
+	protected @SuppressWarnings("null") @Override ToDoubleFunction<? super T> castToDouble(
+	  IOToDoubleBiFunction<A, ? super T> mapper) {
 		return t -> mapper.uncheck(classOfE()).applyAsDouble(getCached(), t);
 	}
-	public @Override BinaryOperator<T> castToBinaryOperators(Function<A, IOBinaryOperator<T>> combiner) {
+	protected @Override BinaryOperator<T> castToBinaryOperators(Function<A, IOBinaryOperator<T>> combiner) {
 		return combiner.apply(getCached()).uncheck(classOfE());
 	}
-	public @Override Comparator<? super T> castToComparators(Function<A, Comparator<? super T>> comparator) {
+	protected @Override Comparator<? super T> castToComparators(Function<A, Comparator<? super T>> comparator) {
 		return comparator.apply(getCached());
 	}
-	public @Override Consumer<? super T> castToConsumers(IOBiConsumer<A, ? super T> action) {
+	protected @SuppressWarnings("null") @Override Consumer<? super T> castToConsumers(IOBiConsumer<A, ? super T> action) {
 		return t -> action.uncheck(classOfE()).accept(getCached(), t);
 	}
-	public @Override Predicate<? super T> castToPredicates(IOBiPredicate<A, ? super T> test) {
+	protected @SuppressWarnings("null") @Override Predicate<? super T> castToPredicates(IOBiPredicate<A, ? super T> test) {
 		return t -> test.uncheck(classOfE()).test(getCached(), t);
 	}
-	public <R> IOStream<R> map(IOBiFunction<A, ? super T, ? extends R> mapping) {
+	public <R> RioStream<A, R> map(IOBiFunction<A, ? super T, ? extends R> mapping) {
 		return mapInternal(castToMapFunctions(mapping), cast());
 	}
-	public final @SafeVarargs <R> IOStream<R> map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
+	public final @SafeVarargs <R> RioStream<A, R> map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? mapInternal(
 		  mapper,
 		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
-	public <R> IOStream<R> flatMap(IOBiFunction<A, ? super T, ? extends Stream<? extends R>> mapper) {
+	public <R> RioStream<A, R> flatMap(IOBiFunction<A, ? super T, ? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public final @SafeVarargs <R> IOStream<R> flatMap(
+	public final @SafeVarargs <R> RioStream<A, R> flatMap(
 	  Function<? super T, ? extends Stream<? extends R>> mapper,
 	  Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? flatMapInternal(
@@ -162,17 +165,19 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 		}
 		return toMultiMapInternal(classifier, intoMap, intoList);
 	}
-	private <K> Function<? super T, ? extends K> castToClassifier(IOBiFunction<A, ? super T, ? extends K> classifier) {
+	private @SuppressWarnings("null") <K> Function<? super T, ? extends K> castToClassifier(
+	  IOBiFunction<A, ? super T, ? extends K> classifier) {
 		return t -> classifier.uncheck(classOfE()).apply(getCached(), t);
 	}
-	private <R> Function<? super T, ? extends Stream<? extends R>> castToFlatMapFunctions(
+	private @SuppressWarnings("null") <R> Function<? super T, ? extends Stream<? extends R>> castToFlatMapFunctions(
 	  IOBiFunction<A, ? super T, ? extends Stream<? extends R>> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
-	private <R> Function<? super T, ? extends R> castToMapFunctions(IOBiFunction<A, ? super T, ? extends R> mapping) {
+	private @SuppressWarnings("null") <R> Function<? super T, ? extends R> castToMapFunctions(
+	  IOBiFunction<A, ? super T, ? extends R> mapping) {
 		return t -> mapping.uncheck(classOfE()).apply(getCached(), t);
 	}
-	private <R> Function<Function<Stream<T>, Stream<R>>, IOStream<R>> cast() {
-		return f -> new IOStream<>(supplier, f);
+	private <R> Function<Function<Stream<T>, Stream<R>>, RioStream<A, R>> cast() {
+		return f -> new RioStream<>(supplierAC, f);
 	}
 }

@@ -3,6 +3,7 @@ package utils.streams;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,6 +29,7 @@ import static java.util.stream.Collectors.*;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExPredicate;
+import utils.streams.functions.ExSupplier;
 import utils.streams.functions.ExToLongFunction;
 
 //*Q*
@@ -36,16 +38,27 @@ SELF extends AbstractStream<T, E, STREAM,
 SELF,
 IS, LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, COMPARATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_DOUBLE>,
 IS, LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, COMPARATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_DOUBLE>
-implements StreamyBase<T, E, SELF, IS, LS, DS> {//*E*
+implements StreamyBase<T, E> {//*E*
 
-	public SELF filter(PREDICATE allowed) {
-		return filterInternal(castToPredicates(allowed));
+	protected abstract Class<E> classOfE();
+	public @Override Stream<T> stream() throws E {
+		return ExSupplier.recheck(maker(), classOfE()).get();
 	}
-	public final @SafeVarargs SELF filter(Predicate<T> allow, Predicate<T>... allowed) {
-		for(Predicate<T> predicate : allowed) {
-			allow = allow.and(predicate);
+	public @Override Iterable<T> iterate() throws E {
+		List<T> collected = stream().collect(Collectors.toList());
+		return () -> collected.iterator();
+	}
+	public SELF filter(PREDICATE allowed) {
+		return asSELF(s -> s.filter(castToPredicates(allowed)));
+	}
+	public final @SafeVarargs SELF filter(Predicate<? super T> allow, Predicate<? super T>... allowed) {
+		@SuppressWarnings("null")
+		Predicate<T> allow2 = allow::test;
+		for(Predicate<? super T> predicate : allowed) {
+			allow2 = allow2.and(predicate);
 		}
-		return filterInternal(allow);
+		Predicate<T> allow3 = allow2;
+		return asSELF(s -> s.filter(allow3));
 	}
 	public IS mapToInt(TO_INT mapper) {
 		return asIS(s -> s.mapToInt(castToInt(mapper)));
@@ -81,31 +94,40 @@ implements StreamyBase<T, E, SELF, IS, LS, DS> {//*E*
 		return asSELF(s -> s.skip(n));
 	}
 	public SELF peek(CONSUMER action) {
-		return peek(castToConsumers(action));
+		return asSELF(s -> s.peek(castToConsumers(action)));
 	}
-	public final @SafeVarargs SELF peek(Consumer<T> action, Consumer<? super T>... actions) {
+	public final @SafeVarargs SELF peek(Consumer<? super T> action, Consumer<? super T>... actions) {
+		@SuppressWarnings("null")
+		Consumer<T> action2 = action::accept;
 		for(Consumer<? super T> consumer : actions) {
-			action = action.andThen(consumer);
+			action2 = action2.andThen(consumer);
 		}
-		return peek(action);
+		Consumer<T> action3 = action2;
+		return asSELF(s -> s.peek(action3));
 	}
 	public void forEach(CONSUMER action) throws E {
-		forEach(castToConsumers(action));
+		StreamyBase.terminal(s -> s.forEach(castToConsumers(action)), maker(), classOfE());
 	}
-	public final @SafeVarargs void forEach(Consumer<T> action, Consumer<? super T>... actions) throws E {
+	public final @SafeVarargs void forEach(Consumer<? super T> action, Consumer<? super T>... actions) throws E {
+		@SuppressWarnings("null")
+		Consumer<T> action2 = action::accept;
 		for(Consumer<? super T> consumer : actions) {
-			action = action.andThen(consumer);
+			action2 = action2.andThen(consumer);
 		}
-		forEach(action);
+		Consumer<T> action3 = action2;
+		StreamyBase.terminal(s -> s.forEach(action3), maker(), classOfE());
 	}
 	public void forEachOrdered(CONSUMER action) throws E {
 		forEachOrdered(castToConsumers(action));
 	}
-	public final @SafeVarargs void forEachOrdered(Consumer<T> action, Consumer<? super T>... actions) throws E {
+	public final @SafeVarargs void forEachOrdered(Consumer<? super T> action, Consumer<? super T>... actions) throws E {
+		@SuppressWarnings("null")
+		Consumer<T> action2 = action::accept;
 		for(Consumer<? super T> consumer : actions) {
-			action = action.andThen(consumer);
+			action2 = action2.andThen(consumer);
 		}
-		forEachOrdered(action);
+		Consumer<T> action3 = action2;
+		forEachOrdered(action3);
 	}
 	public IS asIntStream() {
 		return asIS(s -> s.mapToInt(AbstractIntStream::toInt));
@@ -146,7 +168,10 @@ implements StreamyBase<T, E, SELF, IS, LS, DS> {//*E*
 	public Optional<T> findAny() throws E {
 		return StreamyBase.terminalAsObj(s -> s.findAny(), maker(), classOfE());
 	}
-	public SELF concat(StreamyBase<T, E, SELF, IS, LS, DS> after) {
+	public
+	  SELF
+	  concat(
+	    AbstractStream<T, E, STREAM, SELF, IS, LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, COMPARATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_DOUBLE> after) {
 		Objects.requireNonNull(after);
 		return asSELF(s -> Stream.concat(s, after.maker().get()));
 	}
@@ -204,29 +229,38 @@ implements StreamyBase<T, E, SELF, IS, LS, DS> {//*E*
 	public boolean anyMatch(PREDICATE test) throws E {
 		return anyMatch(castToPredicates(test));
 	}
-	public final @SafeVarargs boolean anyMatch(Predicate<T> test, Predicate<? super T>... tests) throws E {
-		for(Predicate<? super T> test2 : tests) {
-			test = test.and(test2);
+	public final @SafeVarargs boolean anyMatch(Predicate<? super T> test, Predicate<? super T>... tests) throws E {
+		@SuppressWarnings("null")
+		Predicate<T> test2 = test::test;
+		for(Predicate<? super T> predicate2 : tests) {
+			test2 = test2.and(predicate2);
 		}
-		return anyMatch(test);
+		Predicate<? super T> test3 = test;
+		return StreamyBase.terminalAsBoolean(s -> s.anyMatch(test3), maker(), classOfE());
 	}
 	public boolean allMatch(PREDICATE predicate) throws E {
 		return allMatch(castToPredicates(predicate));
 	}
-	public final @SafeVarargs boolean allMatch(Predicate<T> test, Predicate<? super T>... tests) throws E {
-		for(Predicate<? super T> test2 : tests) {
-			test = test.and(test2);
+	public final @SafeVarargs boolean allMatch(Predicate<? super T> test, Predicate<? super T>... tests) throws E {
+		@SuppressWarnings("null")
+		Predicate<T> test2 = test::test;
+		for(Predicate<? super T> predicate2 : tests) {
+			test2 = test2.and(predicate2);
 		}
-		return allMatch(test);
+		Predicate<T> test3 = test2;
+		return StreamyBase.terminalAsBoolean(s -> s.allMatch(test3), maker(), classOfE());
 	}
 	public boolean noneMatch(PREDICATE test) throws E {
-		return noneMatch(castToPredicates(test));
+		return StreamyBase.terminalAsBoolean(s -> s.noneMatch(castToPredicates(test)), maker(), classOfE());
 	}
-	public final @SafeVarargs boolean noneMatch(Predicate<T> test, Predicate<? super T>... tests) throws E {
+	public final @SafeVarargs boolean noneMatch(Predicate<? super T> test, Predicate<? super T>... tests) throws E {
+		@SuppressWarnings("null")
+		Predicate<T> test2 = test::test;
 		for(Predicate<? super T> predicate2 : tests) {
-			test = test.and(predicate2);
+			test2 = test2.and(predicate2);
 		}
-		return noneMatch(test);
+		Predicate<T> test3 = test2;
+		return StreamyBase.terminalAsBoolean(s -> s.noneMatch(test3), maker(), classOfE());
 	}
 	protected <R, RS> RS mapInternal(
 	  Function<? super T, ? extends R> mapper,
@@ -241,9 +275,6 @@ implements StreamyBase<T, E, SELF, IS, LS, DS> {//*E*
 	protected Optional<T> reduceInternal(BinaryOperator<T> accumulator) throws E {
 		return StreamyBase.terminalAsObj(s -> s.reduce(accumulator), maker(), classOfE());
 	}
-	protected SELF filterInternal(Predicate<? super T> allowed) {
-		return asSELF(s -> s.filter(allowed));
-	}
 
 	protected final Supplier<Stream<T>> supplier;
 
@@ -253,9 +284,13 @@ implements StreamyBase<T, E, SELF, IS, LS, DS> {//*E*
 	protected <OLD> AbstractStream(Supplier<OLD> older, Function<OLD, STREAM> converter) {
 		this.supplier = () -> castToStream(converter.apply(older.get()));
 	}
-	public @Override Supplier<Stream<T>> maker() {
+	protected Supplier<Stream<T>> maker() {
 		return supplier;
 	}
+	protected abstract SELF asSELF(Function<Stream<T>, Stream<T>> convert);
+	protected abstract IS asIS(Function<Stream<T>, IntStream> convert);
+	protected abstract LS asLS(Function<Stream<T>, LongStream> convert);
+	protected abstract DS asDS(Function<Stream<T>, DoubleStream> convert);
 	protected abstract Comparator<? super T> castToComparators(COMPARATOR comparator);
 	protected abstract Function<? super T, ? extends IntStream> castToIntStream(TO_IS mapper);
 	protected abstract Function<? super T, ? extends DoubleStream> castToDoubleStream(TO_DS mapper);

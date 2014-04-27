@@ -46,25 +46,25 @@ DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, 
 	protected <OLD> AbstractLongStream(Supplier<OLD> older, Function<OLD, STREAM> converter) {
 		this.supplier = () -> castToStream(converter.apply(older.get()));
 	}
-	public Supplier<LongStream> maker() {
+	protected Supplier<LongStream> maker() {
 		return supplier;
 	}
-	public abstract LongStream castToStream(STREAM stream);
-	public abstract LongConsumer castToConsumers(CONSUMER action);
-	public abstract LongPredicate castToPredicates(PREDICATE test);
-	public abstract LongBinaryOperator castToBinaryOperators(BINARY_OPERATOR combiner);
-	public abstract Function<? super Long, ? extends IntStream> castToIntStream(TO_IS mapper);
-	public abstract Function<? super Long, ? extends LongStream> castToLongStream(TO_LS mapper);
-	public abstract Function<? super Long, ? extends DoubleStream> castToDoubleStream(TO_DS mapper);
-	public abstract LongToIntFunction castToInt(TO_INT mapper);
-	public abstract LongUnaryOperator castToLong(TO_LONG mapper);
-	public abstract LongToDoubleFunction castToDouble(TO_DOUBLE mapper);
-	public abstract Class<E> classOfE();
-	public abstract OS asOS(Function<LongStream, Stream<Long>> convert);
-	public abstract IS asIS(Function<LongStream, IntStream> convert);
-	public abstract SELF asSELF(Function<LongStream, LongStream> convert);
-	public abstract DS asDS(Function<LongStream, DoubleStream> convert);
-	public static <T> long toLong(T t) {
+	protected abstract LongStream castToStream(STREAM stream);
+	protected abstract LongConsumer castToConsumers(CONSUMER action);
+	protected abstract LongPredicate castToPredicates(PREDICATE test);
+	protected abstract LongBinaryOperator castToBinaryOperators(BINARY_OPERATOR combiner);
+	protected abstract Function<? super Long, ? extends IntStream> castToIntStream(TO_IS mapper);
+	protected abstract Function<? super Long, ? extends LongStream> castToLongStream(TO_LS mapper);
+	protected abstract Function<? super Long, ? extends DoubleStream> castToDoubleStream(TO_DS mapper);
+	protected abstract LongToIntFunction castToInt(TO_INT mapper);
+	protected abstract LongUnaryOperator castToLong(TO_LONG mapper);
+	protected abstract LongToDoubleFunction castToDouble(TO_DOUBLE mapper);
+	protected abstract Class<E> classOfE();
+	protected abstract OS asOS(Function<LongStream, Stream<Long>> convert);
+	protected abstract IS asIS(Function<LongStream, IntStream> convert);
+	protected abstract SELF asSELF(Function<LongStream, LongStream> convert);
+	protected abstract DS asDS(Function<LongStream, DoubleStream> convert);
+	protected static <T> long toLong(T t) {
 		try {
 			return t instanceof Long ? (int) t : t == null ? 0 : Long.parseLong(String.valueOf(t));
 		} catch(NumberFormatException ignored) {

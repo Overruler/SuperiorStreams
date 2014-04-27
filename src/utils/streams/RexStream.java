@@ -61,72 +61,78 @@ ExToDoubleBiFunction<A, ? super T, E>> {//*E*
 		this.supplierAC = supplierAC;
 		this.classOfE = classOfE;
 	}
-	public A getCached() {
+	private A getCached() {
 		return supplierAC.get().resource;
 	}
-	public @Override Stream<T> castToStream(AutoCloseableStrategy<A, Stream<T>> strategy) {
-		return strategy.user;
-	}
-	public @Override Class<E> classOfE() {
+	protected @Override Class<E> classOfE() {
 		return classOfE;
 	}
-	public @Override RexStream<E, A, T> asSELF(Function<Stream<T>, Stream<T>> convert) {
+	protected @Override Stream<T> castToStream(AutoCloseableStrategy<A, Stream<T>> strategy) {
+		return strategy.user;
+	}
+	protected @Override RexStream<E, A, T> asSELF(Function<Stream<T>, Stream<T>> convert) {
 		return new RexStream<>(classOfE, supplierAC, convert);
 	}
-	public @Override RexIntStream<E, A> asIS(Function<Stream<T>, IntStream> convert) {
+	protected @Override RexIntStream<E, A> asIS(Function<Stream<T>, IntStream> convert) {
 		return new RexIntStream<>(classOfE, supplierAC, convert);
 	}
-	public @Override RexLongStream<E, A> asLS(Function<Stream<T>, LongStream> convert) {
+	protected @Override RexLongStream<E, A> asLS(Function<Stream<T>, LongStream> convert) {
 		return new RexLongStream<>(classOfE, supplierAC, convert);
 	}
-	public @Override RexDoubleStream<E, A> asDS(Function<Stream<T>, DoubleStream> convert) {
+	protected @Override RexDoubleStream<E, A> asDS(Function<Stream<T>, DoubleStream> convert) {
 		return new RexDoubleStream<>(classOfE, supplierAC, convert);
 	}
-	public @Override Function<? super T, ? extends IntStream> castToIntStream(
+	protected @SuppressWarnings("null") @Override Function<? super T, ? extends IntStream> castToIntStream(
 	  ExBiFunction<A, ? super T, ? extends IntStream, E> mapper) {
 		return t -> mapper.uncheck(classOfE).apply(getCached(), t);
 	}
-	public @Override Function<? super T, ? extends LongStream> castToLongStream(
+	protected @SuppressWarnings("null") @Override Function<? super T, ? extends LongStream> castToLongStream(
 	  ExBiFunction<A, ? super T, ? extends LongStream, E> mapper) {
 		return t -> mapper.uncheck(classOfE).apply(getCached(), t);
 	}
-	public @Override Function<? super T, ? extends DoubleStream> castToDoubleStream(
+	protected @SuppressWarnings("null") @Override Function<? super T, ? extends DoubleStream> castToDoubleStream(
 	  ExBiFunction<A, ? super T, ? extends DoubleStream, E> mapper) {
 		return t -> mapper.uncheck(classOfE).apply(getCached(), t);
 	}
-	public @Override ToIntFunction<? super T> castToInt(ExToIntBiFunction<A, ? super T, E> mapper) {
+	protected @SuppressWarnings("null") @Override ToIntFunction<? super T> castToInt(
+	  ExToIntBiFunction<A, ? super T, E> mapper) {
 		return t -> mapper.uncheck(classOfE).applyAsInt(getCached(), t);
 	}
-	public @Override ToLongFunction<? super T> castToLong(ExToLongBiFunction<A, ? super T, E> mapper) {
+	protected @SuppressWarnings("null") @Override ToLongFunction<? super T> castToLong(
+	  ExToLongBiFunction<A, ? super T, E> mapper) {
 		return t -> mapper.uncheck(classOfE).applyAsLong(getCached(), t);
 	}
-	public @Override ToDoubleFunction<? super T> castToDouble(ExToDoubleBiFunction<A, ? super T, E> mapper) {
+	protected @SuppressWarnings("null") @Override ToDoubleFunction<? super T> castToDouble(
+	  ExToDoubleBiFunction<A, ? super T, E> mapper) {
 		return t -> mapper.uncheck(classOfE).applyAsDouble(getCached(), t);
 	}
-	public @Override BinaryOperator<T> castToBinaryOperators(Function<A, ExBinaryOperator<T, E>> combiner) {
-  	return combiner.apply(getCached()).uncheck(classOfE);
-  }
-	public @Override Comparator<? super T> castToComparators(Function<A, Comparator<? super T>> comparator) {
-  	return comparator.apply(getCached());
-  }
-	public @Override Consumer<? super T> castToConsumers(ExBiConsumer<A, ? super T, E> action) {
+	protected @Override BinaryOperator<T> castToBinaryOperators(Function<A, ExBinaryOperator<T, E>> combiner) {
+		return combiner.apply(getCached()).uncheck(classOfE);
+	}
+	protected @Override Comparator<? super T> castToComparators(Function<A, Comparator<? super T>> comparator) {
+		return comparator.apply(getCached());
+	}
+	protected @SuppressWarnings("null") @Override Consumer<? super T>
+	  castToConsumers(ExBiConsumer<A, ? super T, E> action) {
 		return t -> action.uncheck(classOfE).accept(getCached(), t);
 	}
-	public @Override Predicate<? super T> castToPredicates(ExBiPredicate<A, ? super T, E> test) {
-  	return t -> test.uncheck(classOfE).test(getCached(), t);
-  }
-	public <R> IOStream<R> map(ExBiFunction<A, ? super T, ? extends R, E> mapping) {
+	protected @SuppressWarnings("null") @Override Predicate<? super T> castToPredicates(
+	  ExBiPredicate<A, ? super T, E> test) {
+		return t -> test.uncheck(classOfE).test(getCached(), t);
+	}
+	public <R> RexStream<E, A, R> map(ExBiFunction<A, ? super T, ? extends R, E> mapping) {
 		return mapInternal(castToMapFunctions(mapping), cast());
 	}
-	public final @SafeVarargs <R> IOStream<R> map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
+	public final @SafeVarargs <R> RexStream<E, A, R>
+	  map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? mapInternal(
 		  mapper,
 		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
-	public <R> IOStream<R> flatMap(ExBiFunction<A, ? super T, ? extends Stream<? extends R>, E> mapper) {
+	public <R> RexStream<E, A, R> flatMap(ExBiFunction<A, ? super T, ? extends Stream<? extends R>, E> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public final @SafeVarargs <R> IOStream<R> flatMap(
+	public final @SafeVarargs <R> RexStream<E, A, R> flatMap(
 	  Function<? super T, ? extends Stream<? extends R>> mapper,
 	  Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? flatMapInternal(
@@ -163,17 +169,19 @@ ExToDoubleBiFunction<A, ? super T, E>> {//*E*
 		}
 		return toMultiMapInternal(classifier, intoMap, intoList);
 	}
-	private <K> Function<? super T, ? extends K> castToClassifier(ExBiFunction<A, ? super T, ? extends K, E> classifier) {
+	private @SuppressWarnings("null") <K> Function<? super T, ? extends K> castToClassifier(
+	  ExBiFunction<A, ? super T, ? extends K, E> classifier) {
 		return t -> classifier.uncheck(classOfE()).apply(getCached(), t);
 	}
-	private <R> Function<? super T, ? extends Stream<? extends R>> castToFlatMapFunctions(
+	private @SuppressWarnings("null") <R> Function<? super T, ? extends Stream<? extends R>> castToFlatMapFunctions(
 	  ExBiFunction<A, ? super T, ? extends Stream<? extends R>, E> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
-	private <R> Function<? super T, ? extends R> castToMapFunctions(ExBiFunction<A, ? super T, ? extends R, E> mapping) {
+	private @SuppressWarnings("null") <R> Function<? super T, ? extends R> castToMapFunctions(
+	  ExBiFunction<A, ? super T, ? extends R, E> mapping) {
 		return t -> mapping.uncheck(classOfE()).apply(getCached(), t);
 	}
-	private <R> Function<Function<Stream<T>, Stream<R>>, IOStream<R>> cast() {
-		return f -> new IOStream<>(supplier, f);
+	private <R> Function<Function<Stream<T>, Stream<R>>, RexStream<E, A, R>> cast() {
+		return f -> new RexStream<>(classOfE(), supplierAC, f);
 	}
 }

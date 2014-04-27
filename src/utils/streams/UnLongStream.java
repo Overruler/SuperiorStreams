@@ -19,6 +19,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+
 //*Q*
 public final class UnLongStream extends AbstractLongStream<RuntimeException,
 LongStream,
@@ -42,61 +43,52 @@ ToDoubleFunction<Long>> {//*E*
 	<OLD> UnLongStream(Supplier<OLD> older, Function<OLD, LongStream> converter) {
 		this(() -> converter.apply(older.get()));
 	}
-	@Override
-  public LongStream castToStream(LongStream stream) {
-  	return stream;
-  }
-	@Override
-	public Class<RuntimeException> classOfE() {
+	protected @Override Class<RuntimeException> classOfE() {
 		return RuntimeException.class;
 	}
-	public @Override UnStream<Long> asOS(Function<LongStream, Stream<Long>> func) {
+	protected @Override LongStream castToStream(LongStream stream) {
+		return stream;
+	}
+	protected @Override UnStream<Long> asOS(Function<LongStream, Stream<Long>> func) {
 		return new UnStream<>(supplier, func);
 	}
-	public @Override UnIntStream asIS(Function<LongStream, IntStream> func) {
+	protected @Override UnIntStream asIS(Function<LongStream, IntStream> func) {
 		return new UnIntStream(supplier, func);
 	}
-	public @Override UnLongStream asSELF(Function<LongStream, LongStream> func) {
+	protected @Override UnLongStream asSELF(Function<LongStream, LongStream> func) {
 		return new UnLongStream(supplier, func);
 	}
-	public @Override UnDoubleStream asDS(Function<LongStream, DoubleStream> func) {
+	protected @Override UnDoubleStream asDS(Function<LongStream, DoubleStream> func) {
 		return new UnDoubleStream(supplier, func);
 	}
-	@Override
-  public Function<? super Long, ? extends IntStream> castToIntStream(LongFunction<? extends IntStream> mapper) {
-  	return mapper::apply;
-  }
-	@Override
-  public Function<? super Long, ? extends LongStream> castToLongStream(LongFunction<? extends LongStream> mapper) {
-  	return mapper::apply;
-  }
-	@Override
-  public Function<? super Long, ? extends DoubleStream> castToDoubleStream(
-    LongFunction<? extends DoubleStream> mapper) {
-  	return mapper::apply;
-  }
-	@Override
-  public LongToIntFunction castToInt(ToIntFunction<Long> mapper) {
-  	return mapper::applyAsInt;
-  }
-	@Override
-  public LongUnaryOperator castToLong(ToLongFunction<Long> mapper) {
-  	return mapper::applyAsLong;
-  }
-	@Override
-  public LongToDoubleFunction castToDouble(ToDoubleFunction<Long> mapper) {
-  	return mapper::applyAsDouble;
-  }
-	@Override
-  public LongBinaryOperator castToBinaryOperators(LongBinaryOperator combiner) {
-  	return combiner;
-  }
-	@Override
-  public LongConsumer castToConsumers(LongConsumer action) {
-  	return action;
-  }
-	@Override
-	public LongPredicate castToPredicates(LongPredicate test) {
+	protected @Override Function<? super Long, ? extends IntStream> castToIntStream(
+	  LongFunction<? extends IntStream> mapper) {
+		return mapper::apply;
+	}
+	protected @Override Function<? super Long, ? extends LongStream> castToLongStream(
+	  LongFunction<? extends LongStream> mapper) {
+		return mapper::apply;
+	}
+	protected @Override Function<? super Long, ? extends DoubleStream> castToDoubleStream(
+	  LongFunction<? extends DoubleStream> mapper) {
+		return mapper::apply;
+	}
+	protected @Override LongToIntFunction castToInt(ToIntFunction<Long> mapper) {
+		return mapper::applyAsInt;
+	}
+	protected @Override LongUnaryOperator castToLong(ToLongFunction<Long> mapper) {
+		return mapper::applyAsLong;
+	}
+	protected @Override LongToDoubleFunction castToDouble(ToDoubleFunction<Long> mapper) {
+		return mapper::applyAsDouble;
+	}
+	protected @Override LongBinaryOperator castToBinaryOperators(LongBinaryOperator combiner) {
+		return combiner;
+	}
+	protected @Override LongConsumer castToConsumers(LongConsumer action) {
+		return action;
+	}
+	protected @Override LongPredicate castToPredicates(LongPredicate test) {
 		return test;
 	}
 	public <R> UnStream<R> map(LongFunction<? extends R> mapping) {
@@ -113,9 +105,11 @@ ToDoubleFunction<Long>> {//*E*
 	public final @SafeVarargs <R> UnStream<R> flatMap(
 	  LongFunction<? extends Stream<? extends R>> mapper,
 	  LongPredicate... allowed) {
-		return allowed != null && allowed.length > 0 ?
-			flatMapInternal(mapper::apply, filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) :
-				flatMapInternal(mapper::apply, cast());
+		return allowed != null && allowed.length > 0 ? flatMapInternal(
+		  mapper::apply,
+		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(
+		  mapper::apply,
+		  cast());
 	}
 	public <K> Map<K, long[]> toMap(LongFunction<? extends K> classifier) throws RuntimeException {
 		return toMapInternal(classifier, castToClassifier());
@@ -129,7 +123,7 @@ ToDoubleFunction<Long>> {//*E*
 	private static <K> Function<LongFunction<? extends K>, LongFunction<? extends K>> castToClassifier() {
 		return c -> c;
 	}
-	private static <R> Function<Long,? extends Stream<? extends R>> castToFlatMapFunctions(
+	private static <R> Function<Long, ? extends Stream<? extends R>> castToFlatMapFunctions(
 	  LongFunction<? extends Stream<? extends R>> mapper) {
 		return mapper::apply;
 	}

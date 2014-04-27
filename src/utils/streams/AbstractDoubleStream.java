@@ -45,25 +45,25 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 	protected <OLD> AbstractDoubleStream(Supplier<OLD> older, Function<OLD, STREAM> converter) {
 		this.supplier = () -> castToStream(converter.apply(older.get()));
 	}
-	public Supplier<DoubleStream> maker() {
+	protected Supplier<DoubleStream> maker() {
 		return supplier;
 	}
-	public abstract DoubleStream castToStream(STREAM stream);
-	public abstract DoubleConsumer castToConsumers(CONSUMER action);
-	public abstract DoublePredicate castToPredicates(PREDICATE test);
-	public abstract DoubleBinaryOperator castToBinaryOperators(BINARY_OPERATOR combiner);
-	public abstract Function<? super Double, ? extends IntStream> castToIntStream(TO_IS mapper);
-	public abstract Function<? super Double, ? extends LongStream> castToLongStream(TO_LS mapper);
-	public abstract Function<? super Double, ? extends DoubleStream> castToDoubleStream(TO_DS mapper);
-	public abstract DoubleToIntFunction castToInt(TO_INT mapper);
-	public abstract DoubleToLongFunction castToLong(TO_LONG mapper);
-	public abstract DoubleUnaryOperator castToDouble(TO_DOUBLE mapper);
-	public abstract Class<E> classOfE();
-	public abstract OS asOS(Function<DoubleStream, Stream<Double>> convert);
-	public abstract IS asIS(Function<DoubleStream, IntStream> convert);
-	public abstract LS asLS(Function<DoubleStream, LongStream> convert);
-	public abstract SELF asSELF(Function<DoubleStream, DoubleStream> convert);
-	public static <T> double toDouble(T t) {
+	protected abstract DoubleStream castToStream(STREAM stream);
+	protected abstract DoubleConsumer castToConsumers(CONSUMER action);
+	protected abstract DoublePredicate castToPredicates(PREDICATE test);
+	protected abstract DoubleBinaryOperator castToBinaryOperators(BINARY_OPERATOR combiner);
+	protected abstract Function<? super Double, ? extends IntStream> castToIntStream(TO_IS mapper);
+	protected abstract Function<? super Double, ? extends LongStream> castToLongStream(TO_LS mapper);
+	protected abstract Function<? super Double, ? extends DoubleStream> castToDoubleStream(TO_DS mapper);
+	protected abstract DoubleToIntFunction castToInt(TO_INT mapper);
+	protected abstract DoubleToLongFunction castToLong(TO_LONG mapper);
+	protected abstract DoubleUnaryOperator castToDouble(TO_DOUBLE mapper);
+	protected abstract Class<E> classOfE();
+	protected abstract OS asOS(Function<DoubleStream, Stream<Double>> convert);
+	protected abstract IS asIS(Function<DoubleStream, IntStream> convert);
+	protected abstract LS asLS(Function<DoubleStream, LongStream> convert);
+	protected abstract SELF asSELF(Function<DoubleStream, DoubleStream> convert);
+	protected static <T> double toDouble(T t) {
 		try {
 			return t instanceof Double ? (int) t : t == null ? 0 : Double.parseDouble(String.valueOf(t));
 		} catch(NumberFormatException ignored) {

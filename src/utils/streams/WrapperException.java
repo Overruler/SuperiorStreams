@@ -8,11 +8,9 @@ public final class WrapperException extends UncheckedExceptionWrappingException 
 		super(e, classOfE);
 		Objects.requireNonNull(classOfE);
 	}
-
 	public static <E extends Exception> E show(RuntimeException e, Class<E> classOfE) {
 		return unwrapCause(classOfE, e);
 	}
-
 	public static <E extends Exception> RuntimeException hide(Exception e, Class<E> classOfE) {
 		Objects.requireNonNull(e);
 		if(RuntimeException.class.isInstance(e)) {
@@ -23,8 +21,7 @@ public final class WrapperException extends UncheckedExceptionWrappingException 
 		}
 		throw new UnexpectedCastFailureException(e, classOfE);
 	}
-
-static <E extends Exception> E unwrapException(RuntimeException e, Class<E> classOfE) {
+	static <E extends Exception> E unwrapException(RuntimeException e, Class<E> classOfE) {
 		return unwrapCause(classOfE, e);
 	}
 }

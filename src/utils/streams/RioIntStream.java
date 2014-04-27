@@ -62,65 +62,52 @@ IOToDoubleBiFunction<A, Integer>> {//*E*
 	public A getCached() {
 		return supplierAC.get().resource;
 	}
-	public @Override IntStream castToStream(AutoCloseableStrategy<A, IntStream> strategy) {
-		return strategy.user;
-	}
-	public @Override Class<IOException> classOfE() {
+	protected @Override Class<IOException> classOfE() {
 		return IOException.class;
 	}
-	@Override
-	public RioStream<A, Integer> asOS(Function<IntStream, Stream<Integer>> convert) {
+	protected @Override IntStream castToStream(AutoCloseableStrategy<A, IntStream> strategy) {
+		return strategy.user;
+	}
+	protected @Override RioStream<A, Integer> asOS(Function<IntStream, Stream<Integer>> convert) {
 		return new RioStream<>(supplierAC, convert);
 	}
-	@Override
-	public RioIntStream<A> asSELF(Function<IntStream, IntStream> convert) {
+	protected @Override RioIntStream<A> asSELF(Function<IntStream, IntStream> convert) {
 		return new RioIntStream<>(supplierAC, convert);
 	}
-	@Override
-	public RioLongStream<A> asLS(Function<IntStream, LongStream> convert) {
+	protected @Override RioLongStream<A> asLS(Function<IntStream, LongStream> convert) {
 		return new RioLongStream<>(supplierAC, convert);
 	}
-	@Override
-	public RioDoubleStream<A> asDS(Function<IntStream, DoubleStream> convert) {
+	protected @Override RioDoubleStream<A> asDS(Function<IntStream, DoubleStream> convert) {
 		return new RioDoubleStream<>(supplierAC, convert);
 	}
-	@Override
-	public Function<? super Integer, ? extends IntStream> castToIntStream(
+	protected @Override Function<? super Integer, ? extends IntStream> castToIntStream(
 	  IOBiFunction<A, Integer, ? extends IntStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
-	@Override
-	public Function<? super Integer, ? extends LongStream> castToLongStream(
+	protected @Override Function<? super Integer, ? extends LongStream> castToLongStream(
 	  IOBiFunction<A, Integer, ? extends LongStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
-	@Override
-	public Function<? super Integer, ? extends DoubleStream> castToDoubleStream(
+	protected @Override Function<? super Integer, ? extends DoubleStream> castToDoubleStream(
 	  IOBiFunction<A, Integer, ? extends DoubleStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
-	@Override
-	public IntUnaryOperator castToInt(IOToIntBiFunction<A, Integer> mapper) {
+	protected @Override IntUnaryOperator castToInt(IOToIntBiFunction<A, Integer> mapper) {
 		return t -> mapper.uncheck(classOfE()).applyAsInt(getCached(), t);
 	}
-	@Override
-	public IntToLongFunction castToLong(IOToLongBiFunction<A, Integer> mapper) {
+	protected @Override IntToLongFunction castToLong(IOToLongBiFunction<A, Integer> mapper) {
 		return t -> mapper.uncheck(classOfE()).applyAsLong(getCached(), t);
 	}
-	@Override
-	public IntToDoubleFunction castToDouble(IOToDoubleBiFunction<A, Integer> mapper) {
+	protected @Override IntToDoubleFunction castToDouble(IOToDoubleBiFunction<A, Integer> mapper) {
 		return t -> mapper.uncheck(classOfE()).applyAsDouble(getCached(), t);
 	}
-	@Override
-	public IntBinaryOperator castToBinaryOperators(Function<A, IOIntBinaryOperator> combiner) {
+	protected @Override IntBinaryOperator castToBinaryOperators(Function<A, IOIntBinaryOperator> combiner) {
 		return combiner.apply(getCached()).uncheck(classOfE());
 	}
-	@Override
-	public IntConsumer castToConsumers(IOObjIntConsumer<A> action) {
+	protected @Override IntConsumer castToConsumers(IOObjIntConsumer<A> action) {
 		return t -> action.uncheck(classOfE()).accept(getCached(), t);
 	}
-	@Override
-	public IntPredicate castToPredicates(IOBiPredicate<A, Integer> test) {
+	protected @Override IntPredicate castToPredicates(IOBiPredicate<A, Integer> test) {
 		return t -> test.uncheck(classOfE()).test(getCached(), t);
 	}
 	public <R> RioStream<A, R> map(IOBiFunction<A, Integer, ? extends R> mapping) {

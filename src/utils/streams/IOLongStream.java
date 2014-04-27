@@ -24,6 +24,7 @@ import utils.streams.functions.IOLongPredicate;
 import utils.streams.functions.IOToDoubleFunction;
 import utils.streams.functions.IOToIntFunction;
 import utils.streams.functions.IOToLongFunction;
+
 //*Q*
 public final class IOLongStream extends AbstractLongStream<IOException,
 LongStream,
@@ -47,61 +48,52 @@ IOToDoubleFunction<Long>> {//*E*
 	<OLD> IOLongStream(Supplier<OLD> older, Function<OLD, LongStream> converter) {
 		this(() -> converter.apply(older.get()));
 	}
-	@Override
-  public LongStream castToStream(LongStream stream) {
-  	return stream;
-  }
-	@Override
-	public Class<IOException> classOfE() {
+	protected @Override Class<IOException> classOfE() {
 		return IOException.class;
 	}
-	public @Override IOStream<Long> asOS(Function<LongStream, Stream<Long>> func) {
+	protected @Override LongStream castToStream(LongStream stream) {
+		return stream;
+	}
+	protected @Override IOStream<Long> asOS(Function<LongStream, Stream<Long>> func) {
 		return new IOStream<>(supplier, func);
 	}
-	public @Override IOIntStream asIS(Function<LongStream, IntStream> func) {
+	protected @Override IOIntStream asIS(Function<LongStream, IntStream> func) {
 		return new IOIntStream(supplier, func);
 	}
-	public @Override IOLongStream asSELF(Function<LongStream, LongStream> func) {
+	protected @Override IOLongStream asSELF(Function<LongStream, LongStream> func) {
 		return new IOLongStream(supplier, func);
 	}
-	public @Override IODoubleStream asDS(Function<LongStream, DoubleStream> func) {
+	protected @Override IODoubleStream asDS(Function<LongStream, DoubleStream> func) {
 		return new IODoubleStream(supplier, func);
 	}
-	@Override
-  public Function<? super Long, ? extends IntStream> castToIntStream(IOLongFunction<? extends IntStream> mapper) {
-  	return mapper.uncheck(classOfE())::apply;
-  }
-	@Override
-  public Function<? super Long, ? extends LongStream> castToLongStream(IOLongFunction<? extends LongStream> mapper) {
-  	return mapper.uncheck(classOfE())::apply;
-  }
-	@Override
-  public Function<? super Long, ? extends DoubleStream> castToDoubleStream(
-    IOLongFunction<? extends DoubleStream> mapper) {
-  	return mapper.uncheck(classOfE())::apply;
-  }
-	@Override
-  public LongToIntFunction castToInt(IOToIntFunction<Long> mapper) {
-  	return mapper.uncheck(classOfE())::applyAsInt;
-  }
-	@Override
-  public LongUnaryOperator castToLong(IOToLongFunction<Long> mapper) {
-  	return mapper.uncheck(classOfE())::applyAsLong;
-  }
-	@Override
-  public LongToDoubleFunction castToDouble(IOToDoubleFunction<Long> mapper) {
-  	return mapper.uncheck(classOfE())::applyAsDouble;
-  }
-	@Override
-  public LongBinaryOperator castToBinaryOperators(IOLongBinaryOperator combiner) {
-  	return combiner.uncheck(classOfE());
-  }
-	@Override
-  public LongConsumer castToConsumers(IOLongConsumer action) {
-  	return action.uncheck(classOfE());
-  }
-	@Override
-	public LongPredicate castToPredicates(IOLongPredicate test) {
+	protected @Override Function<? super Long, ? extends IntStream> castToIntStream(
+	  IOLongFunction<? extends IntStream> mapper) {
+		return mapper.uncheck(classOfE())::apply;
+	}
+	protected @Override Function<? super Long, ? extends LongStream> castToLongStream(
+	  IOLongFunction<? extends LongStream> mapper) {
+		return mapper.uncheck(classOfE())::apply;
+	}
+	protected @Override Function<? super Long, ? extends DoubleStream> castToDoubleStream(
+	  IOLongFunction<? extends DoubleStream> mapper) {
+		return mapper.uncheck(classOfE())::apply;
+	}
+	protected @Override LongToIntFunction castToInt(IOToIntFunction<Long> mapper) {
+		return mapper.uncheck(classOfE())::applyAsInt;
+	}
+	protected @Override LongUnaryOperator castToLong(IOToLongFunction<Long> mapper) {
+		return mapper.uncheck(classOfE())::applyAsLong;
+	}
+	protected @Override LongToDoubleFunction castToDouble(IOToDoubleFunction<Long> mapper) {
+		return mapper.uncheck(classOfE())::applyAsDouble;
+	}
+	protected @Override LongBinaryOperator castToBinaryOperators(IOLongBinaryOperator combiner) {
+		return combiner.uncheck(classOfE());
+	}
+	protected @Override LongConsumer castToConsumers(IOLongConsumer action) {
+		return action.uncheck(classOfE());
+	}
+	protected @Override LongPredicate castToPredicates(IOLongPredicate test) {
 		return test.uncheck(classOfE());
 	}
 	public <R> IOStream<R> map(IOLongFunction<? extends R> mapping) {
@@ -118,9 +110,11 @@ IOToDoubleFunction<Long>> {//*E*
 	public final @SafeVarargs <R> IOStream<R> flatMap(
 	  LongFunction<? extends Stream<? extends R>> mapper,
 	  LongPredicate... allowed) {
-		return allowed != null && allowed.length > 0 ?
-			flatMapInternal(mapper::apply, filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) :
-				flatMapInternal(mapper::apply, cast());
+		return allowed != null && allowed.length > 0 ? flatMapInternal(
+		  mapper::apply,
+		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(
+		  mapper::apply,
+		  cast());
 	}
 	public <K> Map<K, long[]> toMap(IOLongFunction<? extends K> classifier) throws IOException {
 		return toMapInternal(classifier, castToClassifier());
@@ -134,7 +128,7 @@ IOToDoubleFunction<Long>> {//*E*
 	private <K> Function<IOLongFunction<? extends K>, LongFunction<? extends K>> castToClassifier() {
 		return c -> c.uncheck(classOfE());
 	}
-	private <R> Function<Long,? extends Stream<? extends R>> castToFlatMapFunctions(
+	private <R> Function<Long, ? extends Stream<? extends R>> castToFlatMapFunctions(
 	  IOLongFunction<? extends Stream<? extends R>> mapper) {
 		return mapper.uncheck(classOfE())::apply;
 	}
