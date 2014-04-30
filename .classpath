@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="usecases"/>
 	<classpathentry kind="src" path="codegen"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="org.eclipse.jdt.annotation_2.0.0.v20140415-1436.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

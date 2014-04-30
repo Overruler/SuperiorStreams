@@ -34,7 +34,6 @@ public class SummaryStatistics<T> implements Consumer<T> {
 	}
 	public @Override void accept(T t) {
 		++count;
-		@SuppressWarnings("null")
 		long value = toValue.applyAsLong(t);
 		sum += value;
 		updateMin(value, t);

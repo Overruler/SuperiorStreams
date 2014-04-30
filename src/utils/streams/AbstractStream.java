@@ -52,7 +52,6 @@ implements StreamyBase<T, E> {//*E*
 		return asSELF(s -> s.filter(castToPredicates(allowed)));
 	}
 	public final @SafeVarargs SELF filter(Predicate<? super T> allow, Predicate<? super T>... allowed) {
-		@SuppressWarnings("null")
 		Predicate<T> allow2 = allow::test;
 		for(Predicate<? super T> predicate : allowed) {
 			allow2 = allow2.and(predicate);
@@ -97,7 +96,6 @@ implements StreamyBase<T, E> {//*E*
 		return asSELF(s -> s.peek(castToConsumers(action)));
 	}
 	public final @SafeVarargs SELF peek(Consumer<? super T> action, Consumer<? super T>... actions) {
-		@SuppressWarnings("null")
 		Consumer<T> action2 = action::accept;
 		for(Consumer<? super T> consumer : actions) {
 			action2 = action2.andThen(consumer);
@@ -109,7 +107,6 @@ implements StreamyBase<T, E> {//*E*
 		StreamyBase.terminal(s -> s.forEach(castToConsumers(action)), maker(), classOfE());
 	}
 	public final @SafeVarargs void forEach(Consumer<? super T> action, Consumer<? super T>... actions) throws E {
-		@SuppressWarnings("null")
 		Consumer<T> action2 = action::accept;
 		for(Consumer<? super T> consumer : actions) {
 			action2 = action2.andThen(consumer);
@@ -121,7 +118,6 @@ implements StreamyBase<T, E> {//*E*
 		forEachOrdered(castToConsumers(action));
 	}
 	public final @SafeVarargs void forEachOrdered(Consumer<? super T> action, Consumer<? super T>... actions) throws E {
-		@SuppressWarnings("null")
 		Consumer<T> action2 = action::accept;
 		for(Consumer<? super T> consumer : actions) {
 			action2 = action2.andThen(consumer);
@@ -230,7 +226,6 @@ implements StreamyBase<T, E> {//*E*
 		return anyMatch(castToPredicates(test));
 	}
 	public final @SafeVarargs boolean anyMatch(Predicate<? super T> test, Predicate<? super T>... tests) throws E {
-		@SuppressWarnings("null")
 		Predicate<T> test2 = test::test;
 		for(Predicate<? super T> predicate2 : tests) {
 			test2 = test2.and(predicate2);
@@ -242,7 +237,6 @@ implements StreamyBase<T, E> {//*E*
 		return allMatch(castToPredicates(predicate));
 	}
 	public final @SafeVarargs boolean allMatch(Predicate<? super T> test, Predicate<? super T>... tests) throws E {
-		@SuppressWarnings("null")
 		Predicate<T> test2 = test::test;
 		for(Predicate<? super T> predicate2 : tests) {
 			test2 = test2.and(predicate2);
@@ -254,7 +248,6 @@ implements StreamyBase<T, E> {//*E*
 		return StreamyBase.terminalAsBoolean(s -> s.noneMatch(castToPredicates(test)), maker(), classOfE());
 	}
 	public final @SafeVarargs boolean noneMatch(Predicate<? super T> test, Predicate<? super T>... tests) throws E {
-		@SuppressWarnings("null")
 		Predicate<T> test2 = test::test;
 		for(Predicate<? super T> predicate2 : tests) {
 			test2 = test2.and(predicate2);
