@@ -33,13 +33,13 @@ public class Lambda {
 		}
 	}
 	public static void main(String[] args) {
-		UnStream<String> stream = Streams.from(results);
+		UnStream<String> stream = Streams.of(results);
 		ArrayList<String> list = stream.distinct().toList();
 		System.out.println(list);
 	}
 	public static void tests() throws IOException {
 		IOStream<String> lines1 = new IOStream<>(() -> Stream.of(results));
-		UnStream<String> lines2 = Streams.from(results);
+		UnStream<String> lines2 = Streams.of(results);
 		Stream<String> lines3 = Stream.of(results);
 		tests1(lines1, lines2, lines3);
 		tests2(lines1, lines2, lines3);

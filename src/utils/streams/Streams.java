@@ -23,18 +23,18 @@ import utils.streams.functions.IOSupplier;
 
 public class Streams {
 
-	public static @SafeVarargs <T> UnStream<T> from(T... array) {
+	public static @SafeVarargs <T> UnStream<T> of(T... array) {
 		return from(Arrays.asList(array.clone()));
 	}
-	public static UnIntStream from(int... array) {
+	public static UnIntStream ints(int... array) {
 		int[] clone = array.clone();
 		return new UnIntStream(() -> IntStream.of(clone));
 	}
-	public static UnLongStream from(long... array) {
+	public static UnLongStream longs(long... array) {
 		long[] clone = array.clone();
 		return new UnLongStream(() -> LongStream.of(clone));
 	}
-	public static UnDoubleStream from(double... array) {
+	public static UnDoubleStream doubles(double... array) {
 		double[] clone = array.clone();
 		return new UnDoubleStream(() -> DoubleStream.of(clone));
 	}
