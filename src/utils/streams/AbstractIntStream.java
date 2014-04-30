@@ -1,5 +1,6 @@
 package utils.streams;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IntSummaryStatistics;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -137,6 +139,9 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 	}
 	public int[] toArray() throws E {
 		return terminalAsObj(s -> s.toArray(), maker(), classOfE());
+	}
+	public ArrayList<Integer> toList() throws E {
+		return terminalAsObj(s -> s.boxed().collect(Collectors.toCollection(ArrayList::new)), maker(), classOfE());
 	}
 	public <L> L toList(Function<int[], L> intoList) throws E {
 		return intoList.apply(toArray());
