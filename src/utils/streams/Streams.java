@@ -5,11 +5,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -92,5 +101,15 @@ public class Streams {
 	}
 	static <R> IOStream<R> with(IOSupplier<Stream<R>> maker) {
 		return new IOStream<>(maker.uncheck(IOException.class));
+	}
+	public static <E> ArrayList<E> where(List<E> list, Predicate<E> pass) {
+		return list.stream().filter(pass).collect(Collectors.toCollection(ArrayList::new));
+	}
+	public static <E> HashSet<E> where(Set<E> set, Predicate<E> pass) {
+		return set.stream().filter(pass).collect(Collectors.toCollection(HashSet::new));
+	}
+	public static <K, V> HashMap<K, V> where(Map<K, V> map, BiPredicate<K, V> pass) {
+		return map.entrySet().stream().filter(e -> pass.test(e.getKey(), e.getValue())).collect(
+		  Collectors.toMap(e -> e.getKey(), e -> e.getValue(), (l, r) -> l, HashMap::new));
 	}
 }
