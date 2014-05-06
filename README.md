@@ -63,70 +63,46 @@ Supplier<Stream<String>> projects = () -> JDK_PROJECTS.stream();
 Predicate<String> isPrefix = (String path) -> projects.get().anyMatch(path::startsWith);
 ```
 
-## Anti-Idioms, or The Cost of Missing Features
+## New Features
 
-Superior Streams code is full of Anti-Idioms, coding patterns that are needlessly complicated and would even be unnecessary if some of Java's language features were more fully-fledged. These missing or half-hearted features have a real cost in terms of code, demonstrated by this library.
+Helper methods for WHERE clauses over Lists, Maps and Sets:
 
-### No parameterizable type parameters. Cost: 192 lines of code
-
-This isn't possible:
 ```java
-abstract class AbstractStream<T, SELF<T> extends AbstractStream<T, SELF<T>>> {
-  public <R> SELF<R> map(Function<? super T, ? extends R> mapper) { ... }
+static ArrayList<String> removeBadWords(List<String> list) {
+  return Streams.where(list, s -> s.contains("fuck") == false);
 }
 ```
-Instead each concrete subclass requires one forwarding method per each such instance and one conversion method used by them all. 
 
-### No exception transparency over functional interfaces. Cost: 85 generated classes, 4 generator classes
+Streams of RGB pixels for color manipulation using red, green, blue channels:
 
-This isn't possible:
 ```java
-public interface Function<T, U, throws E1> {
-  U apply(T t) throws E1;
-
-  default <V, throws E2> 
-    Function<T, V, throws E1 | E2> 
-      andThen(Function<? super U, ? extends V, throws E2> after) {
-
-    Objects.requireNonNull(after);
-    return (T t) -> after.apply(apply(t));
-  }
-}
+RGBStream stream = Streams.loadImageInRGB("pagoda.jpg");
+stream.swapRedAndGreen().save("pagoda_rg.jpg");
+stream.swapRedAndBlue().save("pagoda_rb.jpg");
+stream.swapAlphaAndBlue().save("pagoda_ab.png");
+stream.setRed(255).save("pagoda_bright_red.png");
 ```
-Instead checked exceptions have to be declared even in code that only passes them through.
 
-### Overloading thinks all exceptions are the same. Cost: 80 extra methods in the public API
+Image color manipulation in HSB changing hue, saturation and brightness values:
 
-This is ambiguous: 
 ```java
-void forEach(Consumer<? super T> action) { ... }
-void forEach(IOConsumer<? super T> action) throws IOexception { ... }
-// ...
-lines1.forEach(s -> Files.isHidden(Paths.get(s)));
-lines1.forEach(s -> System.out.println(s));
+HSBStream hsb = Streams.loadImageInHSB("pagoda.jpg");
+hsb.mapBrightness((h, s, b, a) -> b * 0.25).save("pagoda_dark.jpg");
+hsb.mapHue((h, s, b, a) -> h + 10).save("pagoda_altered_hue.jpg");
 ```
-There is no two ways the code can compile if it is to compile at all. Not even trying to but yelling "ambiguous" is lazy. Instead overload resolution needs to be tricked using an extra variable-arity method to do - not even the right thing - but the next best thing to the right thing. 
 
-### No explicit singularity relationship between functional interfaces. Cost: another 80 extra methods in the public API
+Gamma adjustments:
 
-This is impossible: 
 ```java
-public interface ExConsumer<T, E extends Exception> 
-  super extends Consumer<T> extends this<T, RuntimeException> {
-
-  void accept(T t) throws E;
-}
-// ...
-void forEach(ExConsumer<? super T, E> action) throws E { ... }
-// 
-lines1.forEach((ExConsumer<String, IOException>) s -> Files.isHidden(Paths.get(s)));
-lines1.forEach((Consumer<String>) s -> System.out.println(s));
+stream.gammaExpand(2.4).save("pagoda_texture.jpg");
+HSBStream bw = stream.toBlackAndWhite();
+bw.save("pagoda_bw.jpg");
+bw.gammaCompress(0.5).save("pagoda_bw_05.jpg");
 ```
-Lambda expressions get freely turned into any compatible functional interfaces as if they all were of the same type. This isn't possible if the functional interface types are named. Instead method overloading is needed to allow compatible but named functional interfaces to be used in the same way that lambda expressions can be used.  
 
-## Superior Streams are largely untested
+## Superior Streams are still largely untested
 
-Or rather, they will be gradually tested over time.
+Or rather, they are being gradually tested over time.
 
 ## License
 
@@ -135,3 +111,5 @@ Your choice of:
 - [BSD](http://opensource.org/licenses/bsd-license.php) 
 - [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) 
 - [Eclipse Public License (EPL) v1.0](http://wiki.eclipse.org/EPL)
+
+The image pagoda.jpg, by the author plusgood, is licensed under the Creative Commons Attribution 2.0 Generic license. Downloaded from the [Wikimedia Commons](http://en.wikipedia.org/wiki/File:Silverpagoda.jpg).
