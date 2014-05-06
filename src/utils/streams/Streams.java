@@ -1,5 +1,6 @@
 package utils.streams;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +26,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import javax.imageio.ImageIO;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.IOConsumer;
 import utils.streams.functions.IOFunction;
@@ -111,5 +113,31 @@ public class Streams {
 	public static <K, V> HashMap<K, V> where(Map<K, V> map, BiPredicate<K, V> pass) {
 		return map.entrySet().stream().filter(e -> pass.test(e.getKey(), e.getValue())).collect(
 		  Collectors.toMap(e -> e.getKey(), e -> e.getValue(), (l, r) -> l, HashMap::new));
+	}
+	public static HSBStream loadImageInHSB(String path) throws IOException {
+		return loadImageInRGB(path).toHSB();
+	}
+	public static HSBStream loadImageInHSB(Path path) throws IOException {
+		return loadImageInRGB(path).toHSB();
+	}
+	public static RGBStream loadImageInRGB(String path) throws IOException {
+		return loadImageInRGB(Paths.get(path));
+	}
+	public static RGBStream loadImageInRGB(Path path) throws IOException {
+		BufferedImage image = ImageIO.read(path.toFile());
+		if(image == null) {
+			throw new IOException("No ImageReader could read file " + path);
+		}
+		return imageToRGB(image);
+	}
+	public static HSBStream imageToHSB(BufferedImage image) {
+		return imageToRGB(image).toHSB();
+	}
+	public static RGBStream imageToRGB(BufferedImage image) {
+		int w = image.getWidth();
+		int h = image.getHeight();
+		int[] data = new int[w * h];
+		image.getRGB(0, 0, w, h, data, 0, w);
+		return new RGBStream(() -> IntStream.of(data), w, h);
 	}
 }
