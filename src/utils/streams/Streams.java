@@ -71,11 +71,23 @@ public class Streams {
 		ExConsumer<A, Exception> releaser = a -> a.close();
 		return new RioStream<>(allocator.uncheck(IOException.class), converter, releaser.uncheck(Exception.class));
 	}
+	public static RioStream<JarFile, JarEntry> jarFile(String jar) {
+		return jarFile(Paths.get(jar));
+	}
+	public static RioStream<JarFile, JarEntry> jarFile(Path jar) {
+		return jarFile(jar.toFile());
+	}
 	public static RioStream<JarFile, JarEntry> jarFile(File jar) {
 		IOSupplier<JarFile> allocator = () -> new JarFile(jar);
 		Function<JarFile, Stream<JarEntry>> converter = f -> f.stream();
 		IOConsumer<JarFile> releaser = f -> f.close();
 		return new RioStream<>(allocator.uncheck(IOException.class), converter, releaser.uncheck(IOException.class));
+	}
+	public static RioStream<ZipFile, ZipEntry> zipFile(String zip) {
+		return zipFile(Paths.get(zip));
+	}
+	public static RioStream<ZipFile, ZipEntry> zipFile(Path zip) {
+		return zipFile(zip.toFile());
 	}
 	public static RioStream<ZipFile, ZipEntry> zipFile(File zip) {
 		IOSupplier<ZipFile> allocator = () -> new ZipFile(zip);
