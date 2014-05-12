@@ -37,9 +37,9 @@ public class Streams {
 	public static @SafeVarargs <T> Stream2<T> of(T... array) {
 		return from(Arrays.asList(array.clone()));
 	}
-	public static UnIntStream ints(int... array) {
+	public static IntStream2 ints(int... array) {
 		int[] clone = array.clone();
-		return new UnIntStream(() -> IntStream.of(clone));
+		return new IntStream2(() -> IntStream.of(clone));
 	}
 	public static UnLongStream longs(long... array) {
 		long[] clone = array.clone();
@@ -52,8 +52,8 @@ public class Streams {
 	public static <T> Stream2<T> from(Collection<T> collection) {
 		return new Stream2<>(() -> collection.stream());
 	}
-	public static UnIntStream fromCodepoints(String string) {
-		return new UnIntStream(() -> string.codePoints());
+	public static IntStream2 fromCodepoints(String string) {
+		return new IntStream2(() -> string.codePoints());
 	}
 	public static <P, T> IOStream<T> from(IOFunction<P, Stream<T>> changer, P parameter) {
 		Function<P, Stream<T>> function = changer.uncheck(IOException.class);

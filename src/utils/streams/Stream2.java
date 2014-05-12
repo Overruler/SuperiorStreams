@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public class Stream2<T> extends AbstractStream<T, RuntimeException,
 Stream<T>,
 Stream2<T>,
-UnIntStream,
+IntStream2,
 UnLongStream,
 UnDoubleStream,
 Consumer<? super T>,
@@ -51,8 +51,8 @@ ToDoubleFunction<? super T>> {//*E*
 	protected @Override Stream2<T> asSELF(Function<Stream<T>, Stream<T>> func) {
 		return new Stream2<>(supplier, func);
 	}
-	protected @Override UnIntStream asIS(Function<Stream<T>, IntStream> func) {
-		return new UnIntStream(supplier, func);
+	protected @Override IntStream2 asIS(Function<Stream<T>, IntStream> func) {
+		return new IntStream2(supplier, func);
 	}
 	protected @Override UnLongStream asLS(Function<Stream<T>, LongStream> func) {
 		return new UnLongStream(supplier, func);

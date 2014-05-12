@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 public final class UnDoubleStream extends AbstractDoubleStream<RuntimeException,
 DoubleStream,
 Stream2<Double>,
-UnIntStream,
+IntStream2,
 UnLongStream,
 UnDoubleStream,
 DoubleConsumer,
@@ -52,8 +52,8 @@ ToDoubleFunction<Double>> {//*E*
 	protected @Override Stream2<Double> asOS(Function<DoubleStream, Stream<Double>> func) {
 		return new Stream2<>(supplier, func);
 	}
-	protected @Override UnIntStream asIS(Function<DoubleStream, IntStream> func) {
-		return new UnIntStream(supplier, func);
+	protected @Override IntStream2 asIS(Function<DoubleStream, IntStream> func) {
+		return new IntStream2(supplier, func);
 	}
 	protected @Override UnLongStream asLS(Function<DoubleStream, LongStream> func) {
 		return new UnLongStream(supplier, func);

@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 public class HSBStream extends AbstractStream<float[], RuntimeException,
 Stream<float[]>,
 HSBStream,
-UnIntStream,
+IntStream2,
 UnLongStream,
 UnDoubleStream,
 Consumer<? super float[]>,
@@ -63,8 +63,8 @@ ToDoubleFunction<? super float[]>> {//*E*
 	protected @Override HSBStream asSELF(Function<Stream<float[]>, Stream<float[]>> func) {
 		return new HSBStream(supplier, func, w, h);
 	}
-	protected @Override UnIntStream asIS(Function<Stream<float[]>, IntStream> func) {
-		return new UnIntStream(supplier, func);
+	protected @Override IntStream2 asIS(Function<Stream<float[]>, IntStream> func) {
+		return new IntStream2(supplier, func);
 	}
 	protected @Override UnLongStream asLS(Function<Stream<float[]>, LongStream> func) {
 		return new UnLongStream(supplier, func);

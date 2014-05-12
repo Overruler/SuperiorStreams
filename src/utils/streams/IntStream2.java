@@ -21,10 +21,10 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 //*Q*
-public final class UnIntStream extends AbstractIntStream<RuntimeException,
+public final class IntStream2 extends AbstractIntStream<RuntimeException,
 IntStream,
 Stream2<Integer>,
-UnIntStream,
+IntStream2,
 UnLongStream,
 UnDoubleStream,
 IntConsumer,
@@ -37,10 +37,10 @@ ToIntFunction<Integer>,
 ToLongFunction<Integer>,
 ToDoubleFunction<Integer>> {//*E*
 
-	public UnIntStream(Supplier<IntStream> supplier) {
+	public IntStream2(Supplier<IntStream> supplier) {
 		super(supplier);
 	}
-	<OLD> UnIntStream(Supplier<OLD> older, Function<OLD, IntStream> converter) {
+	<OLD> IntStream2(Supplier<OLD> older, Function<OLD, IntStream> converter) {
 		this(() -> converter.apply(older.get()));
 	}
 	protected @Override Class<RuntimeException> classOfE() {
@@ -52,8 +52,8 @@ ToDoubleFunction<Integer>> {//*E*
 	protected @Override Stream2<Integer> asOS(Function<IntStream, Stream<Integer>> func) {
 		return new Stream2<>(supplier, func);
 	}
-	protected @Override UnIntStream asSELF(Function<IntStream, IntStream> func) {
-		return new UnIntStream(supplier, func);
+	protected @Override IntStream2 asSELF(Function<IntStream, IntStream> func) {
+		return new IntStream2(supplier, func);
 	}
 	protected @Override UnLongStream asLS(Function<IntStream, LongStream> func) {
 		return new UnLongStream(supplier, func);
