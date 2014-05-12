@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import utils.streams.IOStream;
 import utils.streams.Streams;
-import utils.streams.UnStream;
+import utils.streams.Stream2;
 import utils.streams.functions.IOBinaryOperator;
 import utils.streams.functions.IOConsumer;
 import utils.streams.functions.IOFunction;
@@ -33,13 +33,13 @@ public class Lambda {
 		}
 	}
 	public static void main(String[] args) {
-		UnStream<String> stream = Streams.of(results);
+		Stream2<String> stream = Streams.of(results);
 		ArrayList<String> list = stream.distinct().toList();
 		System.out.println(list);
 	}
 	public static void tests() throws IOException {
 		IOStream<String> lines1 = new IOStream<>(() -> Stream.of(results));
-		UnStream<String> lines2 = Streams.of(results);
+		Stream2<String> lines2 = Streams.of(results);
 		Stream<String> lines3 = Stream.of(results);
 		tests1(lines1, lines2, lines3);
 		tests2(lines1, lines2, lines3);
@@ -47,7 +47,7 @@ public class Lambda {
 		tests4(lines1, lines2, lines3);
 		tests5(lines1, lines2);
 	}
-	private static void tests1(IOStream<String> lines1, UnStream<String> lines2, Stream<String> lines3)
+	private static void tests1(IOStream<String> lines1, Stream2<String> lines2, Stream<String> lines3)
 	  throws IOException {
 		IOConsumer<? super String> action1 = s -> Files.isHidden(Paths.get(s));
 		Consumer<? super String> action2 = s -> System.out.println(s);
@@ -70,7 +70,7 @@ public class Lambda {
 		lines2.forEachOrdered(action2);
 		lines3.forEachOrdered(action2);
 	}
-	private static void tests2(IOStream<String> lines1, UnStream<String> lines2, Stream<String> lines3)
+	private static void tests2(IOStream<String> lines1, Stream2<String> lines2, Stream<String> lines3)
 	  throws IOException {
 		IOPredicate<? super String> action1 = s -> Files.isHidden(Paths.get(s));
 		Predicate<? super String> action2 = s -> s.isEmpty();
@@ -99,26 +99,26 @@ public class Lambda {
 		lines2.filter(action2);
 		lines3.filter(action2);
 	}
-	private static void tests3(IOStream<String> lines1, UnStream<String> lines2, Stream<String> lines3) {
+	private static void tests3(IOStream<String> lines1, Stream2<String> lines2, Stream<String> lines3) {
 		Function<String, Stream<Integer>> mapping1 = s2 -> s2.codePoints().boxed();
 		IOFunction<String, Stream<String>> mapping2 = s3 -> Files.lines(Paths.get(s3));
 		IOStream<Integer> result1 = lines1.flatMap(mapping1);
 		IOStream<String> result2 = lines1.flatMap(mapping2);
 		IOStream<Integer> result3 = lines1.flatMap(s4 -> s4.codePoints().boxed());
 		IOStream<String> result4 = lines1.flatMap(s1 -> Files.lines(Paths.get(s1)));
-		UnStream<Integer> result5 = lines2.flatMap(mapping1);
+		Stream2<Integer> result5 = lines2.flatMap(mapping1);
 		Stream<Integer> result6 = lines3.flatMap(mapping1);
 		IOStream<Stream<Integer>> map = lines1.map(mapping1);
 		IOStream<Stream<String>> map2 = lines1.map(mapping2);
 		IOStream<Stream<Integer>> map3 = lines1.map(s -> s.codePoints().boxed());
 		IOStream<Stream<String>> map4 = lines1.map(s -> Files.lines(Paths.get(s)));
-		UnStream<Stream<Integer>> map5 = lines2.map(mapping1);
+		Stream2<Stream<Integer>> map5 = lines2.map(mapping1);
 		Stream<Stream<Integer>> map6 = lines3.map(mapping1);
 		eat(result1, result2, result3, result4);
 		eat(map, map2, map3, map4);
 		eat(result5, result6, map5, map6);
 	}
-	private static void tests4(IOStream<String> lines1, UnStream<String> lines2, Stream<String> lines3)
+	private static void tests4(IOStream<String> lines1, Stream2<String> lines2, Stream<String> lines3)
 	  throws IOException {
 		BinaryOperator<String> mapping1 = (l, r) -> l.isEmpty() ? r : l;
 		IOBinaryOperator<String> mapping2 = (l, r) -> Files.isHidden(Paths.get(l)) ? r : l;
@@ -138,7 +138,7 @@ public class Lambda {
 		eat(resultB1, resultB2, resultB3, resultB4);
 		eat(resultA5, resultA6, resultB5, resultB6);
 	}
-	private static void tests5(IOStream<String> lines1, UnStream<String> lines2) throws IOException {
+	private static void tests5(IOStream<String> lines1, Stream2<String> lines2) throws IOException {
 		IOFunction<String, Character> toKey1 = s -> key5(s);
 		Function<String, Character> toKey2 = s -> s.charAt(0);
 		Function<HashMap<Character, String>, TreeMap<Character, String>> toMap = s -> new TreeMap<>(s);

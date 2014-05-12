@@ -19,9 +19,9 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 //*Q*
-public class UnStream<T> extends AbstractStream<T, RuntimeException,
+public class Stream2<T> extends AbstractStream<T, RuntimeException,
 Stream<T>,
-UnStream<T>,
+Stream2<T>,
 UnIntStream,
 UnLongStream,
 UnDoubleStream,
@@ -36,10 +36,10 @@ ToIntFunction<? super T>,
 ToLongFunction<? super T>,
 ToDoubleFunction<? super T>> {//*E*
 
-	public UnStream(Supplier<Stream<T>> supplier) {
+	public Stream2(Supplier<Stream<T>> supplier) {
 		super(supplier);
 	}
-	<OLD> UnStream(Supplier<OLD> older, Function<OLD, Stream<T>> converter) {
+	<OLD> Stream2(Supplier<OLD> older, Function<OLD, Stream<T>> converter) {
 		super(older, converter);
 	}
 	protected @Override Class<RuntimeException> classOfE() {
@@ -48,8 +48,8 @@ ToDoubleFunction<? super T>> {//*E*
 	protected @Override Stream<T> castToStream(Stream<T> stream) {
 		return stream;
 	}
-	protected @Override UnStream<T> asSELF(Function<Stream<T>, Stream<T>> func) {
-		return new UnStream<>(supplier, func);
+	protected @Override Stream2<T> asSELF(Function<Stream<T>, Stream<T>> func) {
+		return new Stream2<>(supplier, func);
 	}
 	protected @Override UnIntStream asIS(Function<Stream<T>, IntStream> func) {
 		return new UnIntStream(supplier, func);
@@ -93,18 +93,18 @@ ToDoubleFunction<? super T>> {//*E*
 	protected @Override Predicate<? super T> castToPredicates(Predicate<? super T> allowed) {
 		return allowed;
 	}
-	public <R> UnStream<R> map(Function<? super T, ? extends R> mapping) {
+	public <R> Stream2<R> map(Function<? super T, ? extends R> mapping) {
 		return mapInternal(castToMapFunctions(mapping), cast());
 	}
-	public final @SafeVarargs <R> UnStream<R> map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
+	public final @SafeVarargs <R> Stream2<R> map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? mapInternal(
 		  mapper,
 		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
-	public <R> UnStream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
+	public <R> Stream2<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public final @SafeVarargs <R> UnStream<R> flatMap(
+	public final @SafeVarargs <R> Stream2<R> flatMap(
 	  Function<? super T, ? extends Stream<? extends R>> mapper,
 	  Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? flatMapInternal(
@@ -151,7 +151,7 @@ ToDoubleFunction<? super T>> {//*E*
 	private <R> Function<? super T, ? extends R> castToMapFunctions(Function<? super T, ? extends R> mapping) {
 		return mapping;
 	}
-	private <R> Function<Function<Stream<T>, Stream<R>>, UnStream<R>> cast() {
-		return f -> new UnStream<>(supplier, f);
+	private <R> Function<Function<Stream<T>, Stream<R>>, Stream2<R>> cast() {
+		return f -> new Stream2<>(supplier, f);
 	}
 }

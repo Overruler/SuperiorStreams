@@ -105,20 +105,20 @@ ToDoubleFunction<? super float[]>> {//*E*
 	protected @Override Predicate<? super float[]> castToPredicates(Predicate<? super float[]> allowed) {
 		return allowed;
 	}
-	public <R> UnStream<R> map(Function<? super float[], ? extends R> mapping) {
+	public <R> Stream2<R> map(Function<? super float[], ? extends R> mapping) {
 		return mapInternal(castToMapFunctions(mapping), cast());
 	}
-	public final @SafeVarargs <R> UnStream<R> map(
+	public final @SafeVarargs <R> Stream2<R> map(
 	  Function<? super float[], ? extends R> mapper,
 	  Predicate<float[]>... allowed) {
 		return allowed != null && allowed.length > 0 ? mapInternal(
 		  mapper,
 		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
-	public <R> UnStream<R> flatMap(Function<? super float[], ? extends Stream<? extends R>> mapper) {
+	public <R> Stream2<R> flatMap(Function<? super float[], ? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public final @SafeVarargs <R> UnStream<R> flatMap(
+	public final @SafeVarargs <R> Stream2<R> flatMap(
 	  Function<? super float[], ? extends Stream<? extends R>> mapper,
 	  Predicate<float[]>... allowed) {
 		return allowed != null && allowed.length > 0 ? flatMapInternal(
@@ -167,8 +167,8 @@ ToDoubleFunction<? super float[]>> {//*E*
 	  Function<? super float[], ? extends R> mapping) {
 		return mapping;
 	}
-	private <R> Function<Function<Stream<float[]>, Stream<R>>, UnStream<R>> cast() {
-		return f -> new UnStream<>(supplier, f);
+	private <R> Function<Function<Stream<float[]>, Stream<R>>, Stream2<R>> cast() {
+		return f -> new Stream2<>(supplier, f);
 	}
 	public HSBStream mapColor(UnaryOperator<float[]> mapping) {
 		return mapInternal(mapping, f -> new HSBStream(supplier, f, w, h));

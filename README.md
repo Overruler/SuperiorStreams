@@ -54,7 +54,7 @@ try(Stream<Path> s11 = Files.list(install);
 Superior Streams can be freely reused as many times as needed:
 
 ```java
-UnStream<String> projects = Streams.from(JDK_PROJECTS);
+Stream2<String> projects = Streams.from(JDK_PROJECTS);
 Predicate<String> isPrefix = (String path) -> projects.anyMatch(path::startsWith);
 
 // Each Stream from JDK can only be used once or the result is an exception at runtime: 

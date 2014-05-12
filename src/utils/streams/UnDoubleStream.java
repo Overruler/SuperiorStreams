@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 //*Q*
 public final class UnDoubleStream extends AbstractDoubleStream<RuntimeException,
 DoubleStream,
-UnStream<Double>,
+Stream2<Double>,
 UnIntStream,
 UnLongStream,
 UnDoubleStream,
@@ -49,8 +49,8 @@ ToDoubleFunction<Double>> {//*E*
 	protected @Override DoubleStream castToStream(DoubleStream stream) {
 		return stream;
 	}
-	protected @Override UnStream<Double> asOS(Function<DoubleStream, Stream<Double>> func) {
-		return new UnStream<>(supplier, func);
+	protected @Override Stream2<Double> asOS(Function<DoubleStream, Stream<Double>> func) {
+		return new Stream2<>(supplier, func);
 	}
 	protected @Override UnIntStream asIS(Function<DoubleStream, IntStream> func) {
 		return new UnIntStream(supplier, func);
@@ -91,18 +91,18 @@ ToDoubleFunction<Double>> {//*E*
 	protected @Override DoublePredicate castToPredicates(DoublePredicate test) {
 		return test;
 	}
-	public <R> UnStream<R> map(DoubleFunction<? extends R> mapping) {
+	public <R> Stream2<R> map(DoubleFunction<? extends R> mapping) {
 		return mapInternal(castToMapFunctions(mapping), cast());
 	}
-	public final @SafeVarargs <R> UnStream<R> map(DoubleFunction<? extends R> mapper, DoublePredicate... allowed) {
+	public final @SafeVarargs <R> Stream2<R> map(DoubleFunction<? extends R> mapper, DoublePredicate... allowed) {
 		return allowed != null && allowed.length > 0 ? mapInternal(
 		  mapper,
 		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
-	public <R> UnStream<R> flatMap(DoubleFunction<? extends Stream<? extends R>> mapper) {
+	public <R> Stream2<R> flatMap(DoubleFunction<? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public final @SafeVarargs <R> UnStream<R> flatMap(
+	public final @SafeVarargs <R> Stream2<R> flatMap(
 	  DoubleFunction<? extends Stream<? extends R>> mapper,
 	  DoublePredicate... allowed) {
 		return allowed != null && allowed.length > 0 ? flatMapInternal(
@@ -130,7 +130,7 @@ ToDoubleFunction<Double>> {//*E*
 	private static <R> DoubleFunction<? extends R> castToMapFunctions(DoubleFunction<? extends R> mapping) {
 		return mapping;
 	}
-	private <R> Function<Function<DoubleStream, Stream<R>>, UnStream<R>> cast() {
-		return f -> new UnStream<>(supplier, f);
+	private <R> Function<Function<DoubleStream, Stream<R>>, Stream2<R>> cast() {
+		return f -> new Stream2<>(supplier, f);
 	}
 }

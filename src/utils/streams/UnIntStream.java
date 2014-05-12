@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 //*Q*
 public final class UnIntStream extends AbstractIntStream<RuntimeException,
 IntStream,
-UnStream<Integer>,
+Stream2<Integer>,
 UnIntStream,
 UnLongStream,
 UnDoubleStream,
@@ -49,8 +49,8 @@ ToDoubleFunction<Integer>> {//*E*
 	protected @Override IntStream castToStream(IntStream stream) {
 		return stream;
 	}
-	protected @Override UnStream<Integer> asOS(Function<IntStream, Stream<Integer>> func) {
-		return new UnStream<>(supplier, func);
+	protected @Override Stream2<Integer> asOS(Function<IntStream, Stream<Integer>> func) {
+		return new Stream2<>(supplier, func);
 	}
 	protected @Override UnIntStream asSELF(Function<IntStream, IntStream> func) {
 		return new UnIntStream(supplier, func);
@@ -91,18 +91,18 @@ ToDoubleFunction<Integer>> {//*E*
 	protected @Override IntPredicate castToPredicates(IntPredicate test) {
 		return test;
 	}
-	public <R> UnStream<R> map(IntFunction<? extends R> mapping) {
+	public <R> Stream2<R> map(IntFunction<? extends R> mapping) {
 		return mapInternal(castToMapFunctions(mapping), cast());
 	}
-	public final @SafeVarargs <R> UnStream<R> map(IntFunction<? extends R> mapper, IntPredicate... allowed) {
+	public final @SafeVarargs <R> Stream2<R> map(IntFunction<? extends R> mapper, IntPredicate... allowed) {
 		return allowed != null && allowed.length > 0 ? mapInternal(
 		  mapper,
 		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
-	public <R> UnStream<R> flatMap(IntFunction<? extends Stream<? extends R>> mapper) {
+	public <R> Stream2<R> flatMap(IntFunction<? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public final @SafeVarargs <R> UnStream<R> flatMap(
+	public final @SafeVarargs <R> Stream2<R> flatMap(
 	  IntFunction<? extends Stream<? extends R>> mapper,
 	  IntPredicate... allowed) {
 		return allowed != null && allowed.length > 0 ? flatMapInternal(
@@ -130,7 +130,7 @@ ToDoubleFunction<Integer>> {//*E*
 	private static <R> IntFunction<? extends R> castToMapFunctions(IntFunction<? extends R> mapping) {
 		return mapping;
 	}
-	private <R> Function<Function<IntStream, Stream<R>>, UnStream<R>> cast() {
-		return f -> new UnStream<>(supplier, f);
+	private <R> Function<Function<IntStream, Stream<R>>, Stream2<R>> cast() {
+		return f -> new Stream2<>(supplier, f);
 	}
 }

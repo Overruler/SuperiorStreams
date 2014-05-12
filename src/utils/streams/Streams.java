@@ -34,7 +34,7 @@ import utils.streams.functions.IOSupplier;
 
 public class Streams {
 
-	public static @SafeVarargs <T> UnStream<T> of(T... array) {
+	public static @SafeVarargs <T> Stream2<T> of(T... array) {
 		return from(Arrays.asList(array.clone()));
 	}
 	public static UnIntStream ints(int... array) {
@@ -49,8 +49,8 @@ public class Streams {
 		double[] clone = array.clone();
 		return new UnDoubleStream(() -> DoubleStream.of(clone));
 	}
-	public static <T> UnStream<T> from(Collection<T> collection) {
-		return new UnStream<>(() -> collection.stream());
+	public static <T> Stream2<T> from(Collection<T> collection) {
+		return new Stream2<>(() -> collection.stream());
 	}
 	public static UnIntStream fromCodepoints(String string) {
 		return new UnIntStream(() -> string.codePoints());
