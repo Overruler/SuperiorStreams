@@ -28,7 +28,7 @@ public class HSBStream extends AbstractStream<float[], RuntimeException,
 Stream<float[]>,
 HSBStream,
 IntStream2,
-UnLongStream,
+LongStream2,
 UnDoubleStream,
 Consumer<? super float[]>,
 Predicate<? super float[]>,
@@ -66,8 +66,8 @@ ToDoubleFunction<? super float[]>> {//*E*
 	protected @Override IntStream2 asIS(Function<Stream<float[]>, IntStream> func) {
 		return new IntStream2(supplier, func);
 	}
-	protected @Override UnLongStream asLS(Function<Stream<float[]>, LongStream> func) {
-		return new UnLongStream(supplier, func);
+	protected @Override LongStream2 asLS(Function<Stream<float[]>, LongStream> func) {
+		return new LongStream2(supplier, func);
 	}
 	protected @Override UnDoubleStream asDS(Function<Stream<float[]>, DoubleStream> func) {
 		return new UnDoubleStream(supplier, func);

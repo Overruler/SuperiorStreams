@@ -25,7 +25,7 @@ public final class IntStream2 extends AbstractIntStream<RuntimeException,
 IntStream,
 Stream2<Integer>,
 IntStream2,
-UnLongStream,
+LongStream2,
 UnDoubleStream,
 IntConsumer,
 IntPredicate,
@@ -55,8 +55,8 @@ ToDoubleFunction<Integer>> {//*E*
 	protected @Override IntStream2 asSELF(Function<IntStream, IntStream> func) {
 		return new IntStream2(supplier, func);
 	}
-	protected @Override UnLongStream asLS(Function<IntStream, LongStream> func) {
-		return new UnLongStream(supplier, func);
+	protected @Override LongStream2 asLS(Function<IntStream, LongStream> func) {
+		return new LongStream2(supplier, func);
 	}
 	protected @Override UnDoubleStream asDS(Function<IntStream, DoubleStream> func) {
 		return new UnDoubleStream(supplier, func);

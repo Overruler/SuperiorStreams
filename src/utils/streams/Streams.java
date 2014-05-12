@@ -41,9 +41,9 @@ public class Streams {
 		int[] clone = array.clone();
 		return new IntStream2(() -> IntStream.of(clone));
 	}
-	public static UnLongStream longs(long... array) {
+	public static LongStream2 longs(long... array) {
 		long[] clone = array.clone();
-		return new UnLongStream(() -> LongStream.of(clone));
+		return new LongStream2(() -> LongStream.of(clone));
 	}
 	public static UnDoubleStream doubles(double... array) {
 		double[] clone = array.clone();

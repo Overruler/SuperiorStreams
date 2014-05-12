@@ -25,7 +25,7 @@ public final class UnDoubleStream extends AbstractDoubleStream<RuntimeException,
 DoubleStream,
 Stream2<Double>,
 IntStream2,
-UnLongStream,
+LongStream2,
 UnDoubleStream,
 DoubleConsumer,
 DoublePredicate,
@@ -55,8 +55,8 @@ ToDoubleFunction<Double>> {//*E*
 	protected @Override IntStream2 asIS(Function<DoubleStream, IntStream> func) {
 		return new IntStream2(supplier, func);
 	}
-	protected @Override UnLongStream asLS(Function<DoubleStream, LongStream> func) {
-		return new UnLongStream(supplier, func);
+	protected @Override LongStream2 asLS(Function<DoubleStream, LongStream> func) {
+		return new LongStream2(supplier, func);
 	}
 	protected @Override UnDoubleStream asSELF(Function<DoubleStream, DoubleStream> func) {
 		return new UnDoubleStream(supplier, func);

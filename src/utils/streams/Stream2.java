@@ -23,7 +23,7 @@ public class Stream2<T> extends AbstractStream<T, RuntimeException,
 Stream<T>,
 Stream2<T>,
 IntStream2,
-UnLongStream,
+LongStream2,
 UnDoubleStream,
 Consumer<? super T>,
 Predicate<? super T>,
@@ -54,8 +54,8 @@ ToDoubleFunction<? super T>> {//*E*
 	protected @Override IntStream2 asIS(Function<Stream<T>, IntStream> func) {
 		return new IntStream2(supplier, func);
 	}
-	protected @Override UnLongStream asLS(Function<Stream<T>, LongStream> func) {
-		return new UnLongStream(supplier, func);
+	protected @Override LongStream2 asLS(Function<Stream<T>, LongStream> func) {
+		return new LongStream2(supplier, func);
 	}
 	protected @Override UnDoubleStream asDS(Function<Stream<T>, DoubleStream> func) {
 		return new UnDoubleStream(supplier, func);
