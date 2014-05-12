@@ -45,9 +45,9 @@ public class Streams {
 		long[] clone = array.clone();
 		return new LongStream2(() -> LongStream.of(clone));
 	}
-	public static UnDoubleStream doubles(double... array) {
+	public static DoubleStream2 doubles(double... array) {
 		double[] clone = array.clone();
-		return new UnDoubleStream(() -> DoubleStream.of(clone));
+		return new DoubleStream2(() -> DoubleStream.of(clone));
 	}
 	public static <T> Stream2<T> from(Collection<T> collection) {
 		return new Stream2<>(() -> collection.stream());

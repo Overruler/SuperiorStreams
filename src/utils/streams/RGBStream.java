@@ -37,7 +37,7 @@ IntStream,
 Stream2<Integer>,
 RGBStream,
 LongStream2,
-UnDoubleStream,
+DoubleStream2,
 IntConsumer,
 IntPredicate,
 IntBinaryOperator,
@@ -75,8 +75,8 @@ ToDoubleFunction<Integer>> {//*E*
 	protected @Override LongStream2 asLS(Function<IntStream, LongStream> func) {
 		return new LongStream2(supplier, func);
 	}
-	protected @Override UnDoubleStream asDS(Function<IntStream, DoubleStream> func) {
-		return new UnDoubleStream(supplier, func);
+	protected @Override DoubleStream2 asDS(Function<IntStream, DoubleStream> func) {
+		return new DoubleStream2(supplier, func);
 	}
 	protected @Override Function<? super Integer, ? extends IntStream> castToIntStream(
 	  IntFunction<? extends IntStream> mapper) {

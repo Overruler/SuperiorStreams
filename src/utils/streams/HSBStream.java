@@ -29,7 +29,7 @@ Stream<float[]>,
 HSBStream,
 IntStream2,
 LongStream2,
-UnDoubleStream,
+DoubleStream2,
 Consumer<? super float[]>,
 Predicate<? super float[]>,
 BinaryOperator<float[]>,
@@ -69,8 +69,8 @@ ToDoubleFunction<? super float[]>> {//*E*
 	protected @Override LongStream2 asLS(Function<Stream<float[]>, LongStream> func) {
 		return new LongStream2(supplier, func);
 	}
-	protected @Override UnDoubleStream asDS(Function<Stream<float[]>, DoubleStream> func) {
-		return new UnDoubleStream(supplier, func);
+	protected @Override DoubleStream2 asDS(Function<Stream<float[]>, DoubleStream> func) {
+		return new DoubleStream2(supplier, func);
 	}
 	protected @Override Function<? super float[], ? extends IntStream> castToIntStream(
 	  Function<? super float[], ? extends IntStream> mapper) {

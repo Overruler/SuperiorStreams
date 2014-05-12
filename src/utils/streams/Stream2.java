@@ -24,7 +24,7 @@ Stream<T>,
 Stream2<T>,
 IntStream2,
 LongStream2,
-UnDoubleStream,
+DoubleStream2,
 Consumer<? super T>,
 Predicate<? super T>,
 BinaryOperator<T>,
@@ -57,8 +57,8 @@ ToDoubleFunction<? super T>> {//*E*
 	protected @Override LongStream2 asLS(Function<Stream<T>, LongStream> func) {
 		return new LongStream2(supplier, func);
 	}
-	protected @Override UnDoubleStream asDS(Function<Stream<T>, DoubleStream> func) {
-		return new UnDoubleStream(supplier, func);
+	protected @Override DoubleStream2 asDS(Function<Stream<T>, DoubleStream> func) {
+		return new DoubleStream2(supplier, func);
 	}
 	protected @Override Function<? super T, ? extends IntStream> castToIntStream(
 	  Function<? super T, ? extends IntStream> mapper) {

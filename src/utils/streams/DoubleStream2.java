@@ -21,12 +21,12 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 //*Q*
-public final class UnDoubleStream extends AbstractDoubleStream<RuntimeException,
+public final class DoubleStream2 extends AbstractDoubleStream<RuntimeException,
 DoubleStream,
 Stream2<Double>,
 IntStream2,
 LongStream2,
-UnDoubleStream,
+DoubleStream2,
 DoubleConsumer,
 DoublePredicate,
 DoubleBinaryOperator,
@@ -37,10 +37,10 @@ ToIntFunction<Double>,
 ToLongFunction<Double>,
 ToDoubleFunction<Double>> {//*E*
 
-	public UnDoubleStream(Supplier<DoubleStream> supplier) {
+	public DoubleStream2(Supplier<DoubleStream> supplier) {
 		super(supplier);
 	}
-	<OLD> UnDoubleStream(Supplier<OLD> older, Function<OLD, DoubleStream> converter) {
+	<OLD> DoubleStream2(Supplier<OLD> older, Function<OLD, DoubleStream> converter) {
 		this(() -> converter.apply(older.get()));
 	}
 	protected @Override Class<RuntimeException> classOfE() {
@@ -58,8 +58,8 @@ ToDoubleFunction<Double>> {//*E*
 	protected @Override LongStream2 asLS(Function<DoubleStream, LongStream> func) {
 		return new LongStream2(supplier, func);
 	}
-	protected @Override UnDoubleStream asSELF(Function<DoubleStream, DoubleStream> func) {
-		return new UnDoubleStream(supplier, func);
+	protected @Override DoubleStream2 asSELF(Function<DoubleStream, DoubleStream> func) {
+		return new DoubleStream2(supplier, func);
 	}
 	protected @Override Function<? super Double, ? extends IntStream> castToIntStream(
 	  DoubleFunction<? extends IntStream> mapper) {
