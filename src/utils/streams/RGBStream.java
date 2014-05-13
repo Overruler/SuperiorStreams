@@ -251,7 +251,7 @@ ToDoubleFunction<Integer>> {//*E*
 		return Math.max(Math.min(255, component), 0);
 	}
 	public BufferedImage toImage() {
-		BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB_PRE);
+		BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		image.setRGB(0, 0, w, h, toArray(), 0, w);
 		return image;
 	}
