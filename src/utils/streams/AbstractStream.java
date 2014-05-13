@@ -3,6 +3,7 @@ package utils.streams;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -150,10 +151,12 @@ implements StreamyBase<T, E> {//*E*
 		return StreamyBase.terminalAsObj(s -> s.toArray(allocator), maker(), classOfE());
 	}
 	public ArrayList<T> toList() throws E {
-		return StreamyBase.terminalAsObj(
-		  s -> s.collect(Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
-		  maker(),
-		  classOfE());
+		Collector<T, ?, ArrayList<T>> collection = Collectors.toCollection(ArrayList<T>::new);
+		return StreamyBase.terminalAsObj(s -> s.collect(collection), maker(), classOfE());
+	}
+	public HashSet<T> toSet() throws E {
+		Collector<T, ?, HashSet<T>> collection = Collectors.toCollection(HashSet<T>::new);
+		return StreamyBase.terminalAsObj(s -> s.collect(collection), maker(), classOfE());
 	}
 	public long count() throws E {
 		return StreamyBase.terminalAsLong(s -> s.count(), maker(), classOfE());

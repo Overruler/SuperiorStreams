@@ -3,6 +3,7 @@ package utils.streams;
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.OptionalDouble;
@@ -138,6 +139,9 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 	}
 	public ArrayList<Double> toList() throws E {
 		return terminalAsObj(s -> s.boxed().collect(Collectors.toCollection(ArrayList::new)), maker(), classOfE());
+	}
+	public HashSet<Double> toSet() throws E {
+		return terminalAsObj(s -> s.boxed().collect(Collectors.toCollection(HashSet::new)), maker(), classOfE());
 	}
 	public <L> L toList(Function<double[], L> intoList) throws E {
 		return intoList.apply(toArray());

@@ -2,6 +2,7 @@ package utils.streams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.Objects;
@@ -139,6 +140,9 @@ DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, 
 	}
 	public ArrayList<Long> toList() throws E {
 		return terminalAsObj(s -> s.boxed().collect(Collectors.toCollection(ArrayList::new)), maker(), classOfE());
+	}
+	public HashSet<Long> toSet() throws E {
+		return terminalAsObj(s -> s.boxed().collect(Collectors.toCollection(HashSet::new)), maker(), classOfE());
 	}
 	public <L> L toList(Function<long[], L> intoList) throws E {
 		return intoList.apply(toArray());
