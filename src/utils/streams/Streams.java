@@ -3,6 +3,7 @@ package utils.streams;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,6 +26,7 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
 import utils.streams.functions.ExConsumer;
@@ -78,7 +80,7 @@ public class Streams {
 		return jarFile(jar.toFile());
 	}
 	public static RioStream<JarFile, JarEntry> jarFile(File jar) {
-		IOSupplier<JarFile> allocator = () -> new JarFile(jar);
+		IOSupplier<JarFile> allocator = () -> openJar(jar);
 		Function<JarFile, Stream<JarEntry>> converter = f -> f.stream();
 		IOConsumer<JarFile> releaser = f -> f.close();
 		return new RioStream<>(allocator.uncheck(IOException.class), converter, releaser.uncheck(IOException.class));
@@ -90,10 +92,45 @@ public class Streams {
 		return zipFile(zip.toFile());
 	}
 	public static RioStream<ZipFile, ZipEntry> zipFile(File zip) {
-		IOSupplier<ZipFile> allocator = () -> new ZipFile(zip);
+		IOSupplier<ZipFile> allocator = () -> openZip(zip);
 		Function<ZipFile, Stream<ZipEntry>> converter = f -> f.stream().map(Function.identity());
 		IOConsumer<ZipFile> releaser = f -> f.close();
 		return new RioStream<>(allocator.uncheck(IOException.class), converter, releaser.uncheck(IOException.class));
+	}
+	private static JarFile openJar(File jar) throws IOException {
+		try {
+			return new JarFile(jar);
+		} catch(ZipException e) {
+			throw addDetail(e, ": " + jar);
+		}
+	}
+	private static ZipFile openZip(File zip) throws IOException {
+		try {
+			return new ZipFile(zip);
+		} catch(ZipException e) {
+			throw addDetail(e, ": " + zip);
+		}
+	}
+	private static ZipException addDetail(ZipException exception, String extraDetail) throws ZipException {
+		try {
+			Field field = Throwable.class.getDeclaredField("detailMessage");
+			boolean inaccessible = field.isAccessible() == false;
+			try {
+				if(inaccessible) {
+					field.setAccessible(true);
+				}
+				String detailMessage = (String) field.get(exception);
+				if(detailMessage != null) {
+					detailMessage = detailMessage + extraDetail;
+					field.set(exception, detailMessage);
+				}
+			} finally {
+				if(inaccessible) {
+					field.setAccessible(false);
+				}
+			}
+		} catch(NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ignored) {}
+		throw exception;
 	}
 	public static IOStream<Path> filesList(String name) {
 		return filesList(Paths.get(name));
@@ -113,7 +150,7 @@ public class Streams {
 	public static IOStream<String> linesInFile(Path path) {
 		return with(() -> Files.lines(path));
 	}
-	static <R> IOStream<R> with(IOSupplier<Stream<R>> maker) {
+	private static <R> IOStream<R> with(IOSupplier<Stream<R>> maker) {
 		return new IOStream<>(maker.uncheck(IOException.class));
 	}
 	public static <E> ArrayList<E> where(List<E> list, Predicate<E> pass) {
