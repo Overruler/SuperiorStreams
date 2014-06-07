@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -125,10 +124,10 @@ ToDoubleFunction<? super float[]>> {//*E*
 		  mapper,
 		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(mapper, cast());
 	}
-	public <K> Map<K, ArrayList<float[]>> toMap(Function<? super float[], ? extends K> classifier) {
+	public <K> HashMap<K, ArrayList<float[]>> toMap(Function<? super float[], ? extends K> classifier) {
 		return toMapInternal(castToClassifier(classifier));
 	}
-	public final @SafeVarargs <K> Map<K, ArrayList<float[]>> toMap(
+	public final @SafeVarargs <K> HashMap<K, ArrayList<float[]>> toMap(
 	  Function<? super float[], ? extends K> classifier,
 	  Predicate<float[]>... allowed) {
 		if(allowed != null && allowed.length > 0) {

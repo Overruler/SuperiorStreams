@@ -2,7 +2,6 @@ package utils.streams;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
@@ -111,7 +110,7 @@ ToDoubleFunction<Integer>> {//*E*
 		  mapper::apply,
 		  cast());
 	}
-	public <K> Map<K, int[]> toMap(IntFunction<? extends K> classifier) {
+	public <K> HashMap<K, int[]> toMap(IntFunction<? extends K> classifier) {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(

@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
@@ -128,7 +127,15 @@ ToDoubleFunction<Integer>> {//*E*
 		  mapper::apply,
 		  cast());
 	}
-	public <K> Map<K, int[]> toMap(IntFunction<? extends K> classifier) {
+	public <K> HashMap<K, int[]> toMap(IntFunction<? extends K> classifier) {
+		return toMapInternal(classifier, castToClassifier());
+	}
+	public final @SafeVarargs <K> HashMap<K, int[]> toMap(IntFunction<? extends K> classifier, IntPredicate... allowed) {
+		if(allowed != null && allowed.length > 0) {
+			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).toMapInternal(
+			  classifier,
+			  castToClassifier());
+		}
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(

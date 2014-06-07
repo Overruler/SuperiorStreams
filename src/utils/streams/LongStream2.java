@@ -2,7 +2,6 @@ package utils.streams;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongConsumer;
@@ -111,7 +110,7 @@ ToDoubleFunction<Long>> {//*E*
 		  mapper::apply,
 		  cast());
 	}
-	public <K> Map<K, long[]> toMap(LongFunction<? extends K> classifier) throws RuntimeException {
+	public <K> HashMap<K, long[]> toMap(LongFunction<? extends K> classifier) throws RuntimeException {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(

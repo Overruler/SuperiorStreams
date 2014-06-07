@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -132,10 +131,10 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 		  mapper,
 		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(mapper, cast());
 	}
-	public <K> Map<K, ArrayList<T>> toMap(IOBiFunction<A, ? super T, ? extends K> classifier) throws IOException {
+	public <K> HashMap<K, ArrayList<T>> toMap(IOBiFunction<A, ? super T, ? extends K> classifier) throws IOException {
 		return toMapInternal(castToClassifier(classifier));
 	}
-	public final @SafeVarargs <K> Map<K, ArrayList<T>> toMap(
+	public final @SafeVarargs <K> HashMap<K, ArrayList<T>> toMap(
 	  Function<? super T, ? extends K> classifier,
 	  Predicate<T>... allowed) throws IOException {
 		if(allowed != null && allowed.length > 0) {

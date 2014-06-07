@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.function.BiConsumer;
@@ -153,7 +152,7 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 	  Function<double[], L> intoList) throws E {
 		return terminalAsMapToList(cast.apply(classifier), intoMap, intoList, maker(), classOfE());
 	}
-	public <K, CLASSIFIER> Map<K, double[]> toMapInternal(
+	public <K, CLASSIFIER> HashMap<K, double[]> toMapInternal(
 	  CLASSIFIER classifier,
 	  Function<CLASSIFIER, DoubleFunction<? extends K>> cast) throws E {
 		return terminalAsMapToList(cast.apply(classifier), Function.identity(), Function.identity(), maker(), classOfE());
@@ -285,7 +284,7 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 			throw unwrapCause(class1, e);
 		}
 	}
-	public static <K, E extends Exception> Map<K, double[]> terminalAsMapToList(
+	public static <K, E extends Exception> HashMap<K, double[]> terminalAsMapToList(
 	  DoubleFunction<? extends K> classifier,
 	  Supplier<DoubleStream> maker,
 	  Class<E> classOfE) throws E {

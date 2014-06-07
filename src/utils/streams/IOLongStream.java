@@ -3,7 +3,6 @@ package utils.streams;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongConsumer;
@@ -116,7 +115,7 @@ IOToDoubleFunction<Long>> {//*E*
 		  mapper::apply,
 		  cast());
 	}
-	public <K> Map<K, long[]> toMap(IOLongFunction<? extends K> classifier) throws IOException {
+	public <K> HashMap<K, long[]> toMap(IOLongFunction<? extends K> classifier) throws IOException {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(

@@ -2,7 +2,6 @@ package utils.streams;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
@@ -129,7 +128,7 @@ ExToDoubleBiFunction<A, Integer, E>> {//*E*
 		  mapper,
 		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(mapper, cast());
 	}
-	public <K> Map<K, int[]> toMap(ExBiFunction<A, Integer, ? extends K, E> classifier) throws E {
+	public <K> HashMap<K, int[]> toMap(ExBiFunction<A, Integer, ? extends K, E> classifier) throws E {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(

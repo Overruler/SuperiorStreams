@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -198,7 +197,7 @@ implements StreamyBase<T, E> {//*E*
 	public OptionalDouble average(TO_DOUBLE attribute) throws E {
 		return StreamyBase.terminalAsObj(s -> s.mapToDouble(castToDouble(attribute)).average(), maker(), classOfE());
 	}
-	protected <K> Map<K, ArrayList<T>> toMapInternal(Function<? super T, ? extends K> classifier) throws E {
+	protected <K> HashMap<K, ArrayList<T>> toMapInternal(Function<? super T, ? extends K> classifier) throws E {
 		return StreamyBase.terminalAsMapToList(classifier, Function.identity(), Function.identity(), maker(), classOfE());
 	}
 	protected <M, L, K> M toMultiMapInternal(
