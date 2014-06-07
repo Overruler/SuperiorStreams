@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import javax.imageio.ImageIO;
 import utils.streams.functions.ExConsumer;
+import utils.streams.functions.IOBiPredicate;
 import utils.streams.functions.IOConsumer;
 import utils.streams.functions.IOFunction;
 import utils.streams.functions.IOSupplier;
@@ -143,6 +145,12 @@ public class Streams {
 	}
 	public static IOStream<Path> filesWalk(Path path) {
 		return with(() -> Files.walk(path));
+	}
+	public static IOStream<Path> filesFind(String name, int maxDepth, IOBiPredicate<Path, BasicFileAttributes> matcher) {
+		return filesFind(Paths.get(name), maxDepth, matcher);
+	}
+	public static IOStream<Path> filesFind(Path path, int maxDepth, IOBiPredicate<Path, BasicFileAttributes> matcher) {
+		return with(() -> Files.find(path, maxDepth, matcher.uncheck(IOException.class)));
 	}
 	public static IOStream<String> linesInFile(String name) {
 		return linesInFile(Paths.get(name));
