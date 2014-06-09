@@ -173,6 +173,29 @@ implements StreamyBase<T, E> {//*E*
 		Objects.requireNonNull(after);
 		return asSELF(s -> Stream.concat(s, after.maker().get()));
 	}
+	public HashMap<Boolean, ArrayList<T>> partition(PREDICATE allowed) throws E {
+		return StreamyBase.terminalAsObj(
+		  s -> s.collect(collectingAndThen(
+		    partitioningBy(castToPredicates(allowed), Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
+		    m -> new HashMap<>(m))),
+		  maker(),
+		  classOfE());
+	}
+	public final @SafeVarargs HashMap<Boolean, ArrayList<T>> partition(
+	  Predicate<? super T> allow,
+	  Predicate<? super T>... allowed) throws E {
+		Predicate<T> allow2 = allow::test;
+		for(Predicate<? super T> predicate : allowed) {
+			allow2 = allow2.and(predicate);
+		}
+		Predicate<T> allow3 = allow2;
+		return StreamyBase.terminalAsObj(
+		  s -> s.collect(collectingAndThen(
+		    partitioningBy(allow3, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
+		    m -> new HashMap<>(m))),
+		  maker(),
+		  classOfE());
+	}
 	public <R> R collect(Supplier<R> initial, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner) throws E {
 		return StreamyBase.terminalAsObj(s -> s.collect(initial, accumulator, combiner), maker(), classOfE());
 	}
