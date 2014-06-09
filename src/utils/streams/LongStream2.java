@@ -119,6 +119,9 @@ ToDoubleFunction<Long>> {//*E*
 	  Function<long[], L> intoList) throws RuntimeException {
 		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
 	}
+	public IOLongStream toIO() {
+		return new IOLongStream(supplier);
+	}
 	private static <K> Function<LongFunction<? extends K>, LongFunction<? extends K>> castToClassifier() {
 		return c -> c;
 	}

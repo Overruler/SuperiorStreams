@@ -119,6 +119,9 @@ ToDoubleFunction<Integer>> {//*E*
 	  Function<int[], L> intoList) {
 		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
 	}
+	public IOIntStream toIO() {
+		return new IOIntStream(supplier);
+	}
 	private static <K> Function<IntFunction<? extends K>, IntFunction<? extends K>> castToClassifier() {
 		return c -> c;
 	}

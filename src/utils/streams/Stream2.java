@@ -140,6 +140,9 @@ ToDoubleFunction<? super T>> {//*E*
 		}
 		return toMultiMapInternal(classifier, intoMap, intoList);
 	}
+	public IOStream<T> toIO() {
+		return new IOStream<>(supplier);
+	}
 	private <K> Function<? super T, ? extends K> castToClassifier(Function<? super T, ? extends K> classifier) {
 		return classifier;
 	}
