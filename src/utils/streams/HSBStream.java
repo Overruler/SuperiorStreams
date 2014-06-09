@@ -170,7 +170,15 @@ ToDoubleFunction<? super float[]>> {//*E*
 		return f -> new Stream2<>(supplier, f);
 	}
 	public HSBStream mapColor(UnaryOperator<float[]> mapping) {
-		return mapInternal(mapping, f -> new HSBStream(supplier, f, w, h));
+		return mapInternal(f -> compressHue(mapping.apply(expandHue(f))), f -> new HSBStream(supplier, f, w, h));
+	}
+	private static float[] compressHue(float[] hsba) {
+		hsba[0] /= 360;
+		return hsba;
+	}
+	private static float[] expandHue(float[] hsba) {
+		hsba[0] *= 360;
+		return hsba;
 	}
 	public HSBStream mapHue(HSBFunction mapping) {
 		Function<Function<Stream<float[]>, Stream<float[]>>, HSBStream> cast = f -> new HSBStream(supplier, f, w, h);
