@@ -115,7 +115,7 @@ implements StreamyBase<T, E> {//*E*
 		StreamyBase.terminal(s -> s.forEach(action3), maker(), classOfE());
 	}
 	public void forEachOrdered(CONSUMER action) throws E {
-		forEachOrdered(castToConsumers(action));
+		StreamyBase.terminal(s -> s.forEachOrdered(castToConsumers(action)), maker(), classOfE());
 	}
 	public final @SafeVarargs void forEachOrdered(Consumer<? super T> action, Consumer<? super T>... actions) throws E {
 		Consumer<T> action2 = action::accept;
@@ -123,7 +123,7 @@ implements StreamyBase<T, E> {//*E*
 			action2 = action2.andThen(consumer);
 		}
 		Consumer<T> action3 = action2;
-		forEachOrdered(action3);
+		StreamyBase.terminal(s -> s.forEachOrdered(action3), maker(), classOfE());
 	}
 	public IS asIntStream() {
 		return asIS(s -> s.mapToInt(AbstractIntStream::toInt));
