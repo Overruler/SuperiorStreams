@@ -38,7 +38,7 @@ SELF extends AbstractStream<T, E, STREAM,
 SELF,
 IS, LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, COMPARATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_DOUBLE>,
 IS, LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, COMPARATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_DOUBLE>
-implements StreamyBase<T, E> {//*E*
+implements Streamable<T, E> {//*E*
 
 	protected abstract Class<E> classOfE();
 	public @Override Stream<T> stream() throws E {
@@ -104,7 +104,7 @@ implements StreamyBase<T, E> {//*E*
 		return asSELF(s -> s.peek(action3));
 	}
 	public void forEach(CONSUMER action) throws E {
-		StreamyBase.terminal(s -> s.forEach(castToConsumers(action)), maker(), classOfE());
+		terminal(s -> s.forEach(castToConsumers(action)), maker(), classOfE());
 	}
 	public final @SafeVarargs void forEach(Consumer<? super T> action, Consumer<? super T>... actions) throws E {
 		Consumer<T> action2 = action::accept;
@@ -112,10 +112,10 @@ implements StreamyBase<T, E> {//*E*
 			action2 = action2.andThen(consumer);
 		}
 		Consumer<T> action3 = action2;
-		StreamyBase.terminal(s -> s.forEach(action3), maker(), classOfE());
+		terminal(s -> s.forEach(action3), maker(), classOfE());
 	}
 	public void forEachOrdered(CONSUMER action) throws E {
-		StreamyBase.terminal(s -> s.forEachOrdered(castToConsumers(action)), maker(), classOfE());
+		terminal(s -> s.forEachOrdered(castToConsumers(action)), maker(), classOfE());
 	}
 	public final @SafeVarargs void forEachOrdered(Consumer<? super T> action, Consumer<? super T>... actions) throws E {
 		Consumer<T> action2 = action::accept;
@@ -123,7 +123,7 @@ implements StreamyBase<T, E> {//*E*
 			action2 = action2.andThen(consumer);
 		}
 		Consumer<T> action3 = action2;
-		StreamyBase.terminal(s -> s.forEachOrdered(action3), maker(), classOfE());
+		terminal(s -> s.forEachOrdered(action3), maker(), classOfE());
 	}
 	public IS asIntStream() {
 		return asIS(s -> s.mapToInt(AbstractIntStream::toInt));
@@ -144,27 +144,27 @@ implements StreamyBase<T, E> {//*E*
 		return asSELF(s -> s.parallel());
 	}
 	public Object[] toArray() throws E {
-		return StreamyBase.terminalAsObj(s -> s.toArray(), maker(), classOfE());
+		return terminalAsObj(s -> s.toArray(), maker(), classOfE());
 	}
 	public T[] toArray(IntFunction<T[]> allocator) throws E {
-		return StreamyBase.terminalAsObj(s -> s.toArray(allocator), maker(), classOfE());
+		return terminalAsObj(s -> s.toArray(allocator), maker(), classOfE());
 	}
 	public ArrayList<T> toList() throws E {
 		Collector<T, ?, ArrayList<T>> collection = Collectors.toCollection(ArrayList<T>::new);
-		return StreamyBase.terminalAsObj(s -> s.collect(collection), maker(), classOfE());
+		return terminalAsObj(s -> s.collect(collection), maker(), classOfE());
 	}
 	public HashSet<T> toSet() throws E {
 		Collector<T, ?, HashSet<T>> collection = Collectors.toCollection(HashSet<T>::new);
-		return StreamyBase.terminalAsObj(s -> s.collect(collection), maker(), classOfE());
+		return terminalAsObj(s -> s.collect(collection), maker(), classOfE());
 	}
 	public long count() throws E {
-		return StreamyBase.terminalAsLong(s -> s.count(), maker(), classOfE());
+		return terminalAsLong(s -> s.count(), maker(), classOfE());
 	}
 	public Optional<T> findFirst() throws E {
-		return StreamyBase.terminalAsObj(s -> s.findFirst(), maker(), classOfE());
+		return terminalAsObj(s -> s.findFirst(), maker(), classOfE());
 	}
 	public Optional<T> findAny() throws E {
-		return StreamyBase.terminalAsObj(s -> s.findAny(), maker(), classOfE());
+		return terminalAsObj(s -> s.findAny(), maker(), classOfE());
 	}
 	public
 	  SELF
@@ -174,7 +174,7 @@ implements StreamyBase<T, E> {//*E*
 		return asSELF(s -> Stream.concat(s, after.maker().get()));
 	}
 	public HashMap<Boolean, ArrayList<T>> partition(PREDICATE allowed) throws E {
-		return StreamyBase.terminalAsObj(
+		return terminalAsObj(
 		  s -> s.collect(collectingAndThen(
 		    partitioningBy(castToPredicates(allowed), Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
 		    m -> new HashMap<>(m))),
@@ -189,7 +189,7 @@ implements StreamyBase<T, E> {//*E*
 			allow2 = allow2.and(predicate);
 		}
 		Predicate<T> allow3 = allow2;
-		return StreamyBase.terminalAsObj(
+		return terminalAsObj(
 		  s -> s.collect(collectingAndThen(
 		    partitioningBy(allow3, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
 		    m -> new HashMap<>(m))),
@@ -197,37 +197,37 @@ implements StreamyBase<T, E> {//*E*
 		  classOfE());
 	}
 	public <R> R collect(Supplier<R> initial, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner) throws E {
-		return StreamyBase.terminalAsObj(s -> s.collect(initial, accumulator, combiner), maker(), classOfE());
+		return terminalAsObj(s -> s.collect(initial, accumulator, combiner), maker(), classOfE());
 	}
 	public <R, A> R collect(Collector<? super T, A, R> collector) throws E {
-		return StreamyBase.terminalAsObj(s -> s.collect(collector), maker(), classOfE());
+		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
 	}
 	public SELF sorted(COMPARATOR comparator) {
 		return asSELF(s -> s.sorted(castToComparators(comparator)));
 	}
 	public Optional<T> min(COMPARATOR comparator) throws E {
-		return StreamyBase.terminalAsObj(s -> s.min(castToComparators(comparator)), maker(), classOfE());
+		return terminalAsObj(s -> s.min(castToComparators(comparator)), maker(), classOfE());
 	}
 	public Optional<T> max(COMPARATOR comparator) throws E {
-		return StreamyBase.terminalAsObj(s -> s.max(castToComparators(comparator)), maker(), classOfE());
+		return terminalAsObj(s -> s.max(castToComparators(comparator)), maker(), classOfE());
 	}
 	public SummaryStatistics<T> summaryStatistics(TO_LONG attribute) throws E {
 		ToLongFunction<? super T> attribute2 = castToLong(attribute);
 		Collector<? super T, SummaryStatistics<T>, SummaryStatistics<T>> collector =
 		  SummaryStatistics.collector(attribute2);
-		return StreamyBase.terminalAsObj(s -> s.collect(collector), maker(), classOfE());
+		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
 	}
 	public OptionalDouble average(TO_DOUBLE attribute) throws E {
-		return StreamyBase.terminalAsObj(s -> s.mapToDouble(castToDouble(attribute)).average(), maker(), classOfE());
+		return terminalAsObj(s -> s.mapToDouble(castToDouble(attribute)).average(), maker(), classOfE());
 	}
 	protected <K> HashMap<K, ArrayList<T>> toMapInternal(Function<? super T, ? extends K> classifier) throws E {
-		return StreamyBase.terminalAsMapToList(classifier, Function.identity(), Function.identity(), maker(), classOfE());
+		return terminalAsMapToList(classifier, Function.identity(), Function.identity(), maker(), classOfE());
 	}
 	protected <M, L, K> M toMultiMapInternal(
 	  Function<? super T, ? extends K> apply,
 	  Function<HashMap<K, L>, M> intoMap,
 	  Function<ArrayList<T>, L> intoList) throws E {
-		return StreamyBase.terminalAsMapToList(apply, intoMap, intoList, maker(), classOfE());
+		return terminalAsMapToList(apply, intoMap, intoList, maker(), classOfE());
 	}
 	public T reduce(T start, BINARY_OPERATOR add) throws E {
 		return reduce(start, castToBinaryOperators(add));
@@ -256,7 +256,7 @@ implements StreamyBase<T, E> {//*E*
 			test2 = test2.and(predicate2);
 		}
 		Predicate<? super T> test3 = test;
-		return StreamyBase.terminalAsBoolean(s -> s.anyMatch(test3), maker(), classOfE());
+		return terminalAsBoolean(s -> s.anyMatch(test3), maker(), classOfE());
 	}
 	public boolean allMatch(PREDICATE predicate) throws E {
 		return allMatch(castToPredicates(predicate));
@@ -267,10 +267,10 @@ implements StreamyBase<T, E> {//*E*
 			test2 = test2.and(predicate2);
 		}
 		Predicate<T> test3 = test2;
-		return StreamyBase.terminalAsBoolean(s -> s.allMatch(test3), maker(), classOfE());
+		return terminalAsBoolean(s -> s.allMatch(test3), maker(), classOfE());
 	}
 	public boolean noneMatch(PREDICATE test) throws E {
-		return StreamyBase.terminalAsBoolean(s -> s.noneMatch(castToPredicates(test)), maker(), classOfE());
+		return terminalAsBoolean(s -> s.noneMatch(castToPredicates(test)), maker(), classOfE());
 	}
 	public final @SafeVarargs boolean noneMatch(Predicate<? super T> test, Predicate<? super T>... tests) throws E {
 		Predicate<T> test2 = test::test;
@@ -278,7 +278,7 @@ implements StreamyBase<T, E> {//*E*
 			test2 = test2.and(predicate2);
 		}
 		Predicate<T> test3 = test2;
-		return StreamyBase.terminalAsBoolean(s -> s.noneMatch(test3), maker(), classOfE());
+		return terminalAsBoolean(s -> s.noneMatch(test3), maker(), classOfE());
 	}
 	protected <R, RS> RS mapInternal(
 	  Function<? super T, ? extends R> mapper,
@@ -291,7 +291,7 @@ implements StreamyBase<T, E> {//*E*
 		return cast.apply(s -> s.flatMap(mapper));
 	}
 	protected Optional<T> reduceInternal(BinaryOperator<T> accumulator) throws E {
-		return StreamyBase.terminalAsObj(s -> s.reduce(accumulator), maker(), classOfE());
+		return terminalAsObj(s -> s.reduce(accumulator), maker(), classOfE());
 	}
 
 	protected final Supplier<Stream<T>> supplier;
@@ -320,7 +320,7 @@ implements StreamyBase<T, E> {//*E*
 	protected abstract Consumer<? super T> castToConsumers(CONSUMER action);
 	protected abstract Predicate<? super T> castToPredicates(PREDICATE test);
 	protected abstract BinaryOperator<T> castToBinaryOperators(BINARY_OPERATOR combiner);
-	static <T, E extends Exception> void terminal(
+	private static <T, E extends Exception> void terminal(
 	  ExConsumer<Stream<T>, E> consumption,
 	  Supplier<Stream<T>> supplier,
 	  Class<E> classOfE) throws E {
@@ -330,7 +330,7 @@ implements StreamyBase<T, E> {//*E*
 			throw unwrapCause(classOfE, e);
 		}
 	}
-	static <T, E extends Exception, R> R terminalAsObj(
+	private static <T, E extends Exception, R> R terminalAsObj(
 	  ExFunction<Stream<T>, R, E> consumption,
 	  Supplier<Stream<T>> supplier,
 	  Class<E> classOfE) throws E {
@@ -340,7 +340,7 @@ implements StreamyBase<T, E> {//*E*
 			throw unwrapCause(classOfE, e);
 		}
 	}
-	static <T, E extends Exception> long terminalAsLong(
+	private static <T, E extends Exception> long terminalAsLong(
 	  ExToLongFunction<Stream<T>, E> consumption,
 	  Supplier<Stream<T>> supplier,
 	  Class<E> classOfE) throws E {
@@ -350,7 +350,7 @@ implements StreamyBase<T, E> {//*E*
 			throw unwrapCause(classOfE, e);
 		}
 	}
-	static <T, E extends Exception> boolean terminalAsBoolean(
+	private static <T, E extends Exception> boolean terminalAsBoolean(
 	  ExPredicate<Stream<T>, E> consumption,
 	  Supplier<Stream<T>> supplier,
 	  Class<E> classOfE) throws E {
@@ -360,7 +360,7 @@ implements StreamyBase<T, E> {//*E*
 			throw unwrapCause(classOfE, e);
 		}
 	}
-	static <T, E extends Exception, K, L, M> M terminalAsMapToList(
+	private static <T, E extends Exception, K, L, M> M terminalAsMapToList(
 	  Function<? super T, ? extends K> classifier,
 	  Function<HashMap<K, L>, M> intoMap,
 	  Function<ArrayList<T>, L> intoList,
@@ -383,7 +383,7 @@ implements StreamyBase<T, E> {//*E*
 			throw unwrapCause(classOfE, e);
 		}
 	}
-	static <E extends Exception> E unwrapCause(Class<E> classOfE, RuntimeException e) throws E {
+	private static <E extends Exception> E unwrapCause(Class<E> classOfE, RuntimeException e) throws E {
 		Throwable cause = e.getCause();
 		if(classOfE.isInstance(cause) == false) {
 			throw e;
