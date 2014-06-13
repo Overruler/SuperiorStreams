@@ -1,5 +1,7 @@
 package utils.lists;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,6 +14,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.*;
+import utils.streams.Streams;
 
 public class Lists {
 
@@ -26,6 +29,12 @@ public class Lists {
 
 	public @SafeVarargs static <V> ArrayList<V> of(V... values) {
 		return new ArrayList<>(Arrays.asList(values));
+	}
+	public static ArrayList<Path> paths(String parent, String... values) {
+		return Streams.of(values).sorted().map(v -> Paths.get(parent, v)).toList();
+	}
+	public @SafeVarargs static ArrayList<Path> paths(String parent, Collection<Path>... values) {
+		return Streams.of(values).sorted().flatMap(c -> c.stream()).map(v -> Paths.get(parent).resolve(v)).toList();
 	}
 	public static <K, V> MapBuilder<K, V> buildMap(K key, V value) {
 		HashMap<K, V> map = new HashMap<>();
