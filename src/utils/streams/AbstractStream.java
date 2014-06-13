@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -44,9 +44,9 @@ implements StreamyBase<T, E> {//*E*
 	public @Override Stream<T> stream() throws E {
 		return ExSupplier.recheck(maker(), classOfE()).get();
 	}
-	public @Override Iterable<T> iterate() throws E {
-		List<T> collected = stream().collect(Collectors.toList());
-		return () -> collected.iterator();
+	public @Override Iterable<T> iterable() throws E {
+		Iterator<T> iterator = stream().iterator();
+		return () -> iterator;
 	}
 	public SELF filter(PREDICATE allowed) {
 		return asSELF(s -> s.filter(castToPredicates(allowed)));
