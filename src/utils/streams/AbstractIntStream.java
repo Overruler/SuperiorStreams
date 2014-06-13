@@ -228,7 +228,7 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 		Objects.requireNonNull(after);
 		return asSELF(s -> IntStream.concat(s, after.maker().get()));
 	}
-	public static <E extends Exception> void terminal(
+	static <E extends Exception> void terminal(
 	  Consumer<IntStream> consumption,
 	  Supplier<IntStream> supplier,
 	  Class<E> class1) throws E {
@@ -238,7 +238,7 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 			throw unwrapCause(class1, e);
 		}
 	}
-	public static <R, E extends Exception> R terminalAsObj(
+	static <R, E extends Exception> R terminalAsObj(
 	  Function<IntStream, R> consumption,
 	  Supplier<IntStream> supplier,
 	  Class<E> class1) throws E {
@@ -248,7 +248,7 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 			throw unwrapCause(class1, e);
 		}
 	}
-	public static <E extends Exception> long terminalAsLong(
+	static <E extends Exception> long terminalAsLong(
 	  ToLongFunction<IntStream> consumption,
 	  Supplier<IntStream> supplier,
 	  Class<E> class1) throws E {
@@ -258,7 +258,7 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 			throw unwrapCause(class1, e);
 		}
 	}
-	public static <E extends Exception> int terminalAsInt(
+	static <E extends Exception> int terminalAsInt(
 	  ToIntFunction<IntStream> consumption,
 	  Supplier<IntStream> supplier,
 	  Class<E> class1) throws E {
@@ -268,7 +268,7 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 			throw unwrapCause(class1, e);
 		}
 	}
-	public static <E extends Exception> boolean terminalAsBoolean(
+	static <E extends Exception> boolean terminalAsBoolean(
 	  Predicate<IntStream> consumption,
 	  Supplier<IntStream> supplier,
 	  Class<E> class1) throws E {
@@ -278,13 +278,13 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 			throw unwrapCause(class1, e);
 		}
 	}
-	public static <K, E extends Exception> HashMap<K, int[]> terminalAsMapToList(
+	static <K, E extends Exception> HashMap<K, int[]> terminalAsMapToList(
 	  IntFunction<? extends K> classifier,
 	  Supplier<IntStream> maker,
 	  Class<E> classOfE) throws E {
 		return terminalAsMapToList(classifier, Function.identity(), Function.identity(), maker, classOfE);
 	}
-	public static <K, L, M, E extends Exception> M terminalAsMapToList(
+	static <K, L, M, E extends Exception> M terminalAsMapToList(
 	  IntFunction<? extends K> classifier,
 	  Function<HashMap<K, L>, M> intoMap,
 	  Function<int[], L> intoList,
@@ -340,7 +340,7 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 			throw unwrapCause(classOfE, e);
 		}
 	}
-	public static <E extends Exception> E unwrapCause(Class<E> classOfE, RuntimeException e) throws E {
+	static <E extends Exception> E unwrapCause(Class<E> classOfE, RuntimeException e) throws E {
 		Throwable cause = e.getCause();
 		if(classOfE.isInstance(cause) == false) {
 			throw e;
