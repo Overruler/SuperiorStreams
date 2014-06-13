@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Spliterator;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -26,6 +27,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -40,6 +42,13 @@ public class Streams {
 
 	public static @SafeVarargs <T> Stream2<T> of(T... array) {
 		return from(Arrays.asList(array.clone()));
+	}
+	public static <T> Stream2<T> iterating(Iterable<T> iterable) {
+		return new Stream2<>(() -> iterableToStream(iterable));
+	}
+	private static <T> Stream<T> iterableToStream(Iterable<T> iterable) {
+		Spliterator<T> spliterator = iterable.spliterator();
+		return StreamSupport.stream(() -> spliterator, spliterator.characteristics(), false);
 	}
 	public static IntStream2 ints(int... array) {
 		int[] clone = array.clone();
