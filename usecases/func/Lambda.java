@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.BinaryOperator;
@@ -15,8 +14,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import utils.streams.IOStream;
-import utils.streams.Streams;
 import utils.streams.Stream2;
+import utils.streams.Streams;
 import utils.streams.functions.IOBinaryOperator;
 import utils.streams.functions.IOConsumer;
 import utils.streams.functions.IOFunction;
@@ -40,88 +39,92 @@ public class Lambda {
 	public static void tests() throws IOException {
 		IOStream<String> lines1 = new IOStream<>(() -> Stream.of(results));
 		Stream2<String> lines2 = Streams.of(results);
-		Stream<String> lines3 = Stream.of(results);
+		java.util.stream.Stream<String> lines3 = java.util.stream.Stream.of(results);
 		tests1(lines1, lines2, lines3);
 		tests2(lines1, lines2, lines3);
 		tests3(lines1, lines2, lines3);
 		tests4(lines1, lines2, lines3);
 		tests5(lines1, lines2);
 	}
-	private static void tests1(IOStream<String> lines1, Stream2<String> lines2, Stream<String> lines3)
+	private static void tests1(IOStream<String> lines1, Stream2<String> lines2, java.util.stream.Stream<String> lines3)
 	  throws IOException {
-		IOConsumer<? super String> action1 = s -> Files.isHidden(Paths.get(s));
+		IOConsumer<? super String> action1 = s -> System.out.println(Files.isHidden(Paths.get(s)));
 		Consumer<? super String> action2 = s -> System.out.println(s);
+		java.util.function.Consumer<? super String> action3 = s -> System.out.println(s);
 		lines1.peek(action1);
 		lines1.peek(action2);
 		lines1.peek(s -> Files.isHidden(Paths.get(s)));
 		lines1.peek(s -> System.out.println(s));
 		lines2.peek(action2);
-		lines3.peek(action2);
+		lines3.peek(action3);
 		lines1.forEach(action1);
 		lines1.forEach(action2);
 		lines1.forEach(s -> Files.isHidden(Paths.get(s)));
 		lines1.forEach(s -> System.out.println(s));
 		lines2.forEach(action2);
-		lines3.forEach(action2);
+		lines3.forEach(action3);
 		lines1.forEachOrdered(action1);
 		lines1.forEachOrdered(action2);
 		lines1.forEachOrdered(s -> Files.isHidden(Paths.get(s)));
 		lines1.forEachOrdered(s -> System.out.println(s));
 		lines2.forEachOrdered(action2);
-		lines3.forEachOrdered(action2);
+		lines3.forEachOrdered(action3);
 	}
-	private static void tests2(IOStream<String> lines1, Stream2<String> lines2, Stream<String> lines3)
+	private static void tests2(IOStream<String> lines1, Stream2<String> lines2, java.util.stream.Stream<String> lines3)
 	  throws IOException {
 		IOPredicate<? super String> action1 = s -> Files.isHidden(Paths.get(s));
 		Predicate<? super String> action2 = s -> s.isEmpty();
+		java.util.function.Predicate<? super String> action3 = s -> s.isEmpty();
 		lines1.anyMatch(action1);
 		lines1.anyMatch(action2);
 		lines1.anyMatch(s -> Files.isHidden(Paths.get(s)));
 		lines1.anyMatch(s -> s.isEmpty());
 		lines2.anyMatch(action2);
-		lines3.anyMatch(action2);
+		lines3.anyMatch(action3);
 		lines1.allMatch(action1);
 		lines1.allMatch(action2);
 		lines1.allMatch(s -> Files.isHidden(Paths.get(s)));
 		lines1.allMatch(s -> s.isEmpty());
 		lines2.allMatch(action2);
-		lines3.allMatch(action2);
+		lines3.allMatch(action3);
 		lines1.noneMatch(action1);
 		lines1.noneMatch(action2);
 		lines1.noneMatch(s -> Files.isHidden(Paths.get(s)));
 		lines1.noneMatch(s -> s.isEmpty());
 		lines2.noneMatch(action2);
-		lines3.noneMatch(action2);
+		lines3.noneMatch(action3);
 		lines1.filter(action1);
 		lines1.filter(action2);
 		lines1.filter(s -> Files.isHidden(Paths.get(s)));
 		lines1.filter(s -> s.isEmpty());
 		lines2.filter(action2);
-		lines3.filter(action2);
+		lines3.filter(action3);
 	}
-	private static void tests3(IOStream<String> lines1, Stream2<String> lines2, Stream<String> lines3) {
+	private static void tests3(IOStream<String> lines1, Stream2<String> lines2, java.util.stream.Stream<String> lines3) {
 		Function<String, Stream<Integer>> mapping1 = s2 -> s2.codePoints().boxed();
 		IOFunction<String, Stream<String>> mapping2 = s3 -> Files.lines(Paths.get(s3));
+		java.util.function.Function<String, java.util.stream.Stream<Integer>> mapping3 = s2 -> s2.codePoints().boxed();
 		IOStream<Integer> result1 = lines1.flatMap(mapping1);
 		IOStream<String> result2 = lines1.flatMap(mapping2);
 		IOStream<Integer> result3 = lines1.flatMap(s4 -> s4.codePoints().boxed());
 		IOStream<String> result4 = lines1.flatMap(s1 -> Files.lines(Paths.get(s1)));
 		Stream2<Integer> result5 = lines2.flatMap(mapping1);
-		Stream<Integer> result6 = lines3.flatMap(mapping1);
+		java.util.stream.Stream<Integer> result6 = lines3.flatMap(mapping3);
 		IOStream<Stream<Integer>> map = lines1.map(mapping1);
 		IOStream<Stream<String>> map2 = lines1.map(mapping2);
 		IOStream<Stream<Integer>> map3 = lines1.map(s -> s.codePoints().boxed());
 		IOStream<Stream<String>> map4 = lines1.map(s -> Files.lines(Paths.get(s)));
 		Stream2<Stream<Integer>> map5 = lines2.map(mapping1);
-		Stream<Stream<Integer>> map6 = lines3.map(mapping1);
+		java.util.stream.Stream<java.util.stream.Stream<Integer>> map6 = lines3.map(mapping3);
 		eat(result1, result2, result3, result4);
 		eat(map, map2, map3, map4);
 		eat(result5, result6, map5, map6);
 	}
-	private static void tests4(IOStream<String> lines1, Stream2<String> lines2, Stream<String> lines3)
+	private static void tests4(IOStream<String> lines1, Stream2<String> lines2, java.util.stream.Stream<String> lines3)
 	  throws IOException {
 		BinaryOperator<String> mapping1 = (l, r) -> l.isEmpty() ? r : l;
 		IOBinaryOperator<String> mapping2 = (l, r) -> Files.isHidden(Paths.get(l)) ? r : l;
+		java.util.function.BinaryOperator<String> mapping3 = (l, r) -> l.isEmpty() ? r : l;
 		String resultA1 = lines1.reduce("", mapping1);
 		String resultA2 = lines1.reduce("", mapping2);
 		String resultA3 = lines1.reduce("", (l, r) -> l.isEmpty() ? r : l);
@@ -133,7 +136,7 @@ public class Lambda {
 		Optional<String> resultB3 = lines1.reduce((l, r) -> l.isEmpty() ? r : l);
 		Optional<String> resultB4 = lines1.reduce((l, r) -> Files.isHidden(Paths.get(l)) ? r : l);
 		Optional<String> resultB5 = lines2.reduce(mapping1);
-		Optional<String> resultB6 = lines3.reduce(mapping1);
+		Optional<String> resultB6 = lines3.reduce(mapping3);
 		eat(resultA1, resultA2, resultA3, resultA4);
 		eat(resultB1, resultB2, resultB3, resultB4);
 		eat(resultA5, resultA6, resultB5, resultB6);
@@ -148,11 +151,11 @@ public class Lambda {
 		TreeMap<Character, String> multiMap3 = lines1.toMultiMap(s -> key5(s), toMap, toList);
 		TreeMap<Character, String> multiMap4 = lines1.toMultiMap(s -> s.charAt(0), toMap, toList);
 		TreeMap<Character, String> multiMap5 = lines2.toMultiMap(toKey2, toMap, toList);
-		Map<Character, ArrayList<String>> map1 = lines1.toMap(toKey1);
-		Map<Character, ArrayList<String>> map2 = lines1.toMap(toKey2);
-		Map<Character, ArrayList<String>> map3 = lines1.toMap(s -> key5(s));
-		Map<Character, ArrayList<String>> map4 = lines1.toMap(s -> s.charAt(0));
-		Map<Character, ArrayList<String>> map5 = lines2.toMap(toKey2);
+		HashMap<Character, ArrayList<String>> map1 = lines1.toMap(toKey1);
+		HashMap<Character, ArrayList<String>> map2 = lines1.toMap(toKey2);
+		HashMap<Character, ArrayList<String>> map3 = lines1.toMap(s -> key5(s));
+		HashMap<Character, ArrayList<String>> map4 = lines1.toMap(s -> s.charAt(0));
+		HashMap<Character, ArrayList<String>> map5 = lines2.toMap(toKey2);
 		eat(multiMap1, multiMap2, multiMap3, multiMap4, multiMap5);
 		eat(map1, map2, map3, map4, map5);
 	}

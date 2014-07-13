@@ -17,16 +17,4 @@ public interface TemplateRechecked {
 			}
 		};
 	}
-
-	static String[] markers() {
-		return new String[] {
-		/**/"MARKER_UNCHECKED_TYPE", "IntBinaryOperator                    ",
-		/**/"MARKER_RECHECKED_TYPE", "IntBinaryOperatorish<E>              ",
-		/**/"MARK_RETURNS", "return it.                           ",
-		/**/"MARK_METHOD_NAME     ", "applyAsInt                           ",
-		/**/"MARK_TYPE_VARIABLES  ", "static <E extends Exception>         ",
-		/**/"MARK_CALL_VARIABLES  ", "(int t1, int t2)                     ",
-		/**/"MARK_CALL_ARGUMENTS  ", "(t1, t2)                             ",
-		};
-	}
 }

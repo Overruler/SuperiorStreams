@@ -991,7 +991,7 @@ public interface Conversions {
 		};
 	}
 
-	public static <T, E extends Exception> ToIntFunction<T> unchecked(Class<E> classOfE, EXToIntFunction<T, E> it) {
+	public static <T, E extends Exception> ToIntFunction<T> unchecked(Class<E> classOfE, ExToIntFunction<T, E> it) {
 		Objects.requireNonNull(classOfE);
 		Objects.requireNonNull(it);
 		return (T t1) -> {
@@ -1003,7 +1003,7 @@ public interface Conversions {
 		};
 	}
 
-	public static <T, E extends Exception> EXToIntFunction<T, E> rechecked(Class<E> classOfE, ToIntFunction<T> it) {
+	public static <T, E extends Exception> ExToIntFunction<T, E> rechecked(Class<E> classOfE, ToIntFunction<T> it) {
 		Objects.requireNonNull(classOfE);
 		Objects.requireNonNull(it);
 		return (T t1) -> {

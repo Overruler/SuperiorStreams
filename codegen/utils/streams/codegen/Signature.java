@@ -17,7 +17,6 @@ class Signature {
 	public final String method;
 	public final List<BaseType> types;
 	public final BaseType returns;
-
 	public final String methodArgumentsText;
 	public final String methodReturnText;
 	public final String typeArgumentsUnchecked;
@@ -33,7 +32,6 @@ class Signature {
 		this.returns = returns;
 		this.checkedVariant = checkedVariant;
 		this.uncheckVariant = uncheckVariant;
-
 		methodArgumentsText = methodArgumentsText();
 		methodReturnText = returns.asReturn();
 		typeArgumentsUnchecked = get00(true, toArguments());
@@ -42,126 +40,107 @@ class Signature {
 		classNameGenericUnchecked = get(uncheckVariant, false, toVariables());
 		classTypeGenericRechecked = get(checkedVariant, true, toArguments());
 		classTypeGenericUnchecked = get(uncheckVariant, false, toArguments());
-
 	}
-
 	private String get(String variant, boolean exceptionStatus, Function<? super BaseType, ? extends String> variables) {
 		return variant +
 		cleanedTypes("<" + asTypeArguments(exceptionStatus).stream().map(variables).collect(joining(", ")) + "> ");
 	}
-
 	private String get00(boolean exceptionStatus, Function<? super BaseType, ? extends String> arguments) {
-		return cleanedTypes("<" + asTypeArguments(exceptionStatus).stream().map(arguments).collect(joining(", ")) + "> ");
+		return cleanedTypes("<" +
+		asTypeArguments(exceptionStatus).stream().map(arguments).collect(joining(", ")) +
+		"> ");
 	}
-
 	private static Function<? super BaseType, ? extends String> toArguments() {
 		return base -> base.argumentVariant;
 	}
-
 	private static Function<? super BaseType, ? extends String> toVariables() {
 		return base -> base.variableVariant;
 	}
-
 	private String methodArgumentsText() {
 		return "(" + asCallVariables() + ")";
 	}
-
 	private List<BaseType> asTypeVariables(boolean includeException, BaseType returnType) {
 		Stream<BaseType> stream = gatherTypes(includeException, returnType);
 		Stream<BaseType> filter = stream.filter((BaseType current) -> BaseType.isPrimitive(current) == false);
 		return filter.collect(toList());
 	}
-
 	private List<BaseType> asTypeArguments(boolean includeException) {
 		Stream<BaseType> stream = gatherTypes(includeException, returns);
 		Stream<BaseType> filter = stream.filter((BaseType current) -> BaseType.isPrimitive(current) == false);
 		return filter.collect(toList());
 	}
-
 	private List<BaseType> asTypeArguments(boolean includeException, BaseType returnType) {
 		Stream<BaseType> stream = gatherTypes(includeException, returnType);
 		Stream<BaseType> filter = stream.filter((BaseType current) -> BaseType.isPrimitive(current) == false);
 		return filter.collect(toList());
 	}
-
 	private Stream<BaseType> gatherTypes(boolean includeException, BaseType returnType) {
 		Stream<BaseType> stream = concat(types.stream(), of(returnType)).distinct();
 		return includeException ? concat(stream, of(E)) : stream;
 	}
-
 	private String asCallVariables() {
 		int[] indexer = { 1 };
-		return types.stream().sequential().map((BaseType type) -> type.asCallVariable(indexer[0]++)).collect(joining(", "));
+		return types.stream().sequential().map((BaseType type) -> type.asCallVariable(indexer[0]++)).collect(
+			joining(", "));
 	}
-
 	private String asCallVariables(String... names) {
 		IntFunction<String> mapper = index -> types.get(index).asCallVariable(names[index]);
 		return IntStream.range(0, types.size()).mapToObj(mapper).collect(joining(", "));
 	}
-
 	private String asCallArguments() {
 		return IntStream.range(1, types.size() + 1).mapToObj(index -> "t" + index).collect(joining(", "));
 	}
-
 	private String asCallArguments(String... names) {
 		return Stream.of(names).limit(types.size()).collect(joining(", "));
 	}
-
 	@Override
 	public String toString() {
 		return recheckDebug() + "\n" + uncheckDebug();
 	}
-
 	private String recheckDebug() {
 		return debugCheck(true);
 	}
-
 	private String uncheckDebug() {
 		return debugCheck(false);
 	}
-
 	private String debugCheck(boolean includeException) {
 		String string =
-		  "class " +
-		  getClassNameGeneric(includeException) +
-		  "{ " +
-		  getTypeArguments(includeException) +
-		  getReturnType() +
-		  " " +
-		  method +
-		  getMethodArguments() +
-		  getReturnStatementBlock() +
-		  "}";
+			"class " +
+			getClassNameGeneric(includeException) +
+			"{ " +
+			getTypeArguments(includeException) +
+			getReturnType() +
+			" " +
+			method +
+			getMethodArguments() +
+			getReturnStatementBlock() +
+			"}";
 		return string;
 	}
-
 	private String getClassNameGeneric(boolean includeException) {
 		return (includeException ? checkedVariant : uncheckVariant) + getTypeVariables(includeException);
 	}
-
 	String getArgumentType(BaseType replacement, BaseType baseType) {
 		return reinterpret(baseType, replacement).argumentVariant;
 	}
-
 	String getArgumentTypes(boolean includeException, BaseType replacement, BaseType... baseTypes) {
 		Stream<BaseType> stream1 = of(baseTypes).map(type -> reinterpret(type, replacement));
 		Stream<BaseType> stream = includeException ? concat(stream1, of(E)) : stream1;
-		Predicate<BaseType> keepObjects = (BaseType current) -> current != null && BaseType.isPrimitive(current) == false;
+		Predicate<BaseType> keepObjects =
+			(BaseType current) -> current != null && BaseType.isPrimitive(current) == false;
 		return cleanedTypes("<" + stream.filter(keepObjects).map(toArguments()).collect(joining(", ")) + "> ");
 	}
-
 	String getVariableTypes(boolean includeException, BaseType replacement, BaseType... baseTypes) {
 		Stream<BaseType> stream1 = of(baseTypes).map(type -> reinterpret(type, replacement));
 		Stream<BaseType> stream = includeException ? concat(stream1, of(E)) : stream1;
 		Predicate<BaseType> keepObjects = (BaseType current) -> BaseType.isPrimitive(current) == false;
 		return cleanedTypes("<" + stream.filter(keepObjects).map(toVariables()).collect(joining(", ")) + "> ");
 	}
-
 	private BaseType reinterpret(BaseType type, BaseType replacement) {
 		BaseType result = getTypeAt(type);
 		if(result == null) {
-	    return null;
-    }
+			return null;
+		}
 		if(primitives.contains(result)) {
 			return result;
 		}
@@ -170,7 +149,6 @@ class Signature {
 		}
 		return type;
 	}
-
 	private BaseType getTypeAt(BaseType type) {
 		switch(type) {/*Q*/
 			         case extends_R: case super_R: case R: return   returns;
@@ -182,61 +160,49 @@ class Signature {
 			case extends_TAIL: case super_TAIL: case TAIL: return safeGet(types.size() - 1);
 			                                       case W: return safeGet(4);
 			                                      default: return safeGet(0);
-		} /*E*/
+		}/*E*/
 	}
-
 	private BaseType safeGet(int index) {
 		return index < types.size() ? types.get(index) : null;
 	}
-
 	String getTypeVariables(boolean includeException) {
 		return cleanedTypes("<" +
 		asTypeArguments(includeException).stream().map(toVariables()).collect(joining(", ")) +
 		"> ");
 	}
-
 	String getTypeVariables(boolean includeException, BaseType alternateReturn) {
 		return cleanedTypes("<" +
 		asTypeVariables(includeException, alternateReturn).stream().map(toVariables()).collect(joining(", ")) +
 		"> ");
 	}
-
 	String getTypeArguments(boolean includeException) {
 		return cleanedTypes("<" +
 		asTypeArguments(includeException).stream().map(toArguments()).collect(joining(", ")) +
 		"> ");
 	}
-
 	String getTypeArguments(boolean includeException, BaseType alternateReturn) {
 		return cleanedTypes("<" +
 		asTypeArguments(includeException, alternateReturn).stream().map(toArguments()).collect(joining(", ")) +
 		"> ");
 	}
-
 	String getReturnType() {
 		return returns.asReturn();
 	}
-
 	String getMethodVariables() {
 		return "(" + asCallVariables() + ")";
 	}
-
 	String getMethodVariables(String... names) {
 		return "(" + asCallVariables(names) + ")";
 	}
-
 	String getMethodArguments() {
 		return "(" + asCallArguments() + ")";
 	}
-
 	String getMethodArguments(String... names) {
 		return "(" + asCallArguments(names) + ")";
 	}
-
 	String getReturnStatementBlock() {
 		return "{" + returns.asDefaultReturn() + "}";
 	}
-
 	private static String cleanedTypes(String string) {
 		return string.replace("<> ", "").replace("<>", "");
 	}

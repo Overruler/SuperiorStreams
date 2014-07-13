@@ -33,46 +33,33 @@ import static utils.streams.codegen.BaseType.*;
 import static utils.streams.codegen.Conversions2TemplateContainer.*;
 
 interface Conversions2TemplateContainer {
-
-	static void foo() {
-		System.out.println();
-		/*Q*/
-		System  .  out  .  println  (  )  ;
-		//e/
-		System.out.println();
-		//*Q*/
-		System.out.println();
-		///e/
-		System.out.println();
-	}
 	static final String STATIC_RECHECKED_METHOD =
-	(""
-	/**/+ "	public static <E extends Exception> IntBinaryOperatorish<E> rechecked(Class<E> classOfE, IntBinaryOperator it) {\n"
-	/**/+ "		Objects.requireNonNull(classOfE);\n"
-	/**/+ "		Objects.requireNonNull(it);\n"
-	/**/+ "		return (int t1, int t2) -> {\n"
-	/**/+ "			try {\n"
-	/**/+ "				return it.applyAsInt(t1, t2);\n"
-	/**/+ "			} catch(RuntimeException e) {\n"
-	/**/+ "				throw WrapperException.show(e, classOfE);\n"
-	/**/+ "			}\n"
-	/**/+ "		};\n"
-	/**/+ "	}\n"
-	/**/+ "").replace("IntBinaryOperatorish<E>", "Retype<E>").replace("IntBinaryOperator", "Untype");
-
+		(""
+		/**/+ "	public static <E extends Exception> IntBinaryOperatorish<E> rechecked(Class<E> classOfE, IntBinaryOperator it) {\n"
+		/**/+ "		Objects.requireNonNull(classOfE);\n"
+		/**/+ "		Objects.requireNonNull(it);\n"
+		/**/+ "		return (int t1, int t2) -> {\n"
+		/**/+ "			try {\n"
+		/**/+ "				return it.applyAsInt(t1, t2);\n"
+		/**/+ "			} catch(RuntimeException e) {\n"
+		/**/+ "				throw WrapperException.show(e, classOfE);\n"
+		/**/+ "			}\n"
+		/**/+ "		};\n"
+		/**/+ "	}\n"
+		/**/+ "").replace("IntBinaryOperatorish<E>", "Retype<E>").replace("IntBinaryOperator", "Untype");
 	static final String STATIC_UNCHECKED_METHOD =
-	""
-	/**/+ "	public static <E extends Exception> IntBinaryOperator unchecked(Class<E> classOfE, IntBinaryOperatorish<E> it) {\n"
-	/**/+ "		Objects.requireNonNull(classOfE);\n"
-	/**/+ "		Objects.requireNonNull(it);\n"
-	/**/+ "		return (int t1, int t2) -> {\n"
-	/**/+ "			try {\n"
-	/**/+ "				return it.applyAsInt(t1, t2);\n"
-	/**/+ "			} catch(Exception e) {\n"
-	/**/+ "				throw WrapperException.hide(e, classOfE);\n"
-	/**/+ "			}\n"
-	/**/+ "		};\n"
-	/**/+ "	}\n";
+		""
+		/**/+ "	public static <E extends Exception> IntBinaryOperator unchecked(Class<E> classOfE, IntBinaryOperatorish<E> it) {\n"
+		/**/+ "		Objects.requireNonNull(classOfE);\n"
+		/**/+ "		Objects.requireNonNull(it);\n"
+		/**/+ "		return (int t1, int t2) -> {\n"
+		/**/+ "			try {\n"
+		/**/+ "				return it.applyAsInt(t1, t2);\n"
+		/**/+ "			} catch(Exception e) {\n"
+		/**/+ "				throw WrapperException.hide(e, classOfE);\n"
+		/**/+ "			}\n"
+		/**/+ "		};\n"
+		/**/+ "	}\n";
 
 	public static <E extends Exception> IntBinaryOperator unchecked(Class<E> classOfE, ExIntBinaryOperator<E> it) {
 		Objects.requireNonNull(classOfE);
@@ -85,7 +72,6 @@ interface Conversions2TemplateContainer {
 			}
 		};
 	}
-
 	public static <E extends Exception> ExIntBinaryOperator<E> rechecked(Class<E> classOfE, IntBinaryOperator it) {
 		Objects.requireNonNull(classOfE);
 		Objects.requireNonNull(it);
@@ -98,8 +84,7 @@ interface Conversions2TemplateContainer {
 		};
 	}
 
-	static final String BINARY_IO_OPERATOR =
-	""
+	static final String BINARY_IO_OPERATOR = ""
 	/**/+ "package utils.streams.functions;\n"
 	/**/+ "\n"
 	/**/+ "import java.io.IOException;\n"
@@ -112,32 +97,30 @@ interface Conversions2TemplateContainer {
 	static final String EXCEPTION_MARKER = "E extends Exception";
 	static final String EXCEPTION_REPLACEMENT = "IOException";
 	static final String BINARY_OPERATOR =
-	""
-	/**/+ "package utils.streams.functions;\n"
-	/**/+ "\n"
-	/**/+ "import java.util.Comparator;\n"
-	/**/+ "import java.util.Objects;\n"
-	/**/+ "import java.util.function.IntBinaryOperator;\n"
-	/**/+ "import static utils.streams.functions.Conversions.*;\n"
-	/**/+ "\n"
-	/**/+ "@FunctionalInterface\n"
-	/**/+ "public interface IntBinaryOperatorish<E extends Exception> {\n"
-	/**/+ "\n"
-	/**/+ "	int applyAsInt(int t1, int t2) throws E;\n"
-	/**/+ "/*MORE*/\n"
-	/**/+ "	static <E extends Exception> IntBinaryOperatorish<E> recheck(IntBinaryOperator unchecked, Class<E> classOfE) {\n"
-	/**/+ "		return rechecked(classOfE, unchecked);\n"
-	/**/+ "	}\n"
-	/**/+ "\n"
-	/**/+ "	default IntBinaryOperator uncheck(Class<E> classOfE) {\n"
-	/**/+ "		return unchecked(classOfE, this);\n"
-	/**/+ "	}\n"
-	/**/+ "}\n"
-	/**/+ "\n"
-	/**/+ "";
-
+		""
+		/**/+ "package utils.streams.functions;\n"
+		/**/+ "\n"
+		/**/+ "import java.util.Comparator;\n"
+		/**/+ "import java.util.Objects;\n"
+		/**/+ "import java.util.function.IntBinaryOperator;\n"
+		/**/+ "import static utils.streams.functions.Conversions.*;\n"
+		/**/+ "\n"
+		/**/+ "@FunctionalInterface\n"
+		/**/+ "public interface IntBinaryOperatorish<E extends Exception> {\n"
+		/**/+ "\n"
+		/**/+ "	int applyAsInt(int t1, int t2) throws E;\n"
+		/**/+ "/*MORE*/\n"
+		/**/+ "	static <E extends Exception> IntBinaryOperatorish<E> recheck(IntBinaryOperator unchecked, Class<E> classOfE) {\n"
+		/**/+ "		return rechecked(classOfE, unchecked);\n"
+		/**/+ "	}\n"
+		/**/+ "\n"
+		/**/+ "	default IntBinaryOperator uncheck(Class<E> classOfE) {\n"
+		/**/+ "		return unchecked(classOfE, this);\n"
+		/**/+ "	}\n"
+		/**/+ "}\n"
+		/**/+ "\n"
+		/**/+ "";
 	static final String MARKER_MORE = "/*MORE*/";
-
 	static final String TO_DOUBLE_FUNCTION ="\n" + /*Q*/
 	"	default <R> IntFunctionish<R, E> andThen(DoubleFunctionish<? extends R, E> after) {\n" +
 	"		Objects.requireNonNull(after);\n" +
@@ -243,7 +226,6 @@ interface Conversions2TemplateContainer {
 	; /*E*/
 }
 public class ConversionsBaseClassGenerator {
-
 	static enum Replacer {//*Q*/
 		BINARY_OPERATOR_CUSTOM      (BINARY_OPERATOR_EXTRA,                        s -> BINARY_OPERATOR_MARKER),
 		TYPE_SUPER_T_SUPER_U_USED   ("Retype<SUPER_T, SUPER_U, E> ",               s -> s.checkedVariant + s.getArgumentTypes(true, null, super_T, super_U)),
@@ -326,9 +308,9 @@ public class ConversionsBaseClassGenerator {
 	private static final String START_BINARY_FILENAME = startingBinaryClass().getSimpleName() + EXT_CLASS;
 	private static final String SOURCE_CODE_CLASS_FILENAME = conversionsClassData() + EXT_JAVA;
 	private static final Collector<CharSequence, ?, String> CONVERSIONS_JOINER = joining(
-	  LINEFEED,
-	  CONVERSIONS_PROLOGUE,
-	  CONVERSIONS_EPILOGUE);
+		LINEFEED,
+		CONVERSIONS_PROLOGUE,
+		CONVERSIONS_EPILOGUE);
 	private static final boolean IS_OLD = true;
 
 	public static void main(String[] args) {
@@ -341,10 +323,10 @@ public class ConversionsBaseClassGenerator {
 		}
 	}
 	private static String generateOtherClassName(String name) {
-		return IS_OLD ? (name + "ish").replace("eish", "ish") : "Ex"+name;
+		return IS_OLD ? (name + "ish").replace("eish", "ish") : "Ex" + name;
 	}
 	private static void generateResults(List<List<BaseType>> strings, Path folder, UnaryOperator<String> naming)
-	  throws IOException {
+		throws IOException {
 		if(DEBUG) {
 			debugMaybe(strings, naming);
 		}
@@ -376,32 +358,37 @@ public class ConversionsBaseClassGenerator {
 		list = replaceAllOfOne(folder, list, "", s -> s.equals(generateOtherClassName("UnaryOperator")));
 		list = replaceAllOfOne(folder, list, FUNCTION_EXTRA, s -> s.equals(generateOtherClassName("Function")));
 		list = replaceAllOfOne(folder, list, FUNCTION_EXTRA, s -> s.contains("UnaryOperator"));
-		list = replaceAllOfOne(folder, list, BINARY_OPERATOR_EXTRA, s -> s.equals(generateOtherClassName("BinaryOperator")));
+		list =
+			replaceAllOfOne(
+				folder,
+				list,
+				BINARY_OPERATOR_EXTRA,
+				s -> s.equals(generateOtherClassName("BinaryOperator")));
 		list = replaceAllOfOne(folder, list, PREDICATE_EXTRA, s -> s.contains("Predicat"));
 		System.out.println("default generated left: " + list);
 		list = replaceAllOfOne(folder, list, BIFUNCTION_EXTRA, (s) -> allButSome(s));
 		Set<String> list2 = list.stream().map(s -> s.checkedVariant).collect(toSet());
 		Set<String> asList =
-		  new HashSet<>(asList(
-		    generateOtherClassName("DoubleBinaryOperator"),
-		    generateOtherClassName("DoubleSupplier"      ),
-		    generateOtherClassName("DoubleToIntFunction" ),
-		    generateOtherClassName("DoubleToLongFunction"),
-		    generateOtherClassName("IntBinaryOperator"   ),
-		    generateOtherClassName("IntSupplier"         ),
-		    generateOtherClassName("IntToDoubleFunction" ),
-		    generateOtherClassName("IntToLongFunction"   ),
-		    generateOtherClassName("LongBinaryOperator"  ),
-		    generateOtherClassName("LongSupplier"        ),
-		    generateOtherClassName("LongToDoubleFunction"),
-		    generateOtherClassName("LongToIntFunction"   ),
-		    generateOtherClassName("Supplier"            ),
-		    generateOtherClassName("ToDoubleBiFunction"  ),
-		    generateOtherClassName("ToDoubleFunction"    ),
-		    generateOtherClassName("ToIntBiFunction"     ),
-		    generateOtherClassName("ToIntFunction"       ),
-		    generateOtherClassName("ToLongBiFunction"    ),
-		    generateOtherClassName("ToLongFunction"      )));
+			new HashSet<>(asList(
+				generateOtherClassName("DoubleBinaryOperator"),
+				generateOtherClassName("DoubleSupplier"),
+				generateOtherClassName("DoubleToIntFunction"),
+				generateOtherClassName("DoubleToLongFunction"),
+				generateOtherClassName("IntBinaryOperator"),
+				generateOtherClassName("IntSupplier"),
+				generateOtherClassName("IntToDoubleFunction"),
+				generateOtherClassName("IntToLongFunction"),
+				generateOtherClassName("LongBinaryOperator"),
+				generateOtherClassName("LongSupplier"),
+				generateOtherClassName("LongToDoubleFunction"),
+				generateOtherClassName("LongToIntFunction"),
+				generateOtherClassName("Supplier"),
+				generateOtherClassName("ToDoubleBiFunction"),
+				generateOtherClassName("ToDoubleFunction"),
+				generateOtherClassName("ToIntBiFunction"),
+				generateOtherClassName("ToIntFunction"),
+				generateOtherClassName("ToLongBiFunction"),
+				generateOtherClassName("ToLongFunction")));
 		if(asList.equals(list2) == false) {
 			throw new IllegalStateException("list2 has " +
 			removeAll(asList, list2) +
@@ -420,16 +407,17 @@ public class ConversionsBaseClassGenerator {
 		return s.contains("Operator") == false && s.contains("Supplier") == false && s.contains("To") == false;
 	}
 	private static List<Signature> replaceAllOfOne(
-	  Path folder,
-	  List<Signature> list,
-	  String extraMethods,
-	  Predicate<String> tester) throws IOException {
-		Map<Boolean, List<Signature>> partition = list.stream().collect(partitioningBy(s -> tester.test(s.checkedVariant)));
+		Path folder,
+		List<Signature> list,
+		String extraMethods,
+		Predicate<String> tester) throws IOException {
+		Map<Boolean, List<Signature>> partition =
+			list.stream().collect(partitioningBy(s -> tester.test(s.checkedVariant)));
 		replaceInTemplate(folder, extraMethods, partition.get(true));
 		return partition.get(false);
 	}
 	private static void replaceInTemplate(Path folder, String extraMethods, List<Signature> binaryOperators)
-	  throws IOException {
+		throws IOException {
 		String template = BINARY_OPERATOR.replace(MARKER_MORE, extraMethods);
 		for(Signature signature : binaryOperators) {
 			String body = applyOne(template, signature);
