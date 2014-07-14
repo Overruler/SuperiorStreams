@@ -2,7 +2,7 @@ package utils.streams.functions;
 
 import java.util.Comparator;
 import java.util.Objects;
-import static utils.streams.functions.Conversions.*;
+import utils.streams.WrapperException;
 
 @FunctionalInterface
 public interface ExBinaryOperator<T, E extends Exception> extends ExBiFunction<T, T, T, E> {
@@ -17,9 +17,24 @@ public interface ExBinaryOperator<T, E extends Exception> extends ExBiFunction<T
 	static <T, E extends Exception> ExBinaryOperator<T, E> recheck(
 		java.util.function.BinaryOperator<T> unchecked,
 		Class<E> classOfE) {
-		return rechecked(classOfE, unchecked);
+		Objects.requireNonNull(classOfE);
+		Objects.requireNonNull(unchecked);
+		return (T t, T u) -> {
+			try {
+				return unchecked.apply(t, u);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 	default @Override java.util.function.BinaryOperator<T> uncheck(Class<E> classOfE) {
-		return unchecked(classOfE, this);
+		Objects.requireNonNull(classOfE);
+		return (T t, T u) -> {
+			try {
+				return apply(t, u);
+			} catch(Exception e) {
+				throw WrapperException.hide(e, classOfE);
+			}
+		};
 	}
 }

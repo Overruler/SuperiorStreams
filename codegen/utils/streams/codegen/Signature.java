@@ -152,6 +152,7 @@ class Signature {
 	private BaseType getTypeAt(BaseType type) {
 		switch(type) {/*Q*/
 			         case extends_R: case super_R: case R: return   returns;
+			case extends_RTRN: case super_RTRN: case RTRN: return   returns;
 			         case extends_T: case super_T: case T: return safeGet(0);
 			         case extends_V: case super_V: case V: return safeGet(3);
 			         case extends_U: case super_U: case U: return safeGet(1);
@@ -204,6 +205,6 @@ class Signature {
 		return "{" + returns.asDefaultReturn() + "}";
 	}
 	private static String cleanedTypes(String string) {
-		return string.replace("<> ", "").replace("<>", "");
+		return string.replace("<>", "");
 	}
 }

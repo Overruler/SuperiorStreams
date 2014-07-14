@@ -1,7 +1,7 @@
 package utils.streams.functions;
 
 import java.util.Objects;
-import static utils.streams.functions.Conversions.*;
+import utils.streams.WrapperException;
 
 @FunctionalInterface
 public interface ExLongPredicate<E extends Exception> {
@@ -20,9 +20,24 @@ public interface ExLongPredicate<E extends Exception> {
 	static <E extends Exception> ExLongPredicate<E> recheck(
 		java.util.function.LongPredicate unchecked,
 		Class<E> classOfE) {
-		return rechecked(classOfE, unchecked);
+		Objects.requireNonNull(classOfE);
+		Objects.requireNonNull(unchecked);
+		return (long t) -> {
+			try {
+				return unchecked.test(t);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 	default java.util.function.LongPredicate uncheck(Class<E> classOfE) {
-		return unchecked(classOfE, this);
+		Objects.requireNonNull(classOfE);
+		return (long t) -> {
+			try {
+				return test(t);
+			} catch(Exception e) {
+				throw WrapperException.hide(e, classOfE);
+			}
+		};
 	}
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 import static java.util.Arrays.*;
 import static java.util.stream.Collectors.*;
 
@@ -16,6 +15,7 @@ enum BaseType implements Supplier<String> {
 	VOID("void"),
 	HEAD("!head!"),
 	TAIL("!tail!"),
+	RTRN("!return!"),
 	R("R"),
 	S("S"),
 	T("T"),
@@ -31,17 +31,28 @@ enum BaseType implements Supplier<String> {
 	extends_V("? extends V"),
 	extends_HEAD("? extends !head!"),
 	extends_TAIL("? extends !tail!"),
+	extends_RTRN("? extends !return!"),
 	super_R("? super R"),
 	super_S("? super S"),
 	super_T("? super T"),
 	super_U("? super U"),
 	super_V("? super V"),
 	super_HEAD("? super !head!"),
-	super_TAIL("? super !tail!");
+	super_TAIL("? super !tail!"),
+	super_RTRN("? super !return!");
 	String variableVariant;
 	String argumentVariant;
 	static EnumSet<BaseType> primitives = EnumSet.of(i, l, d, b, VOID);
-	static EnumSet<BaseType> metatypes = EnumSet.of(HEAD, TAIL, extends_HEAD, extends_TAIL, super_HEAD, super_TAIL);
+	static EnumSet<BaseType> metatypes = EnumSet.of(
+		HEAD,
+		TAIL,
+		RTRN,
+		extends_HEAD,
+		extends_TAIL,
+		extends_RTRN,
+		super_HEAD,
+		super_TAIL,
+		super_RTRN);
 	static EnumSet<BaseType> objects = retainingAll(EnumSet.complementOf(primitives), EnumSet.complementOf(metatypes));
 
 	BaseType(String type) {
@@ -61,12 +72,12 @@ enum BaseType implements Supplier<String> {
 	public String get() {
 		return variableVariant;
 	}
-	static Signature unpacked(List<BaseType> t, UnaryOperator<String> ishher) {
+	static Signature unpacked(List<BaseType> t) {
 		ArrayList<BaseType> list = new ArrayList<>(t);
 		BaseType returns = list.remove(list.size() - 1);
 		String uncheck = className(returns, list);
 		String methodName = methodName(returns, list);
-		String checked = ishher.apply(uncheck);
+		String checked = "Ex" + uncheck;
 		return new Signature(methodName, list, returns, checked, uncheck);
 	}
 	static List<List<BaseType>> generated() {

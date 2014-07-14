@@ -1,6 +1,7 @@
 package utils.streams.functions;
 
-import static utils.streams.functions.Conversions.*;
+import java.util.Objects;
+import utils.streams.WrapperException;
 
 @FunctionalInterface
 public interface ExDoubleBinaryOperator<E extends Exception> {
@@ -8,9 +9,24 @@ public interface ExDoubleBinaryOperator<E extends Exception> {
 	static <E extends Exception> ExDoubleBinaryOperator<E> recheck(
 		java.util.function.DoubleBinaryOperator unchecked,
 		Class<E> classOfE) {
-		return rechecked(classOfE, unchecked);
+		Objects.requireNonNull(classOfE);
+		Objects.requireNonNull(unchecked);
+		return (double t, double u) -> {
+			try {
+				return unchecked.applyAsDouble(t, u);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 	default java.util.function.DoubleBinaryOperator uncheck(Class<E> classOfE) {
-		return unchecked(classOfE, this);
+		Objects.requireNonNull(classOfE);
+		return (double t, double u) -> {
+			try {
+				return applyAsDouble(t, u);
+			} catch(Exception e) {
+				throw WrapperException.hide(e, classOfE);
+			}
+		};
 	}
 }

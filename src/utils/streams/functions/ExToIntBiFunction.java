@@ -1,6 +1,7 @@
 package utils.streams.functions;
 
-import static utils.streams.functions.Conversions.*;
+import java.util.Objects;
+import utils.streams.WrapperException;
 
 @FunctionalInterface
 public interface ExToIntBiFunction<T, U, E extends Exception> {
@@ -8,9 +9,24 @@ public interface ExToIntBiFunction<T, U, E extends Exception> {
 	static <T, U, E extends Exception> ExToIntBiFunction<T, U, E> recheck(
 		java.util.function.ToIntBiFunction<T, U> unchecked,
 		Class<E> classOfE) {
-		return rechecked(classOfE, unchecked);
+		Objects.requireNonNull(classOfE);
+		Objects.requireNonNull(unchecked);
+		return (T t, U u) -> {
+			try {
+				return unchecked.applyAsInt(t, u);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 	default java.util.function.ToIntBiFunction<T, U> uncheck(Class<E> classOfE) {
-		return unchecked(classOfE, this);
+		Objects.requireNonNull(classOfE);
+		return (T t, U u) -> {
+			try {
+				return applyAsInt(t, u);
+			} catch(Exception e) {
+				throw WrapperException.hide(e, classOfE);
+			}
+		};
 	}
 }

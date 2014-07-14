@@ -1,7 +1,7 @@
 package utils.streams.functions;
 
 import java.util.Objects;
-import static utils.streams.functions.Conversions.*;
+import utils.streams.WrapperException;
 
 @FunctionalInterface
 public interface ExObjDoubleConsumer<T, E extends Exception> {
@@ -16,9 +16,24 @@ public interface ExObjDoubleConsumer<T, E extends Exception> {
 	static <T, E extends Exception> ExObjDoubleConsumer<T, E> recheck(
 		java.util.function.ObjDoubleConsumer<T> unchecked,
 		Class<E> classOfE) {
-		return rechecked(classOfE, unchecked);
+		Objects.requireNonNull(classOfE);
+		Objects.requireNonNull(unchecked);
+		return (T t, double u) -> {
+			try {
+				unchecked.accept(t, u);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 	default java.util.function.ObjDoubleConsumer<T> uncheck(Class<E> classOfE) {
-		return unchecked(classOfE, this);
+		Objects.requireNonNull(classOfE);
+		return (T t, double u) -> {
+			try {
+				accept(t, u);
+			} catch(Exception e) {
+				throw WrapperException.hide(e, classOfE);
+			}
+		};
 	}
 }

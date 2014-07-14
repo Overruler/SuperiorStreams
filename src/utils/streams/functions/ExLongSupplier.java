@@ -1,6 +1,7 @@
 package utils.streams.functions;
 
-import static utils.streams.functions.Conversions.*;
+import java.util.Objects;
+import utils.streams.WrapperException;
 
 @FunctionalInterface
 public interface ExLongSupplier<E extends Exception> {
@@ -8,9 +9,24 @@ public interface ExLongSupplier<E extends Exception> {
 	static <E extends Exception> ExLongSupplier<E> recheck(
 		java.util.function.LongSupplier unchecked,
 		Class<E> classOfE) {
-		return rechecked(classOfE, unchecked);
+		Objects.requireNonNull(classOfE);
+		Objects.requireNonNull(unchecked);
+		return () -> {
+			try {
+				return unchecked.getAsLong();
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 	default java.util.function.LongSupplier uncheck(Class<E> classOfE) {
-		return unchecked(classOfE, this);
+		Objects.requireNonNull(classOfE);
+		return () -> {
+			try {
+				return getAsLong();
+			} catch(Exception e) {
+				throw WrapperException.hide(e, classOfE);
+			}
+		};
 	}
 }

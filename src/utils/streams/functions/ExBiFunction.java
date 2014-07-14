@@ -1,7 +1,7 @@
 package utils.streams.functions;
 
 import java.util.Objects;
-import static utils.streams.functions.Conversions.*;
+import utils.streams.WrapperException;
 
 @FunctionalInterface
 public interface ExBiFunction<T, U, R, E extends Exception> {
@@ -13,9 +13,24 @@ public interface ExBiFunction<T, U, R, E extends Exception> {
 	static <T, U, R, E extends Exception> ExBiFunction<T, U, R, E> recheck(
 		java.util.function.BiFunction<T, U, R> unchecked,
 		Class<E> classOfE) {
-		return rechecked(classOfE, unchecked);
+		Objects.requireNonNull(classOfE);
+		Objects.requireNonNull(unchecked);
+		return (T t, U u) -> {
+			try {
+				return unchecked.apply(t, u);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 	default java.util.function.BiFunction<T, U, R> uncheck(Class<E> classOfE) {
-		return unchecked(classOfE, this);
+		Objects.requireNonNull(classOfE);
+		return (T t, U u) -> {
+			try {
+				return apply(t, u);
+			} catch(Exception e) {
+				throw WrapperException.hide(e, classOfE);
+			}
+		};
 	}
 }

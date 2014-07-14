@@ -1,7 +1,7 @@
 package utils.streams.functions;
 
 import java.util.Objects;
-import static utils.streams.functions.Conversions.*;
+import utils.streams.WrapperException;
 
 @FunctionalInterface
 public interface ExIntFunction<R, E extends Exception> {
@@ -13,9 +13,24 @@ public interface ExIntFunction<R, E extends Exception> {
 	static <R, E extends Exception> ExIntFunction<R, E> recheck(
 		java.util.function.IntFunction<R> unchecked,
 		Class<E> classOfE) {
-		return rechecked(classOfE, unchecked);
+		Objects.requireNonNull(classOfE);
+		Objects.requireNonNull(unchecked);
+		return (int t) -> {
+			try {
+				return unchecked.apply(t);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 	default java.util.function.IntFunction<R> uncheck(Class<E> classOfE) {
-		return unchecked(classOfE, this);
+		Objects.requireNonNull(classOfE);
+		return (int t) -> {
+			try {
+				return apply(t);
+			} catch(Exception e) {
+				throw WrapperException.hide(e, classOfE);
+			}
+		};
 	}
 }

@@ -1,6 +1,7 @@
 package utils.streams.functions;
 
-import static utils.streams.functions.Conversions.*;
+import java.util.Objects;
+import utils.streams.WrapperException;
 
 @FunctionalInterface
 public interface ExToDoubleBiFunction<T, U, E extends Exception> {
@@ -8,9 +9,24 @@ public interface ExToDoubleBiFunction<T, U, E extends Exception> {
 	static <T, U, E extends Exception> ExToDoubleBiFunction<T, U, E> recheck(
 		java.util.function.ToDoubleBiFunction<T, U> unchecked,
 		Class<E> classOfE) {
-		return rechecked(classOfE, unchecked);
+		Objects.requireNonNull(classOfE);
+		Objects.requireNonNull(unchecked);
+		return (T t, U u) -> {
+			try {
+				return unchecked.applyAsDouble(t, u);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 	default java.util.function.ToDoubleBiFunction<T, U> uncheck(Class<E> classOfE) {
-		return unchecked(classOfE, this);
+		Objects.requireNonNull(classOfE);
+		return (T t, U u) -> {
+			try {
+				return applyAsDouble(t, u);
+			} catch(Exception e) {
+				throw WrapperException.hide(e, classOfE);
+			}
+		};
 	}
 }
