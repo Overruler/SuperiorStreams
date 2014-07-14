@@ -1,28 +1,24 @@
 package utils.streams.functions;
 
 import java.util.Objects;
-import java.util.function.DoubleConsumer;
 import static utils.streams.functions.Conversions.*;
 
 @FunctionalInterface
 public interface ExDoubleConsumer<E extends Exception> {
-
-	void accept(double t1) throws E;
-
+	void accept(double t) throws E;
 	default ExDoubleConsumer<E> andThen(ExDoubleConsumer<E> after) {
 		Objects.requireNonNull(after);
-		return (double t1) -> {
-			accept(t1);
-			after.accept(t1);
+		return (double t) -> {
+			accept(t);
+			after.accept(t);
 		};
 	}
-
-	static <E extends Exception> ExDoubleConsumer<E> recheck(DoubleConsumer unchecked, Class<E> classOfE) {
+	static <E extends Exception> ExDoubleConsumer<E> recheck(
+		java.util.function.DoubleConsumer unchecked,
+		Class<E> classOfE) {
 		return rechecked(classOfE, unchecked);
 	}
-
-	default DoubleConsumer uncheck(Class<E> classOfE) {
+	default java.util.function.DoubleConsumer uncheck(Class<E> classOfE) {
 		return unchecked(classOfE, this);
 	}
 }
-
