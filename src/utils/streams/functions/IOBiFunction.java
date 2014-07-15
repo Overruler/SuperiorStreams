@@ -4,6 +4,12 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.BiFunction
+ * @param <T>
+ * @param <U>
+ * @param <R>
+ */
 @FunctionalInterface
 public interface IOBiFunction<T, U, R> extends ExBiFunction<T, U, R, IOException> {
 	default <V> IOBiFunction<T, U, V> andThen(IOFunction<? super R, ? extends V> after) {

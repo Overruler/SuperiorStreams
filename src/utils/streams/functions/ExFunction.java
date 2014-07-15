@@ -3,8 +3,20 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.Function
+ * @param <T>
+ * @param <R>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExFunction<T, R, E extends Exception> {
+	/**
+	 * @param t
+	 * @return R
+	 * @throws E
+	 * @see java.util.function.Function#apply
+	 */
 	R apply(T t) throws E;
 	default <V> ExFunction<V, R, E> compose(ExFunction<? super V, ? extends T, E> before) {
 		Objects.requireNonNull(before);

@@ -3,8 +3,22 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.BiFunction
+ * @param <T>
+ * @param <U>
+ * @param <R>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExBiFunction<T, U, R, E extends Exception> {
+	/**
+	 * @param t
+	 * @param u
+	 * @return R
+	 * @throws E
+	 * @see java.util.function.BiFunction#apply
+	 */
 	R apply(T t, U u) throws E;
 	default <V> ExBiFunction<T, U, V, E> andThen(ExFunction<? super R, ? extends V, E> after) {
 		Objects.requireNonNull(after);

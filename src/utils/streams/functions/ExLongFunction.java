@@ -3,8 +3,19 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongFunction
+ * @param <R>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExLongFunction<R, E extends Exception> {
+	/**
+	 * @param t
+	 * @return R
+	 * @throws E
+	 * @see java.util.function.LongFunction#apply
+	 */
 	R apply(long t) throws E;
 	default <V> ExLongFunction<V, E> andThen(ExFunction<? super R, ? extends V, E> after) {
 		Objects.requireNonNull(after);

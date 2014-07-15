@@ -21,31 +21,45 @@ import static utils.streams.codegen.BaseType.*;
 
 public class ConversionsBaseClassGenerator {
 	static enum Replacer {//*Q*/
+		CLASS_JAVADOC_COMMENT1      ("/** class-ex */",                                        s -> s.javadocForClass(true)),
+		CLASS_JAVADOC_COMMENT2      ("/** class */",                                           s -> s.javadocForClass(false)),
+		METHOD_JAVADOC_COMMENT      ("/** method-ex */",                                       s -> s.javadocForMethod("E")),
 		TYPE_SUPER_T_SUPER_U_USED1  ("ExIntBinaryOperator<SUPER_T, SUPER_U, E> ",              s -> "Ex" + s.uncheckVariant + s.getArgumentTypes(true, null, super_T, super_U)),
 		TYPE_SUPER_T_SUPER_U_USED2  ("IOIntBinaryOperator<SUPER_T, SUPER_U> ",                 s -> "IO" + s.uncheckVariant + s.getArgumentTypes(false, null, super_T, super_U)),
+		TYPE_SUPER_T_SUPER_U_USED3  ("IntBinaryOperator<SUPER_T, SUPER_U> ",                   s ->        s.uncheckVariant + s.getArgumentTypes(false, null, super_T, super_U)),
 		TYPE_SUPER_R_EXTENDS_V_USED1("ExIntBinaryOperator<SUPER_R, EXTENDS_V, E> ",            s -> "Ex" + s.uncheckVariant + s.getArgumentTypes(true, extends_V, super_R, extends_TAIL)),
 		TYPE_SUPER_R_EXTENDS_V_USED2("IOIntBinaryOperator<SUPER_R, EXTENDS_V> ",               s -> "IO" + s.uncheckVariant + s.getArgumentTypes(false, extends_V, super_R, extends_TAIL)),
+		TYPE_SUPER_R_EXTENDS_V_USED3("IntBinaryOperator<SUPER_R, EXTENDS_V> ",                 s ->        s.uncheckVariant + s.getArgumentTypes(false, extends_V, super_R, extends_TAIL)),
 		TYPE_SUPER_V_EXTENDS_T_USED1("ExIntBinaryOperator<SUPER_V, EXTENDS_T, E> ",            s -> "Ex" + s.uncheckVariant + s.getArgumentTypes(true, super_V, super_HEAD, extends_T)),
 		TYPE_SUPER_V_EXTENDS_T_USED2("IOIntBinaryOperator<SUPER_V, EXTENDS_T> ",               s -> "IO" + s.uncheckVariant + s.getArgumentTypes(false, super_V, super_HEAD, extends_T)),
-		TYPE_T_T_USED1              ("<T, E extends Exception> ExIntBinaryOperator<T, T, E> ", s -> (s.getVariableTypes(true, null, T) + "Ex" + s.uncheckVariant ).trim() + s.getArgumentTypes(true, null, T, T)),
+		TYPE_SUPER_V_EXTENDS_T_USED3("IntBinaryOperator<SUPER_V, EXTENDS_T> ",                 s ->        s.uncheckVariant + s.getArgumentTypes(false, super_V, super_HEAD, extends_T)),
+		TYPE_T_T_USED1              ("<T, E extends Exception> ExIntBinaryOperator<T, T, E> ", s -> (s.getVariableTypes(true, null, T)  + "Ex" + s.uncheckVariant).trim() + s.getArgumentTypes(true, null, T, T)),
 		TYPE_T_T_USED2              ("<T> IOIntBinaryOperator<T, T> ",                         s -> (s.getVariableTypes(false, null, T) + "IO" + s.uncheckVariant).trim() + s.getArgumentTypes(false, null, T, T)),
+		TYPE_T_T_USED3              ("<T> IntBinaryOperator<T, T> ",                           s -> (s.getVariableTypes(false, null, T)        + s.uncheckVariant).trim() + s.getArgumentTypes(false, null, T, T)),
 		TYPE_T_V_USED1              ("<V> ExIntBinaryOperator<T, V, E> ",                      s -> (s.getVariableTypes(false, V, TAIL) + "Ex" + s.uncheckVariant).trim() + s.getArgumentTypes(true, V, T, U, TAIL)),
 		TYPE_T_V_USED2              ("<V> IOIntBinaryOperator<T, V> ",                         s -> (s.getVariableTypes(false, V, TAIL) + "IO" + s.uncheckVariant).trim() + s.getArgumentTypes(false, V, T, U, TAIL)),
+		TYPE_T_V_USED3              ("<V> IntBinaryOperator<T, V> ",                           s -> (s.getVariableTypes(false, V, TAIL)        + s.uncheckVariant).trim() + s.getArgumentTypes(false, V, T, U, TAIL)),
 		TYPE_T_R_USED1              ("<V> ExIntBinaryOperator<T, R, E> ",                      s -> (s.getVariableTypes(false, V, RTRN) + "Ex" + s.uncheckVariant).trim() + s.getArgumentTypes(true, V, T, U, RTRN)),
 		TYPE_T_R_USED2              ("<V> IOIntBinaryOperator<T, R> ",                         s -> (s.getVariableTypes(false, V, RTRN) + "IO" + s.uncheckVariant).trim() + s.getArgumentTypes(false, V, T, U, RTRN)),
+		TYPE_T_R_USED3              ("<V> IntBinaryOperator<T, R> ",                           s -> (s.getVariableTypes(false, V, RTRN)        + s.uncheckVariant).trim() + s.getArgumentTypes(false, V, T, U, RTRN)),
 		TYPE_V_R_USED1              ("<V> ExIntBinaryOperator<V, R, E> ",                      s -> (s.getVariableTypes(false, V, HEAD) + "Ex" + s.uncheckVariant).trim() + s.getArgumentTypes(true, V, HEAD, R)),
 		TYPE_V_R_USED2              ("<V> IOIntBinaryOperator<V, R> ",                         s -> (s.getVariableTypes(false, V, HEAD) + "IO" + s.uncheckVariant).trim() + s.getArgumentTypes(false, V, HEAD, R)),
+		TYPE_V_R_USED3              ("<V> IntBinaryOperator<V, R> ",                           s -> (s.getVariableTypes(false, V, HEAD)        + s.uncheckVariant).trim() + s.getArgumentTypes(false, V, HEAD, R)),
 		CLASS_DECLARED1             ("ExIntBinaryOperator<E extends Exception> ",              s -> "Ex" + s.uncheckVariant + s.getTypeVariables(true)),
 		CLASS_DECLARED2             ("interface IOIntBinaryOperator ",                         s -> "interface IO" + s.uncheckVariant + s.getTypeVariables(false)),
+		CLASS_DECLARED3             ("interface IntBinaryOperator ",                           s -> "interface " + s.uncheckVariant + s.getTypeVariables(false)),
 		CALL_VARIABLES_WITH_TAIL    ("(TAIL ",                                                 s -> "(" + s.getArgumentType(T, TAIL) + " "),
 		CALL_VARIABLES_WITH_HEAD    ("(HEAD ",                                                 s -> "(" + s.getArgumentType(V, HEAD) + " "),
 		IMPORTED_TYPE1              ("java.util.function.IntBinaryOperator;",                  s -> "java.util.function." + s.uncheckVariant + ";"),
+		UNCHECKED_TYPE1             ("java.util.function.IntBinaryOperator ",                  s -> "java.util.function." + s.classTypeGenericUnchecked.trim() + " "),
 		RECHECKED_TYPE_WITH_V1      ("ExIntBinaryOperator<V, E> ",                             s -> "Ex" + s.uncheckVariant + s.getTypeArguments(true, V)),
 		RECHECKED_TYPE_WITH_V2      ("IOIntBinaryOperator<V> ",                                s -> "IO" + s.uncheckVariant + s.getTypeArguments(false, V)),
-		RECHECKED_TYPE1             ("ExIntBinaryOperator<E>",                                 s -> s.classTypeGenericRechecked.trim()),
-		RECHECKED_TYPE3             ("ExIntBinaryOperator<IOException>",                       s -> s.classTypeGenericRechecked.trim().replace("E>", "IOException>")),
+		RECHECKED_TYPE_WITH_V3      ("IntBinaryOperator<V> ",                                  s ->        s.uncheckVariant + s.getTypeArguments(false, V)),
+		SUPER_TYPE1                 ("ExIntBinaryOperator<IOException>",                       s -> s.classTypeGenericRechecked.trim().replace("E>", "IOException>")),
+		SUPER_TYPE2                 ("ExIntBinaryOperator<RuntimeException>",                  s -> s.classTypeGenericRechecked.trim().replace("E>", "RuntimeException>")),
+		RECHECKED_TYPE1             ("ExIntBinaryOperator<E>",                                 s ->        s.classTypeGenericRechecked.trim()),
 		RECHECKED_TYPE2             ("IOIntBinaryOperator",                                    s -> "IO" + s.classTypeGenericUnchecked.trim()),
-		UNCHECKED_TYPE1             ("java.util.function.IntBinaryOperator ",                  s -> "java.util.function." + s.classTypeGenericUnchecked.trim() + " "),
+		RECHECKED_TYPE3             ("IntBinaryOperator",                                      s ->        s.classTypeGenericUnchecked.trim()),
 		CALL_VARIABLES_v1           ("(int t1, int t2)",                                       s -> s.getMethodVariables("t1", "t2", "t3", "t4")),
 		CALL_ARGUMENTS_v1           ("(t1, t2)",                                               s -> s.getMethodArguments("t1", "t2", "t3", "t4")),
 		CALL_VARIABLES_v2           ("(int t, int u)",                                         s -> s.getMethodVariables("t", "u", "v", "w")),
@@ -91,8 +105,9 @@ public class ConversionsBaseClassGenerator {
 	public static void main(String[] args) {
 		try {
 			Path folder = findTarget();
-			generateResults(Templates.forEx(), BaseType.generated(), folder, sig -> sig.checkedVariant);
-			generateResults(Templates.forIO(), BaseType.generated(), folder, sig -> "IO" + sig.uncheckVariant);
+			generateResults(Templates.forException(), BaseType.generated(), folder, sig -> sig.checkedVariant);
+			generateResults(Templates.forIOException(), BaseType.generated(), folder, sig -> "IO" + sig.uncheckVariant);
+			generateResults(Templates.forRuntimeException(), BaseType.generated(), folder, sig -> sig.uncheckVariant);
 		} catch(UncheckedIOException | URISyntaxException | IOException e) {
 			e.printStackTrace();
 		}

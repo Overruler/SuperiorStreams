@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.ToIntBiFunction
+ * @param <T>
+ * @param <U>
+ */
 @FunctionalInterface
 public interface IOToIntBiFunction<T, U> extends ExToIntBiFunction<T, U, IOException> {
 	static <T, U> IOToIntBiFunction<T, U> recheck(java.util.function.ToIntBiFunction<T, U> unchecked) {

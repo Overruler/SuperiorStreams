@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.ObjDoubleConsumer
+ * @param <T>
+ */
 @FunctionalInterface
 public interface IOObjDoubleConsumer<T> extends ExObjDoubleConsumer<T, IOException> {
 	default IOObjDoubleConsumer<T> andThen(IOObjDoubleConsumer<T> after) {

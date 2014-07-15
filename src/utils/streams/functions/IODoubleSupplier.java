@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.DoubleSupplier
+
+ */
 @FunctionalInterface
 public interface IODoubleSupplier extends ExDoubleSupplier<IOException> {
 	static IODoubleSupplier recheck(java.util.function.DoubleSupplier unchecked) {

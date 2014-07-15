@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.IntSupplier
+
+ */
 @FunctionalInterface
 public interface IOIntSupplier extends ExIntSupplier<IOException> {
 	static IOIntSupplier recheck(java.util.function.IntSupplier unchecked) {

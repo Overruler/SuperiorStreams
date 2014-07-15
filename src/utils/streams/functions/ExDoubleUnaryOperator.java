@@ -3,8 +3,18 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.DoubleUnaryOperator
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExDoubleUnaryOperator<E extends Exception> {
+	/**
+	 * @param t
+	 * @return double
+	 * @throws E
+	 * @see java.util.function.DoubleUnaryOperator#applyAsDouble
+	 */
 	double applyAsDouble(double t) throws E;
 	default ExDoubleUnaryOperator<E> compose(ExDoubleUnaryOperator<E> before) {
 		Objects.requireNonNull(before);

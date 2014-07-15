@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.UnaryOperator
+ * @param <T>
+ */
 @FunctionalInterface
 public interface IOUnaryOperator<T> extends ExUnaryOperator<T, IOException>, IOFunction<T, T> {
 	default IOUnaryOperator<T> compose(IOUnaryOperator<T> before) {

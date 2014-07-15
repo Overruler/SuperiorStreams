@@ -3,8 +3,20 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.BiConsumer
+ * @param <T>
+ * @param <U>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExBiConsumer<T, U, E extends Exception> {
+	/**
+	 * @param t
+	 * @param u
+	 * @throws E
+	 * @see java.util.function.BiConsumer#accept
+	 */
 	void accept(T t, U u) throws E;
 	default ExBiConsumer<T, U, E> andThen(ExBiConsumer<T, U, E> after) {
 		Objects.requireNonNull(after);

@@ -3,8 +3,18 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.DoublePredicate
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExDoublePredicate<E extends Exception> {
+	/**
+	 * @param t
+	 * @return boolean
+	 * @throws E
+	 * @see java.util.function.DoublePredicate#test
+	 */
 	boolean test(double t) throws E;
 	default ExDoublePredicate<E> and(ExDoublePredicate<E> other) {
 		Objects.requireNonNull(other);

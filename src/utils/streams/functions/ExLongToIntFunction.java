@@ -3,9 +3,19 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongToIntFunction
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExLongToIntFunction<E extends Exception> {
-	int applyAsInt(long t1) throws E;
+	/**
+	 * @param t
+	 * @return int
+	 * @throws E
+	 * @see java.util.function.LongToIntFunction#applyAsInt
+	 */
+	int applyAsInt(long t) throws E;
 	static <E extends Exception> ExLongToIntFunction<E> recheck(
 		java.util.function.LongToIntFunction unchecked,
 		Class<E> classOfE) {

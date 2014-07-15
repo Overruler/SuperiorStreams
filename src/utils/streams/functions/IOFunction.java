@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.Function
+ * @param <T>
+ * @param <R>
+ */
 @FunctionalInterface
 public interface IOFunction<T, R> extends ExFunction<T, R, IOException> {
 	default <V> IOFunction<V, R> compose(IOFunction<? super V, ? extends T> before) {

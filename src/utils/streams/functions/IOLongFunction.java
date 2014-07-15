@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongFunction
+ * @param <R>
+ */
 @FunctionalInterface
 public interface IOLongFunction<R> extends ExLongFunction<R, IOException> {
 	default <V> IOLongFunction<V> andThen(IOFunction<? super R, ? extends V> after) {

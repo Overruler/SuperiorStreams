@@ -3,8 +3,18 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.IntPredicate
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExIntPredicate<E extends Exception> {
+	/**
+	 * @param t
+	 * @return boolean
+	 * @throws E
+	 * @see java.util.function.IntPredicate#test
+	 */
 	boolean test(int t) throws E;
 	default ExIntPredicate<E> and(ExIntPredicate<E> other) {
 		Objects.requireNonNull(other);

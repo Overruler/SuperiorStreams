@@ -3,8 +3,17 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.DoubleSupplier
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExDoubleSupplier<E extends Exception> {
+	/**
+	 * @return double
+	 * @throws E
+	 * @see java.util.function.DoubleSupplier#getAsDouble
+	 */
 	double getAsDouble() throws E;
 	static <E extends Exception> ExDoubleSupplier<E> recheck(
 		java.util.function.DoubleSupplier unchecked,

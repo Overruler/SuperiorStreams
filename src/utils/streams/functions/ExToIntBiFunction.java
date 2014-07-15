@@ -3,9 +3,22 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.ToIntBiFunction
+ * @param <T>
+ * @param <U>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExToIntBiFunction<T, U, E extends Exception> {
-	int applyAsInt(T t1, U t2) throws E;
+	/**
+	 * @param t
+	 * @param u
+	 * @return int
+	 * @throws E
+	 * @see java.util.function.ToIntBiFunction#applyAsInt
+	 */
+	int applyAsInt(T t, U u) throws E;
 	static <T, U, E extends Exception> ExToIntBiFunction<T, U, E> recheck(
 		java.util.function.ToIntBiFunction<T, U> unchecked,
 		Class<E> classOfE) {

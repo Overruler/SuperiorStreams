@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.IntBinaryOperator
+
+ */
 @FunctionalInterface
 public interface IOIntBinaryOperator extends ExIntBinaryOperator<IOException> {
 	static IOIntBinaryOperator recheck(java.util.function.IntBinaryOperator unchecked) {

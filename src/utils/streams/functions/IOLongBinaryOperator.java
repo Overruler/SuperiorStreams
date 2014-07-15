@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongBinaryOperator
+
+ */
 @FunctionalInterface
 public interface IOLongBinaryOperator extends ExLongBinaryOperator<IOException> {
 	static IOLongBinaryOperator recheck(java.util.function.LongBinaryOperator unchecked) {

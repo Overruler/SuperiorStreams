@@ -3,9 +3,19 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongToDoubleFunction
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExLongToDoubleFunction<E extends Exception> {
-	double applyAsDouble(long t1) throws E;
+	/**
+	 * @param t
+	 * @return double
+	 * @throws E
+	 * @see java.util.function.LongToDoubleFunction#applyAsDouble
+	 */
+	double applyAsDouble(long t) throws E;
 	static <E extends Exception> ExLongToDoubleFunction<E> recheck(
 		java.util.function.LongToDoubleFunction unchecked,
 		Class<E> classOfE) {

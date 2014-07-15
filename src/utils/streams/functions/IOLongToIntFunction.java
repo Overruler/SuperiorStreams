@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongToIntFunction
+
+ */
 @FunctionalInterface
 public interface IOLongToIntFunction extends ExLongToIntFunction<IOException> {
 	static IOLongToIntFunction recheck(java.util.function.LongToIntFunction unchecked) {

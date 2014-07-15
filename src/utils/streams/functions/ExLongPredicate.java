@@ -3,8 +3,18 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongPredicate
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExLongPredicate<E extends Exception> {
+	/**
+	 * @param t
+	 * @return boolean
+	 * @throws E
+	 * @see java.util.function.LongPredicate#test
+	 */
 	boolean test(long t) throws E;
 	default ExLongPredicate<E> and(ExLongPredicate<E> other) {
 		Objects.requireNonNull(other);

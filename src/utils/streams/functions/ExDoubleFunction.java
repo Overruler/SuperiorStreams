@@ -3,8 +3,19 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.DoubleFunction
+ * @param <R>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExDoubleFunction<R, E extends Exception> {
+	/**
+	 * @param t
+	 * @return R
+	 * @throws E
+	 * @see java.util.function.DoubleFunction#apply
+	 */
 	R apply(double t) throws E;
 	default <V> ExDoubleFunction<V, E> andThen(ExFunction<? super R, ? extends V, E> after) {
 		Objects.requireNonNull(after);

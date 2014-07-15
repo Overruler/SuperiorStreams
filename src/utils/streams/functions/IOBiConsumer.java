@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.BiConsumer
+ * @param <T>
+ * @param <U>
+ */
 @FunctionalInterface
 public interface IOBiConsumer<T, U> extends ExBiConsumer<T, U, IOException> {
 	default IOBiConsumer<T, U> andThen(IOBiConsumer<T, U> after) {

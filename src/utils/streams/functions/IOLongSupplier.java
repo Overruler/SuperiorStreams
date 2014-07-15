@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongSupplier
+
+ */
 @FunctionalInterface
 public interface IOLongSupplier extends ExLongSupplier<IOException> {
 	static IOLongSupplier recheck(java.util.function.LongSupplier unchecked) {

@@ -3,8 +3,18 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongUnaryOperator
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExLongUnaryOperator<E extends Exception> {
+	/**
+	 * @param t
+	 * @return long
+	 * @throws E
+	 * @see java.util.function.LongUnaryOperator#applyAsLong
+	 */
 	long applyAsLong(long t) throws E;
 	default ExLongUnaryOperator<E> compose(ExLongUnaryOperator<E> before) {
 		Objects.requireNonNull(before);

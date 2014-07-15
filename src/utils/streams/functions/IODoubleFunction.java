@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.DoubleFunction
+ * @param <R>
+ */
 @FunctionalInterface
 public interface IODoubleFunction<R> extends ExDoubleFunction<R, IOException> {
 	default <V> IODoubleFunction<V> andThen(IOFunction<? super R, ? extends V> after) {

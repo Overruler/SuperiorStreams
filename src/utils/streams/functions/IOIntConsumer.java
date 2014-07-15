@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.IntConsumer
+
+ */
 @FunctionalInterface
 public interface IOIntConsumer extends ExIntConsumer<IOException> {
 	default IOIntConsumer andThen(IOIntConsumer after) {

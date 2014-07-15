@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.ToDoubleFunction
+ * @param <T>
+ */
 @FunctionalInterface
 public interface IOToDoubleFunction<T> extends ExToDoubleFunction<T, IOException> {
 	static <T> IOToDoubleFunction<T> recheck(java.util.function.ToDoubleFunction<T> unchecked) {

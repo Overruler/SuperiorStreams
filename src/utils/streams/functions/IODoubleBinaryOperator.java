@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.DoubleBinaryOperator
+
+ */
 @FunctionalInterface
 public interface IODoubleBinaryOperator extends ExDoubleBinaryOperator<IOException> {
 	static IODoubleBinaryOperator recheck(java.util.function.DoubleBinaryOperator unchecked) {

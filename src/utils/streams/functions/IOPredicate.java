@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.Predicate
+ * @param <T>
+ */
 @FunctionalInterface
 public interface IOPredicate<T> extends ExPredicate<T, IOException> {
 	default IOPredicate<T> and(IOPredicate<? super T> other) {

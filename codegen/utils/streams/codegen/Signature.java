@@ -120,6 +120,45 @@ class Signature {
 	private String getClassNameGeneric(boolean includeException) {
 		return (includeException ? checkedVariant : uncheckVariant) + getTypeVariables(includeException);
 	}
+	String javadocForClass(boolean includeException) {
+		String genericTypes =
+			asTypeArguments(includeException).stream().map(bt -> " * @param <" + bt.argumentVariant + ">").collect(
+				joining("\n"));
+		return "/**\n * @see java.util.function." + uncheckVariant + "\n" + genericTypes + "\n */";
+	}
+	String javadocForMethod(String exceptionName) {
+		String returnJavadoc = returns == VOID ? "" : "\t * @return " + returns.argumentVariant + "\n";
+		String throwsJavadoc = exceptionName == null ? "" : "\t * @throws " + exceptionName + "\n";
+		String argumentJavadoc;
+		switch(types.size()) {
+			case 0:
+				argumentJavadoc = "";
+				break;
+			case 1:
+				argumentJavadoc = "\t * @param t\n";
+				break;
+			case 2:
+				argumentJavadoc = "\t * @param t\n" + "\t * @param u\n";
+				break;
+			case 3:
+				argumentJavadoc = "\t * @param t\n" + "\t * @param u\n" + "\t * @param v\n";
+				break;
+			case 4:
+				argumentJavadoc = "\t * @param t\n" + "\t * @param u\n" + "\t * @param v\n" + "\t * @param w\n";
+				break;
+			default:
+				throw new IllegalStateException("Too many types: " + types);
+		}
+		return "/**\n" +
+		argumentJavadoc +
+		returnJavadoc +
+		throwsJavadoc +
+		"\t * @see java.util.function." +
+		uncheckVariant +
+		"#" +
+		method +
+		"\n\t */";
+	}
 	String getArgumentType(BaseType replacement, BaseType baseType) {
 		return reinterpret(baseType, replacement).argumentVariant;
 	}

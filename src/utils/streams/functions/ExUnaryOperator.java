@@ -3,6 +3,11 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.UnaryOperator
+ * @param <T>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExUnaryOperator<T, E extends Exception> extends ExFunction<T, T, E> {
 	default ExUnaryOperator<T, E> compose(ExUnaryOperator<T, E> before) {

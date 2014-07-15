@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.DoubleToIntFunction
+
+ */
 @FunctionalInterface
 public interface IODoubleToIntFunction extends ExDoubleToIntFunction<IOException> {
 	static IODoubleToIntFunction recheck(java.util.function.DoubleToIntFunction unchecked) {

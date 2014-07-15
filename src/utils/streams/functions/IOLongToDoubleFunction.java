@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongToDoubleFunction
+
+ */
 @FunctionalInterface
 public interface IOLongToDoubleFunction extends ExLongToDoubleFunction<IOException> {
 	static IOLongToDoubleFunction recheck(java.util.function.LongToDoubleFunction unchecked) {

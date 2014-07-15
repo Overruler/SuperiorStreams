@@ -3,8 +3,19 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.ObjLongConsumer
+ * @param <T>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExObjLongConsumer<T, E extends Exception> {
+	/**
+	 * @param t
+	 * @param u
+	 * @throws E
+	 * @see java.util.function.ObjLongConsumer#accept
+	 */
 	void accept(T t, long u) throws E;
 	default ExObjLongConsumer<T, E> andThen(ExObjLongConsumer<T, E> after) {
 		Objects.requireNonNull(after);

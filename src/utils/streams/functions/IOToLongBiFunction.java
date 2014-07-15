@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.ToLongBiFunction
+ * @param <T>
+ * @param <U>
+ */
 @FunctionalInterface
 public interface IOToLongBiFunction<T, U> extends ExToLongBiFunction<T, U, IOException> {
 	static <T, U> IOToLongBiFunction<T, U> recheck(java.util.function.ToLongBiFunction<T, U> unchecked) {

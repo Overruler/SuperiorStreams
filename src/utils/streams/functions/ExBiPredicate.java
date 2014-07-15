@@ -3,8 +3,21 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.BiPredicate
+ * @param <T>
+ * @param <U>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExBiPredicate<T, U, E extends Exception> {
+	/**
+	 * @param t
+	 * @param u
+	 * @return boolean
+	 * @throws E
+	 * @see java.util.function.BiPredicate#test
+	 */
 	boolean test(T t, U u) throws E;
 	default ExBiPredicate<T, U, E> and(ExBiPredicate<? super T, ? super U, E> other) {
 		Objects.requireNonNull(other);

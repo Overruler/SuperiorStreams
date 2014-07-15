@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.ObjLongConsumer
+ * @param <T>
+ */
 @FunctionalInterface
 public interface IOObjLongConsumer<T> extends ExObjLongConsumer<T, IOException> {
 	default IOObjLongConsumer<T> andThen(IOObjLongConsumer<T> after) {

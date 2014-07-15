@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.DoubleUnaryOperator
+
+ */
 @FunctionalInterface
 public interface IODoubleUnaryOperator extends ExDoubleUnaryOperator<IOException> {
 	default IODoubleUnaryOperator compose(IODoubleUnaryOperator before) {

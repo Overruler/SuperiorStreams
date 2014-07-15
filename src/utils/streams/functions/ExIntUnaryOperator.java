@@ -3,8 +3,18 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.IntUnaryOperator
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExIntUnaryOperator<E extends Exception> {
+	/**
+	 * @param t
+	 * @return int
+	 * @throws E
+	 * @see java.util.function.IntUnaryOperator#applyAsInt
+	 */
 	int applyAsInt(int t) throws E;
 	default ExIntUnaryOperator<E> compose(ExIntUnaryOperator<E> before) {
 		Objects.requireNonNull(before);

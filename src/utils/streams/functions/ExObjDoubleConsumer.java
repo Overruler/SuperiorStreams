@@ -3,8 +3,19 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.ObjDoubleConsumer
+ * @param <T>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExObjDoubleConsumer<T, E extends Exception> {
+	/**
+	 * @param t
+	 * @param u
+	 * @throws E
+	 * @see java.util.function.ObjDoubleConsumer#accept
+	 */
 	void accept(T t, double u) throws E;
 	default ExObjDoubleConsumer<T, E> andThen(ExObjDoubleConsumer<T, E> after) {
 		Objects.requireNonNull(after);

@@ -5,6 +5,10 @@ import java.util.Comparator;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.BinaryOperator
+ * @param <T>
+ */
 @FunctionalInterface
 public interface IOBinaryOperator<T> extends ExBinaryOperator<T, IOException>, IOBiFunction<T, T, T> {
 	static <T> IOBinaryOperator<T> minBy(Comparator<? super T> comparator) {

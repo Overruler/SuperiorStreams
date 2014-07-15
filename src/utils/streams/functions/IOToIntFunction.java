@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.ToIntFunction
+ * @param <T>
+ */
 @FunctionalInterface
 public interface IOToIntFunction<T> extends ExToIntFunction<T, IOException> {
 	static <T> IOToIntFunction<T> recheck(java.util.function.ToIntFunction<T> unchecked) {

@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.Supplier
+ * @param <T>
+ */
 @FunctionalInterface
 public interface IOSupplier<T> extends ExSupplier<T, IOException> {
 	static <T> IOSupplier<T> recheck(java.util.function.Supplier<T> unchecked) {

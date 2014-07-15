@@ -3,9 +3,20 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.DoubleBinaryOperator
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExDoubleBinaryOperator<E extends Exception> {
-	double applyAsDouble(double t1, double t2) throws E;
+	/**
+	 * @param t
+	 * @param u
+	 * @return double
+	 * @throws E
+	 * @see java.util.function.DoubleBinaryOperator#applyAsDouble
+	 */
+	double applyAsDouble(double t, double u) throws E;
 	static <E extends Exception> ExDoubleBinaryOperator<E> recheck(
 		java.util.function.DoubleBinaryOperator unchecked,
 		Class<E> classOfE) {

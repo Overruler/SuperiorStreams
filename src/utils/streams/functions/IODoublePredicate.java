@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.DoublePredicate
+
+ */
 @FunctionalInterface
 public interface IODoublePredicate extends ExDoublePredicate<IOException> {
 	default IODoublePredicate and(IODoublePredicate other) {

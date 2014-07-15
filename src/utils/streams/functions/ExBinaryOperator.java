@@ -4,6 +4,11 @@ import java.util.Comparator;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.BinaryOperator
+ * @param <T>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExBinaryOperator<T, E extends Exception> extends ExBiFunction<T, T, T, E> {
 	static <T, E extends Exception> ExBinaryOperator<T, E> minBy(Comparator<? super T> comparator) {

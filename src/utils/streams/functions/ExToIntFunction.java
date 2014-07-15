@@ -3,9 +3,20 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.ToIntFunction
+ * @param <T>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExToIntFunction<T, E extends Exception> {
-	int applyAsInt(T t1) throws E;
+	/**
+	 * @param t
+	 * @return int
+	 * @throws E
+	 * @see java.util.function.ToIntFunction#applyAsInt
+	 */
+	int applyAsInt(T t) throws E;
 	static <T, E extends Exception> ExToIntFunction<T, E> recheck(
 		java.util.function.ToIntFunction<T> unchecked,
 		Class<E> classOfE) {

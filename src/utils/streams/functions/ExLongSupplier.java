@@ -3,8 +3,17 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongSupplier
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExLongSupplier<E extends Exception> {
+	/**
+	 * @return long
+	 * @throws E
+	 * @see java.util.function.LongSupplier#getAsLong
+	 */
 	long getAsLong() throws E;
 	static <E extends Exception> ExLongSupplier<E> recheck(
 		java.util.function.LongSupplier unchecked,

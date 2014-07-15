@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.IntFunction
+ * @param <R>
+ */
 @FunctionalInterface
 public interface IOIntFunction<R> extends ExIntFunction<R, IOException> {
 	default <V> IOIntFunction<V> andThen(IOFunction<? super R, ? extends V> after) {

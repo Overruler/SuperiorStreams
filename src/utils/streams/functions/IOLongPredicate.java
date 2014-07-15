@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongPredicate
+
+ */
 @FunctionalInterface
 public interface IOLongPredicate extends ExLongPredicate<IOException> {
 	default IOLongPredicate and(IOLongPredicate other) {

@@ -3,8 +3,18 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.Consumer
+ * @param <T>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExConsumer<T, E extends Exception> {
+	/**
+	 * @param t
+	 * @throws E
+	 * @see java.util.function.Consumer#accept
+	 */
 	void accept(T t) throws E;
 	default ExConsumer<T, E> andThen(ExConsumer<T, E> after) {
 		Objects.requireNonNull(after);

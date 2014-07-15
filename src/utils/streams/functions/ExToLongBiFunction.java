@@ -3,9 +3,22 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.ToLongBiFunction
+ * @param <T>
+ * @param <U>
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExToLongBiFunction<T, U, E extends Exception> {
-	long applyAsLong(T t1, U t2) throws E;
+	/**
+	 * @param t
+	 * @param u
+	 * @return long
+	 * @throws E
+	 * @see java.util.function.ToLongBiFunction#applyAsLong
+	 */
+	long applyAsLong(T t, U u) throws E;
 	static <T, U, E extends Exception> ExToLongBiFunction<T, U, E> recheck(
 		java.util.function.ToLongBiFunction<T, U> unchecked,
 		Class<E> classOfE) {

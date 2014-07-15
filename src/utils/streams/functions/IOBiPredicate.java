@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.BiPredicate
+ * @param <T>
+ * @param <U>
+ */
 @FunctionalInterface
 public interface IOBiPredicate<T, U> extends ExBiPredicate<T, U, IOException> {
 	default IOBiPredicate<T, U> and(IOBiPredicate<? super T, ? super U> other) {

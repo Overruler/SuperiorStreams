@@ -3,9 +3,19 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.IntToDoubleFunction
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExIntToDoubleFunction<E extends Exception> {
-	double applyAsDouble(int t1) throws E;
+	/**
+	 * @param t
+	 * @return double
+	 * @throws E
+	 * @see java.util.function.IntToDoubleFunction#applyAsDouble
+	 */
+	double applyAsDouble(int t) throws E;
 	static <E extends Exception> ExIntToDoubleFunction<E> recheck(
 		java.util.function.IntToDoubleFunction unchecked,
 		Class<E> classOfE) {

@@ -3,9 +3,20 @@ package utils.streams.functions;
 import java.util.Objects;
 import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongBinaryOperator
+ * @param <E>
+ */
 @FunctionalInterface
 public interface ExLongBinaryOperator<E extends Exception> {
-	long applyAsLong(long t1, long t2) throws E;
+	/**
+	 * @param t
+	 * @param u
+	 * @return long
+	 * @throws E
+	 * @see java.util.function.LongBinaryOperator#applyAsLong
+	 */
+	long applyAsLong(long t, long u) throws E;
 	static <E extends Exception> ExLongBinaryOperator<E> recheck(
 		java.util.function.LongBinaryOperator unchecked,
 		Class<E> classOfE) {
