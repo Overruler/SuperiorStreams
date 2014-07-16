@@ -11,7 +11,7 @@ import utils.streams.WrapperException;
  */
 @FunctionalInterface
 public interface IOBiConsumer<T, U> extends ExBiConsumer<T, U, IOException> {
-	default IOBiConsumer<T, U> andThen(IOBiConsumer<T, U> after) {
+	default IOBiConsumer<T, U> andThen(IOBiConsumer<? super T, ? super U> after) {
 		Objects.requireNonNull(after);
 		return (T t, U u) -> {
 			accept(t, u);

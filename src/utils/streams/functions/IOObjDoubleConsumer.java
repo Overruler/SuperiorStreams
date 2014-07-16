@@ -10,7 +10,7 @@ import utils.streams.WrapperException;
  */
 @FunctionalInterface
 public interface IOObjDoubleConsumer<T> extends ExObjDoubleConsumer<T, IOException> {
-	default IOObjDoubleConsumer<T> andThen(IOObjDoubleConsumer<T> after) {
+	default IOObjDoubleConsumer<T> andThen(IOObjDoubleConsumer<? super T> after) {
 		Objects.requireNonNull(after);
 		return (T t, double u) -> {
 			accept(t, u);

@@ -123,18 +123,19 @@ interface Templates {
 				+ "public interface ExBiConsumer<T, U, E extends Exception> {\n"
 				+ "	/** method-ex */\n"
 				+ "	void accept(T t1, U t2) throws E;\n"
-				+ "	default ExBiConsumer<T, U, E> andThen(ExBiConsumer<T, U, E> after) {\n"
+				+ "	default ExBiConsumer<T, U, E> andThen(ExBiConsumer<? super T, ? super U, E> after) {\n"
 				+ "		Objects.requireNonNull(after);\n"
 				+ "		return (T t1, U t2) -> {\n"
 				+ "			accept(t1, t2);\n"
 				+ "			after.accept(t1, t2);\n"
 				+ "		};\n"
-				+ "	}\n" + EX_RECHECK_UNCHECK)
+				+ "	}\n")
 				/**/.replace("ExBiConsumer<T, U, ", "ExIntBinaryOperator<")
-				/**/.replace("BiConsumer", "IntBinaryOperator")
+				/**/.replace("ExBiConsumer<? super T, ? super U,", "ExIntBinaryOperator<SUPER_T, SUPER_U,")
 				/**/.replace("(T t1, U t2)", "(int t, int u)")
 				/**/.replace("accept", "applyAsInt")
-				/**/.replace("(t1, t2)", "(t, u)");
+				/**/.replace("(t1, t2)", "(t, u)") +
+				EX_RECHECK_UNCHECK;
 			}
 			public @Override String unaryOperatorLike() {
 				return "package utils.streams.functions;\n" +
@@ -311,7 +312,7 @@ interface Templates {
 				+ "/** class */\n"
 				+ "@FunctionalInterface\n"
 				+ "public interface IOBiConsumer<T, U> extends ExBiConsumer<T, U, IOException> {\n"
-				+ "	default IOBiConsumer<T, U> andThen(IOBiConsumer<T, U> after) {\n"
+				+ "	default IOBiConsumer<T, U> andThen(IOBiConsumer<? super T, ? super U> after) {\n"
 				+ "		Objects.requireNonNull(after);\n"
 				+ "		return (T t1, U t2) -> {\n"
 				+ "			accept(t1, t2);\n"
@@ -320,6 +321,7 @@ interface Templates {
 				+ "	}\n")
 				/**/.replace("IOBiConsumer<T, U>", "IOIntBinaryOperator")
 				/**/.replace("ExBiConsumer<T, U, ", "ExIntBinaryOperator<")
+				/**/.replace("IOBiConsumer<? super T, ? super U>", "IOIntBinaryOperator<SUPER_T, SUPER_U>")
 				/**/.replace("(T t1, U t2)", "(int t, int u)")
 				/**/.replace("accept", "applyAsInt")
 				/**/.replace("(t1, t2)", "(t, u)") +
@@ -488,7 +490,7 @@ interface Templates {
 				+ "/** class */\n"
 				+ "@FunctionalInterface\n"
 				+ "public interface BiConsumer<T, U> extends ExBiConsumer<T, U, RuntimeException>, java.util.function.BiConsumer<T, U> {\n"
-				+ "	default BiConsumer<T, U> andThen(BiConsumer<T, U> after) {\n"
+				+ "	default BiConsumer<T, U> andThen(BiConsumer<? super T, ? super U> after) {\n"
 				+ "		Objects.requireNonNull(after);\n"
 				+ "		return (T t, U u) -> {\n"
 				+ "			accept(t, u);\n"
@@ -497,6 +499,7 @@ interface Templates {
 				+ "	}\n")
 				/**/.replace("ExBiConsumer<T, U, ", "ExIntBinaryOperator<")
 				/**/.replace("BiConsumer<T, U>", "IntBinaryOperator")
+				/**/.replace("BiConsumer<? super T, ? super U>", "IntBinaryOperator<SUPER_T, SUPER_U>")
 				/**/.replace("(T t, U u)", "(int t, int u)")
 				/**/.replace("accept", "applyAsInt") +
 				RECHECK;

@@ -10,7 +10,7 @@ import utils.streams.WrapperException;
  */
 @FunctionalInterface
 public interface IOObjLongConsumer<T> extends ExObjLongConsumer<T, IOException> {
-	default IOObjLongConsumer<T> andThen(IOObjLongConsumer<T> after) {
+	default IOObjLongConsumer<T> andThen(IOObjLongConsumer<? super T> after) {
 		Objects.requireNonNull(after);
 		return (T t, long u) -> {
 			accept(t, u);

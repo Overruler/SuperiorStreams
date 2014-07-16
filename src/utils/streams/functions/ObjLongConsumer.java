@@ -9,7 +9,7 @@ import utils.streams.WrapperException;
  */
 @FunctionalInterface
 public interface ObjLongConsumer<T> extends ExObjLongConsumer<T, RuntimeException>, java.util.function.ObjLongConsumer<T> {
-	default ObjLongConsumer<T> andThen(ObjLongConsumer<T> after) {
+	default ObjLongConsumer<T> andThen(ObjLongConsumer<? super T> after) {
 		Objects.requireNonNull(after);
 		return (T t, long u) -> {
 			accept(t, u);

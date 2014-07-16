@@ -17,7 +17,7 @@ public interface ExObjIntConsumer<T, E extends Exception> {
 	 * @see java.util.function.ObjIntConsumer#accept
 	 */
 	void accept(T t, int u) throws E;
-	default ExObjIntConsumer<T, E> andThen(ExObjIntConsumer<T, E> after) {
+	default ExObjIntConsumer<T, E> andThen(ExObjIntConsumer<? super T, E> after) {
 		Objects.requireNonNull(after);
 		return (T t, int u) -> {
 			accept(t, u);

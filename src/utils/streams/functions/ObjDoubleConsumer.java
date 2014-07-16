@@ -9,7 +9,7 @@ import utils.streams.WrapperException;
  */
 @FunctionalInterface
 public interface ObjDoubleConsumer<T> extends ExObjDoubleConsumer<T, RuntimeException>, java.util.function.ObjDoubleConsumer<T> {
-	default ObjDoubleConsumer<T> andThen(ObjDoubleConsumer<T> after) {
+	default ObjDoubleConsumer<T> andThen(ObjDoubleConsumer<? super T> after) {
 		Objects.requireNonNull(after);
 		return (T t, double u) -> {
 			accept(t, u);

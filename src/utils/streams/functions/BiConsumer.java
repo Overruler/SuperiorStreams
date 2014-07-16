@@ -10,7 +10,7 @@ import utils.streams.WrapperException;
  */
 @FunctionalInterface
 public interface BiConsumer<T, U> extends ExBiConsumer<T, U, RuntimeException>, java.util.function.BiConsumer<T, U> {
-	default BiConsumer<T, U> andThen(BiConsumer<T, U> after) {
+	default BiConsumer<T, U> andThen(BiConsumer<? super T, ? super U> after) {
 		Objects.requireNonNull(after);
 		return (T t, U u) -> {
 			accept(t, u);

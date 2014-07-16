@@ -10,7 +10,7 @@ import utils.streams.WrapperException;
  */
 @FunctionalInterface
 public interface IOConsumer<T> extends ExConsumer<T, IOException> {
-	default IOConsumer<T> andThen(IOConsumer<T> after) {
+	default IOConsumer<T> andThen(IOConsumer<? super T> after) {
 		Objects.requireNonNull(after);
 		return (T t) -> {
 			accept(t);

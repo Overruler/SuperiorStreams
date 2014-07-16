@@ -18,7 +18,7 @@ public interface ExBiConsumer<T, U, E extends Exception> {
 	 * @see java.util.function.BiConsumer#accept
 	 */
 	void accept(T t, U u) throws E;
-	default ExBiConsumer<T, U, E> andThen(ExBiConsumer<T, U, E> after) {
+	default ExBiConsumer<T, U, E> andThen(ExBiConsumer<? super T, ? super U, E> after) {
 		Objects.requireNonNull(after);
 		return (T t, U u) -> {
 			accept(t, u);

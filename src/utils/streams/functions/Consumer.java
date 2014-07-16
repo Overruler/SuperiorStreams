@@ -9,7 +9,7 @@ import utils.streams.WrapperException;
  */
 @FunctionalInterface
 public interface Consumer<T> extends ExConsumer<T, RuntimeException>, java.util.function.Consumer<T> {
-	default Consumer<T> andThen(Consumer<T> after) {
+	default Consumer<T> andThen(Consumer<? super T> after) {
 		Objects.requireNonNull(after);
 		return (T t) -> {
 			accept(t);
