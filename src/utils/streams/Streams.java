@@ -39,7 +39,6 @@ import utils.streams.functions.IOFunction;
 import utils.streams.functions.IOSupplier;
 
 public class Streams {
-
 	public static @SafeVarargs <T> Stream2<T> of(T... array) {
 		return from(Arrays.asList(array.clone()));
 	}
@@ -76,9 +75,9 @@ public class Streams {
 		return with(source);
 	}
 	public static <A extends AutoCloseable, T> RioStream<A, T> from(
-	  File file,
-	  IOFunction<File, A> resourceAllocator,
-	  IOFunction<A, Stream<T>> streamSupplier) {
+		File file,
+		IOFunction<File, A> resourceAllocator,
+		IOFunction<A, Stream<T>> streamSupplier) {
 		IOSupplier<A> allocator = () -> resourceAllocator.apply(file);
 		Function<A, Stream<T>> converter = streamSupplier.uncheck(IOException.class);
 		ExConsumer<A, Exception> releaser = a -> a.close();
@@ -178,7 +177,7 @@ public class Streams {
 	}
 	public static <K, V> HashMap<K, V> where(Map<K, V> map, BiPredicate<K, V> pass) {
 		return map.entrySet().stream().filter(e -> pass.test(e.getKey(), e.getValue())).collect(
-		  Collectors.toMap(e -> e.getKey(), e -> e.getValue(), (l, r) -> l, HashMap::new));
+			Collectors.toMap(e -> e.getKey(), e -> e.getValue(), (l, r) -> l, HashMap::new));
 	}
 	public static HSBStream loadImageInHSB(String path) throws IOException {
 		return loadImageInRGB(path).toHSB();

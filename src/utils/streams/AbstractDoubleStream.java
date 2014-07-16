@@ -37,7 +37,6 @@ SELF extends AbstractDoubleStream<E, STREAM, OS, IS, LS,
 SELF,
 CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_DOUBLE>,
 CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_DOUBLE> {//*E*
-
 	protected final Supplier<DoubleStream> supplier;
 
 	public AbstractDoubleStream(Supplier<STREAM> supplier) {
@@ -84,8 +83,8 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		return asSELF(s -> s.filter(allowed));
 	}
 	protected static <R, RS> RS mapInternal(
-	  DoubleFunction<? extends R> mapper,
-	  Function<Function<DoubleStream, Stream<R>>, RS> cast) {
+		DoubleFunction<? extends R> mapper,
+		Function<Function<DoubleStream, Stream<R>>, RS> cast) {
 		return cast.apply(s -> s.mapToObj(mapper));
 	}
 	public IS mapToInt(TO_INT mapper) {
@@ -98,8 +97,8 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		return asSELF(s -> s.map(castToDouble(mapper)));
 	}
 	protected static <R, RS> RS flatMapInternal(
-	  Function<? super Double, ? extends Stream<? extends R>> mapper,
-	  Function<Function<DoubleStream, Stream<R>>, RS> cast) {
+		Function<? super Double, ? extends Stream<? extends R>> mapper,
+		Function<Function<DoubleStream, Stream<R>>, RS> cast) {
 		return cast.apply(s -> s.boxed().flatMap(mapper));
 	}
 	public IS flatMapToInt(TO_IS mapper) {
@@ -145,16 +144,21 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		return intoList.apply(toArray());
 	}
 	public <K, L, M, CLASSIFIER> M toMultiMapInternal(
-	  CLASSIFIER classifier,
-	  Function<CLASSIFIER, DoubleFunction<? extends K>> cast,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<double[], L> intoList) throws E {
+		CLASSIFIER classifier,
+		Function<CLASSIFIER, DoubleFunction<? extends K>> cast,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<double[], L> intoList) throws E {
 		return terminalAsMapToList(cast.apply(classifier), intoMap, intoList, maker(), classOfE());
 	}
 	public <K, CLASSIFIER> HashMap<K, double[]> toMapInternal(
-	  CLASSIFIER classifier,
-	  Function<CLASSIFIER, DoubleFunction<? extends K>> cast) throws E {
-		return terminalAsMapToList(cast.apply(classifier), Function.identity(), Function.identity(), maker(), classOfE());
+		CLASSIFIER classifier,
+		Function<CLASSIFIER, DoubleFunction<? extends K>> cast) throws E {
+		return terminalAsMapToList(
+			cast.apply(classifier),
+			Function.identity(),
+			Function.identity(),
+			maker(),
+			classOfE());
 	}
 	public double reduce(double identity, BINARY_OPERATOR accumulator) throws E {
 		return terminalAsDouble(s -> s.reduce(identity, castToBinaryOperators(accumulator)), maker(), classOfE());
@@ -224,9 +228,9 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		return asSELF(s -> DoubleStream.concat(s, after.maker().get()));
 	}
 	private static <E extends Exception> void terminal(
-	  Consumer<DoubleStream> consumption,
-	  Supplier<DoubleStream> supplier,
-	  Class<E> class1) throws E {
+		Consumer<DoubleStream> consumption,
+		Supplier<DoubleStream> supplier,
+		Class<E> class1) throws E {
 		try(DoubleStream stream = supplier.get()) {
 			consumption.accept(stream);
 		} catch(RuntimeException e) {
@@ -234,9 +238,9 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		}
 	}
 	private static <R, E extends Exception> R terminalAsObj(
-	  Function<DoubleStream, R> consumption,
-	  Supplier<DoubleStream> supplier,
-	  Class<E> class1) throws E {
+		Function<DoubleStream, R> consumption,
+		Supplier<DoubleStream> supplier,
+		Class<E> class1) throws E {
 		try(DoubleStream stream = supplier.get()) {
 			return consumption.apply(stream);
 		} catch(RuntimeException e) {
@@ -244,9 +248,9 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		}
 	}
 	private static <E extends Exception> long terminalAsLong(
-	  ToLongFunction<DoubleStream> consumption,
-	  Supplier<DoubleStream> supplier,
-	  Class<E> class1) throws E {
+		ToLongFunction<DoubleStream> consumption,
+		Supplier<DoubleStream> supplier,
+		Class<E> class1) throws E {
 		try(DoubleStream stream = supplier.get()) {
 			return consumption.applyAsLong(stream);
 		} catch(RuntimeException e) {
@@ -254,9 +258,9 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		}
 	}
 	private static <E extends Exception> double terminalAsDouble(
-	  ToDoubleFunction<DoubleStream> consumption,
-	  Supplier<DoubleStream> supplier,
-	  Class<E> class1) throws E {
+		ToDoubleFunction<DoubleStream> consumption,
+		Supplier<DoubleStream> supplier,
+		Class<E> class1) throws E {
 		try(DoubleStream stream = supplier.get()) {
 			return consumption.applyAsDouble(stream);
 		} catch(RuntimeException e) {
@@ -264,9 +268,9 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		}
 	}
 	private static <E extends Exception> boolean terminalAsBoolean(
-	  Predicate<DoubleStream> consumption,
-	  Supplier<DoubleStream> supplier,
-	  Class<E> class1) throws E {
+		Predicate<DoubleStream> consumption,
+		Supplier<DoubleStream> supplier,
+		Class<E> class1) throws E {
 		try(DoubleStream stream = supplier.get()) {
 			return consumption.test(stream);
 		} catch(RuntimeException e) {
@@ -274,11 +278,11 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		}
 	}
 	private static <K, L, M, E extends Exception> M terminalAsMapToList(
-	  DoubleFunction<? extends K> classifier,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<double[], L> intoList,
-	  Supplier<DoubleStream> supplier,
-	  Class<E> classOfE) throws E {
+		DoubleFunction<? extends K> classifier,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<double[], L> intoList,
+		Supplier<DoubleStream> supplier,
+		Class<E> classOfE) throws E {
 		Supplier<double[][]> supplier2 = () -> new double[64][];
 		BiConsumer<double[][], Double> biConsumer = (left, value) -> {
 			double[] array2 = new double[] { value == null ? 0 : value };
@@ -322,7 +326,7 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		};
 		Collector<Double, double[][], L> collectingAndThen = collectingAndThen(toContainer, intoList.compose(before));
 		Collector<Double, ?, M> collectMap =
-		  collectingAndThen(groupingBy(classifier::apply, HashMap<K, L>::new, collectingAndThen), intoMap);
+			collectingAndThen(groupingBy(classifier::apply, HashMap<K, L>::new, collectingAndThen), intoMap);
 		try(DoubleStream s = supplier.get()) {
 			return s.boxed().collect(collectMap);
 		} catch(RuntimeException e) {

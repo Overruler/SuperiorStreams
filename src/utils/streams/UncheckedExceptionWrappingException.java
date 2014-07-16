@@ -3,7 +3,6 @@ package utils.streams;
 import java.util.Objects;
 
 class UncheckedExceptionWrappingException extends RuntimeException {
-
 	final Class<?> originalClass;
 
 	UncheckedExceptionWrappingException(Exception e, Class<?> classOfE) {

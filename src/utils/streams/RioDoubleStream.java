@@ -41,15 +41,14 @@ IOBiFunction<A, Double, ? extends DoubleStream>,
 IOToIntBiFunction<A, Double>,
 IOToLongBiFunction<A, Double>,
 IOToDoubleBiFunction<A, Double>> {//*E*
-
 	private final Supplier<AutoCloseableStrategy<A, DoubleStream>> supplierAC;
 
 	public RioDoubleStream(Supplier<A> allocator, Function<A, DoubleStream> converter, Consumer<A> releaser) {
 		this(CachedSupplier.create(() -> new AutoCloseableStrategy<>(
-		  allocator,
-		  converter,
-		  (a, s) -> s.onClose(() -> releaser.accept(a)),
-		  Function.identity())));
+			allocator,
+			converter,
+			(a, s) -> s.onClose(() -> releaser.accept(a)),
+			Function.identity())));
 	}
 	<OLD> RioDoubleStream(Supplier<AutoCloseableStrategy<A, OLD>> old, Function<OLD, DoubleStream> converter) {
 		this(CachedSupplier.create(() -> new AutoCloseableStrategy<>(old, converter)));
@@ -80,15 +79,15 @@ IOToDoubleBiFunction<A, Double>> {//*E*
 		return new RioDoubleStream<>(supplierAC, convert);
 	}
 	protected @Override Function<? super Double, ? extends IntStream> castToIntStream(
-	  IOBiFunction<A, Double, ? extends IntStream> mapper) {
+		IOBiFunction<A, Double, ? extends IntStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	protected @Override Function<? super Double, ? extends LongStream> castToLongStream(
-	  IOBiFunction<A, Double, ? extends LongStream> mapper) {
+		IOBiFunction<A, Double, ? extends LongStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	protected @Override Function<? super Double, ? extends DoubleStream> castToDoubleStream(
-	  IOBiFunction<A, Double, ? extends DoubleStream> mapper) {
+		IOBiFunction<A, Double, ? extends DoubleStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	protected @Override DoubleToIntFunction castToInt(IOToIntBiFunction<A, Double> mapper) {
@@ -114,33 +113,34 @@ IOToDoubleBiFunction<A, Double>> {//*E*
 	}
 	public final @SafeVarargs <R> RioStream<A, R> map(DoubleFunction<? extends R> mapper, DoublePredicate... allowed) {
 		return allowed != null && allowed.length > 0 ? mapInternal(
-		  mapper,
-		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+			mapper,
+			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
 	public <R> RioStream<A, R> flatMap(IOBiFunction<A, Double, ? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public final @SafeVarargs <R> RioStream<A, R> flatMap(
-	  Function<Double, ? extends Stream<? extends R>> mapper,
-	  DoublePredicate... allowed) {
+		Function<Double, ? extends Stream<? extends R>> mapper,
+		DoublePredicate... allowed) {
 		return allowed != null && allowed.length > 0 ? flatMapInternal(
-		  mapper,
-		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(mapper, cast());
+			mapper,
+			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast())
+			: flatMapInternal(mapper, cast());
 	}
 	public <K> HashMap<? extends K, double[]> toMap(IOBiFunction<A, Double, ? extends K> classifier) throws IOException {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(
-	  IOBiFunction<A, Double, ? extends K> classifier,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<double[], L> intoList) throws IOException {
+		IOBiFunction<A, Double, ? extends K> classifier,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<double[], L> intoList) throws IOException {
 		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
 	}
 	private <K> Function<IOBiFunction<A, Double, ? extends K>, DoubleFunction<? extends K>> castToClassifier() {
 		return c -> t -> c.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> Function<Double, ? extends Stream<? extends R>> castToFlatMapFunctions(
-	  IOBiFunction<A, Double, ? extends Stream<? extends R>> mapper) {
+		IOBiFunction<A, Double, ? extends Stream<? extends R>> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> DoubleFunction<? extends R> castToMapFunctions(IOBiFunction<A, Double, ? extends R> mapping) {

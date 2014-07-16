@@ -42,15 +42,14 @@ IOBiFunction<A, ? super T, ? extends DoubleStream>,
 IOToIntBiFunction<A, ? super T>,
 IOToLongBiFunction<A, ? super T>,
 IOToDoubleBiFunction<A, ? super T>> {//*E*
-
 	private final Supplier<AutoCloseableStrategy<A, Stream<T>>> supplierAC;
 
 	public RioStream(Supplier<A> allocator, Function<A, Stream<T>> converter, Consumer<A> releaser) {
 		this(CachedSupplier.create(() -> new AutoCloseableStrategy<>(
-		  allocator,
-		  converter,
-		  (a, s) -> s.onClose(() -> releaser.accept(a)),
-		  Function.identity())));
+			allocator,
+			converter,
+			(a, s) -> s.onClose(() -> releaser.accept(a)),
+			Function.identity())));
 	}
 	<OLD> RioStream(Supplier<AutoCloseableStrategy<A, OLD>> old, Function<OLD, Stream<T>> converter) {
 		this(CachedSupplier.create(() -> new AutoCloseableStrategy<>(old, converter)));
@@ -81,15 +80,15 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 		return new RioDoubleStream<>(supplierAC, convert);
 	}
 	protected @Override Function<? super T, ? extends IntStream> castToIntStream(
-	  IOBiFunction<A, ? super T, ? extends IntStream> mapper) {
+		IOBiFunction<A, ? super T, ? extends IntStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	protected @Override Function<? super T, ? extends LongStream> castToLongStream(
-	  IOBiFunction<A, ? super T, ? extends LongStream> mapper) {
+		IOBiFunction<A, ? super T, ? extends LongStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	protected @Override Function<? super T, ? extends DoubleStream> castToDoubleStream(
-	  IOBiFunction<A, ? super T, ? extends DoubleStream> mapper) {
+		IOBiFunction<A, ? super T, ? extends DoubleStream> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	protected @Override ToIntFunction<? super T> castToInt(IOToIntBiFunction<A, ? super T> mapper) {
@@ -118,46 +117,47 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 	}
 	public final @SafeVarargs <R> RioStream<A, R> map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? mapInternal(
-		  mapper,
-		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+			mapper,
+			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
 	public <R> RioStream<A, R> flatMap(IOBiFunction<A, ? super T, ? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public final @SafeVarargs <R> RioStream<A, R> flatMap(
-	  Function<? super T, ? extends Stream<? extends R>> mapper,
-	  Predicate<T>... allowed) {
+		Function<? super T, ? extends Stream<? extends R>> mapper,
+		Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? flatMapInternal(
-		  mapper,
-		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(mapper, cast());
+			mapper,
+			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast())
+			: flatMapInternal(mapper, cast());
 	}
 	public <K> HashMap<K, ArrayList<T>> toMap(IOBiFunction<A, ? super T, ? extends K> classifier) throws IOException {
 		return toMapInternal(castToClassifier(classifier));
 	}
 	public final @SafeVarargs <K> HashMap<K, ArrayList<T>> toMap(
-	  Function<? super T, ? extends K> classifier,
-	  Predicate<T>... allowed) throws IOException {
+		Function<? super T, ? extends K> classifier,
+		Predicate<T>... allowed) throws IOException {
 		if(allowed != null && allowed.length > 0) {
 			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).toMapInternal(classifier);
 		}
 		return toMapInternal(classifier);
 	}
 	public <K, L, M> M toMultiMap(
-	  IOBiFunction<A, ? super T, ? extends K> classifier,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<ArrayList<T>, L> intoList) throws IOException {
+		IOBiFunction<A, ? super T, ? extends K> classifier,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<ArrayList<T>, L> intoList) throws IOException {
 		return toMultiMapInternal(castToClassifier(classifier), intoMap, intoList);
 	}
 	public final @SafeVarargs <K, L, M> M toMultiMap(
-	  Function<? super T, ? extends K> classifier,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<ArrayList<T>, L> intoList,
-	  Predicate<T>... allowed) throws IOException {
+		Function<? super T, ? extends K> classifier,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<ArrayList<T>, L> intoList,
+		Predicate<T>... allowed) throws IOException {
 		if(allowed != null && allowed.length > 0) {
 			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).toMultiMapInternal(
-			  classifier,
-			  intoMap,
-			  intoList);
+				classifier,
+				intoMap,
+				intoList);
 		}
 		return toMultiMapInternal(classifier, intoMap, intoList);
 	}
@@ -165,7 +165,7 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 		return t -> classifier.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> Function<? super T, ? extends Stream<? extends R>> castToFlatMapFunctions(
-	  IOBiFunction<A, ? super T, ? extends Stream<? extends R>> mapper) {
+		IOBiFunction<A, ? super T, ? extends Stream<? extends R>> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> Function<? super T, ? extends R> castToMapFunctions(IOBiFunction<A, ? super T, ? extends R> mapping) {

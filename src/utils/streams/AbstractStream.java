@@ -39,7 +39,6 @@ SELF,
 IS, LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, COMPARATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_DOUBLE>,
 IS, LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, COMPARATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_DOUBLE>
 implements Streamable<T, E> {//*E*
-
 	protected abstract Class<E> classOfE();
 	public @Override Stream<T> stream() throws E {
 		return ExSupplier.recheck(maker(), classOfE()).get();
@@ -167,34 +166,34 @@ implements Streamable<T, E> {//*E*
 		return terminalAsObj(s -> s.findAny(), maker(), classOfE());
 	}
 	public
-	  SELF
-	  concat(
-	    AbstractStream<T, E, STREAM, SELF, IS, LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, COMPARATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_DOUBLE> after) {
+		SELF
+		concat(
+			AbstractStream<T, E, STREAM, SELF, IS, LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, COMPARATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_DOUBLE> after) {
 		Objects.requireNonNull(after);
 		return asSELF(s -> Stream.concat(s, after.maker().get()));
 	}
 	public HashMap<Boolean, ArrayList<T>> partition(PREDICATE allowed) throws E {
 		return terminalAsObj(
-		  s -> s.collect(collectingAndThen(
-		    partitioningBy(castToPredicates(allowed), Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
-		    m -> new HashMap<>(m))),
-		  maker(),
-		  classOfE());
+			s -> s.collect(collectingAndThen(
+				partitioningBy(castToPredicates(allowed), Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
+				m -> new HashMap<>(m))),
+			maker(),
+			classOfE());
 	}
 	public final @SafeVarargs HashMap<Boolean, ArrayList<T>> partition(
-	  Predicate<? super T> allow,
-	  Predicate<? super T>... allowed) throws E {
+		Predicate<? super T> allow,
+		Predicate<? super T>... allowed) throws E {
 		Predicate<T> allow2 = allow::test;
 		for(Predicate<? super T> predicate : allowed) {
 			allow2 = allow2.and(predicate);
 		}
 		Predicate<T> allow3 = allow2;
 		return terminalAsObj(
-		  s -> s.collect(collectingAndThen(
-		    partitioningBy(allow3, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
-		    m -> new HashMap<>(m))),
-		  maker(),
-		  classOfE());
+			s -> s.collect(collectingAndThen(
+				partitioningBy(allow3, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
+				m -> new HashMap<>(m))),
+			maker(),
+			classOfE());
 	}
 	public <R> R collect(Supplier<R> initial, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner) throws E {
 		return terminalAsObj(s -> s.collect(initial, accumulator, combiner), maker(), classOfE());
@@ -214,7 +213,7 @@ implements Streamable<T, E> {//*E*
 	public SummaryStatistics<T> summaryStatistics(TO_LONG attribute) throws E {
 		ToLongFunction<? super T> attribute2 = castToLong(attribute);
 		Collector<? super T, SummaryStatistics<T>, SummaryStatistics<T>> collector =
-		  SummaryStatistics.collector(attribute2);
+			SummaryStatistics.collector(attribute2);
 		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
 	}
 	public OptionalDouble average(TO_DOUBLE attribute) throws E {
@@ -224,9 +223,9 @@ implements Streamable<T, E> {//*E*
 		return terminalAsMapToList(classifier, Function.identity(), Function.identity(), maker(), classOfE());
 	}
 	protected <M, L, K> M toMultiMapInternal(
-	  Function<? super T, ? extends K> apply,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<ArrayList<T>, L> intoList) throws E {
+		Function<? super T, ? extends K> apply,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<ArrayList<T>, L> intoList) throws E {
 		return terminalAsMapToList(apply, intoMap, intoList, maker(), classOfE());
 	}
 	public T reduce(T start, BINARY_OPERATOR add) throws E {
@@ -281,13 +280,13 @@ implements Streamable<T, E> {//*E*
 		return terminalAsBoolean(s -> s.noneMatch(test3), maker(), classOfE());
 	}
 	protected <R, RS> RS mapInternal(
-	  Function<? super T, ? extends R> mapper,
-	  Function<Function<Stream<T>, Stream<R>>, RS> cast) {
+		Function<? super T, ? extends R> mapper,
+		Function<Function<Stream<T>, Stream<R>>, RS> cast) {
 		return cast.apply(s -> s.map(mapper));
 	}
 	protected <R, RS> RS flatMapInternal(
-	  Function<? super T, ? extends Stream<? extends R>> mapper,
-	  Function<Function<Stream<T>, Stream<R>>, RS> cast) {
+		Function<? super T, ? extends Stream<? extends R>> mapper,
+		Function<Function<Stream<T>, Stream<R>>, RS> cast) {
 		return cast.apply(s -> s.flatMap(mapper));
 	}
 	protected Optional<T> reduceInternal(BinaryOperator<T> accumulator) throws E {
@@ -321,9 +320,9 @@ implements Streamable<T, E> {//*E*
 	protected abstract Predicate<? super T> castToPredicates(PREDICATE test);
 	protected abstract BinaryOperator<T> castToBinaryOperators(BINARY_OPERATOR combiner);
 	private static <T, E extends Exception> void terminal(
-	  ExConsumer<Stream<T>, E> consumption,
-	  Supplier<Stream<T>> supplier,
-	  Class<E> classOfE) throws E {
+		ExConsumer<Stream<T>, E> consumption,
+		Supplier<Stream<T>> supplier,
+		Class<E> classOfE) throws E {
 		try(Stream<T> stream = supplier.get()) {
 			consumption.accept(stream);
 		} catch(RuntimeException e) {
@@ -331,9 +330,9 @@ implements Streamable<T, E> {//*E*
 		}
 	}
 	private static <T, E extends Exception, R> R terminalAsObj(
-	  ExFunction<Stream<T>, R, E> consumption,
-	  Supplier<Stream<T>> supplier,
-	  Class<E> classOfE) throws E {
+		ExFunction<Stream<T>, R, E> consumption,
+		Supplier<Stream<T>> supplier,
+		Class<E> classOfE) throws E {
 		try(Stream<T> stream = supplier.get()) {
 			return consumption.apply(stream);
 		} catch(RuntimeException e) {
@@ -341,9 +340,9 @@ implements Streamable<T, E> {//*E*
 		}
 	}
 	private static <T, E extends Exception> long terminalAsLong(
-	  ExToLongFunction<Stream<T>, E> consumption,
-	  Supplier<Stream<T>> supplier,
-	  Class<E> classOfE) throws E {
+		ExToLongFunction<Stream<T>, E> consumption,
+		Supplier<Stream<T>> supplier,
+		Class<E> classOfE) throws E {
 		try(Stream<T> stream = supplier.get()) {
 			return consumption.applyAsLong(stream);
 		} catch(RuntimeException e) {
@@ -351,9 +350,9 @@ implements Streamable<T, E> {//*E*
 		}
 	}
 	private static <T, E extends Exception> boolean terminalAsBoolean(
-	  ExPredicate<Stream<T>, E> consumption,
-	  Supplier<Stream<T>> supplier,
-	  Class<E> classOfE) throws E {
+		ExPredicate<Stream<T>, E> consumption,
+		Supplier<Stream<T>> supplier,
+		Class<E> classOfE) throws E {
 		try(Stream<T> stream = supplier.get()) {
 			return consumption.test(stream);
 		} catch(RuntimeException e) {
@@ -361,11 +360,11 @@ implements Streamable<T, E> {//*E*
 		}
 	}
 	private static <T, E extends Exception, K, L, M> M terminalAsMapToList(
-	  Function<? super T, ? extends K> classifier,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<ArrayList<T>, L> intoList,
-	  Supplier<Stream<T>> supplier,
-	  Class<E> classOfE) throws E {
+		Function<? super T, ? extends K> classifier,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<ArrayList<T>, L> intoList,
+		Supplier<Stream<T>> supplier,
+		Class<E> classOfE) throws E {
 		Supplier<HashMap<K, L>> supply1 = () -> new HashMap<>();
 		Supplier<ArrayList<T>> supply2 = () -> new ArrayList<>();
 		BiConsumer<ArrayList<T>, T> accumulator2 = (left, value) -> left.add(value);
@@ -374,9 +373,9 @@ implements Streamable<T, E> {//*E*
 			return left;
 		};
 		Collector<T, ?, M> collectingAndThen =
-		  collectingAndThen(
-		    groupingBy(classifier, supply1, collectingAndThen(of(supply2, accumulator2, combiner2), intoList)),
-		    intoMap);
+			collectingAndThen(
+				groupingBy(classifier, supply1, collectingAndThen(of(supply2, accumulator2, combiner2), intoList)),
+				intoMap);
 		try(Stream<T> s = supplier.get()) {
 			return s.collect(collectingAndThen);
 		} catch(RuntimeException e) {

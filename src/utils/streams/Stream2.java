@@ -34,7 +34,6 @@ Function<? super T, ? extends DoubleStream>,
 ToIntFunction<? super T>,
 ToLongFunction<? super T>,
 ToDoubleFunction<? super T>> {//*E*
-
 	public Stream2(Supplier<Stream<T>> supplier) {
 		super(supplier);
 	}
@@ -60,15 +59,15 @@ ToDoubleFunction<? super T>> {//*E*
 		return new DoubleStream2(supplier, func);
 	}
 	protected @Override Function<? super T, ? extends IntStream> castToIntStream(
-	  Function<? super T, ? extends IntStream> mapper) {
+		Function<? super T, ? extends IntStream> mapper) {
 		return mapper;
 	}
 	protected @Override Function<? super T, ? extends LongStream> castToLongStream(
-	  Function<? super T, ? extends LongStream> mapper) {
+		Function<? super T, ? extends LongStream> mapper) {
 		return mapper;
 	}
 	protected @Override Function<? super T, ? extends DoubleStream> castToDoubleStream(
-	  Function<? super T, ? extends DoubleStream> mapper) {
+		Function<? super T, ? extends DoubleStream> mapper) {
 		return mapper;
 	}
 	protected @Override ToIntFunction<? super T> castToInt(ToIntFunction<? super T> mapper) {
@@ -97,46 +96,47 @@ ToDoubleFunction<? super T>> {//*E*
 	}
 	public final @SafeVarargs <R> Stream2<R> map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? mapInternal(
-		  mapper,
-		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+			mapper,
+			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
 	public <R> Stream2<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public final @SafeVarargs <R> Stream2<R> flatMap(
-	  Function<? super T, ? extends Stream<? extends R>> mapper,
-	  Predicate<T>... allowed) {
+		Function<? super T, ? extends Stream<? extends R>> mapper,
+		Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? flatMapInternal(
-		  mapper,
-		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(mapper, cast());
+			mapper,
+			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast())
+			: flatMapInternal(mapper, cast());
 	}
 	public <K> HashMap<K, ArrayList<T>> toMap(Function<? super T, ? extends K> classifier) {
 		return toMapInternal(castToClassifier(classifier));
 	}
 	public final @SafeVarargs <K> HashMap<K, ArrayList<T>> toMap(
-	  Function<? super T, ? extends K> classifier,
-	  Predicate<T>... allowed) {
+		Function<? super T, ? extends K> classifier,
+		Predicate<T>... allowed) {
 		if(allowed != null && allowed.length > 0) {
 			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).toMapInternal(classifier);
 		}
 		return toMapInternal(classifier);
 	}
 	public <K, L, M> M toMultiMap(
-	  Function<? super T, ? extends K> classifier,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<ArrayList<T>, L> intoList) {
+		Function<? super T, ? extends K> classifier,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<ArrayList<T>, L> intoList) {
 		return toMultiMapInternal(castToClassifier(classifier), intoMap, intoList);
 	}
 	public final @SafeVarargs <K, L, M> M toMultiMap(
-	  Function<? super T, ? extends K> classifier,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<ArrayList<T>, L> intoList,
-	  Predicate<T>... allowed) {
+		Function<? super T, ? extends K> classifier,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<ArrayList<T>, L> intoList,
+		Predicate<T>... allowed) {
 		if(allowed != null && allowed.length > 0) {
 			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).toMultiMapInternal(
-			  classifier,
-			  intoMap,
-			  intoList);
+				classifier,
+				intoMap,
+				intoList);
 		}
 		return toMultiMapInternal(classifier, intoMap, intoList);
 	}
@@ -147,7 +147,7 @@ ToDoubleFunction<? super T>> {//*E*
 		return classifier;
 	}
 	private <R> Function<? super T, ? extends Stream<? extends R>> castToFlatMapFunctions(
-	  Function<? super T, ? extends Stream<? extends R>> mapper) {
+		Function<? super T, ? extends Stream<? extends R>> mapper) {
 		return mapper;
 	}
 	private <R> Function<? super T, ? extends R> castToMapFunctions(Function<? super T, ? extends R> mapping) {

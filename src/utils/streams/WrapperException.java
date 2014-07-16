@@ -3,7 +3,6 @@ package utils.streams;
 import java.util.Objects;
 
 public final class WrapperException extends UncheckedExceptionWrappingException {
-
 	private <E extends Exception> WrapperException(E e, Class<E> classOfE) {
 		super(e, classOfE);
 		Objects.requireNonNull(classOfE);

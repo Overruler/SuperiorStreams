@@ -41,16 +41,15 @@ ExBiFunction<A, ? super T, ? extends DoubleStream, E>,
 ExToIntBiFunction<A, ? super T, E>,
 ExToLongBiFunction<A, ? super T, E>,
 ExToDoubleBiFunction<A, ? super T, E>> {//*E*
-
 	private final Supplier<AutoCloseableStrategy<A, Stream<T>>> supplierAC;
 	private final Class<E> classOfE;
 
 	public RexStream(Class<E> classOfE, Supplier<A> allocator, Function<A, Stream<T>> converter, Consumer<A> releaser) {
 		this(CachedSupplier.create(() -> new AutoCloseableStrategy<>(
-		  allocator,
-		  converter,
-		  (a, s) -> s.onClose(() -> releaser.accept(a)),
-		  Function.identity())), classOfE);
+			allocator,
+			converter,
+			(a, s) -> s.onClose(() -> releaser.accept(a)),
+			Function.identity())), classOfE);
 	}
 	<OLD> RexStream(Class<E> classOfE, Supplier<AutoCloseableStrategy<A, OLD>> old, Function<OLD, Stream<T>> converter) {
 		this(CachedSupplier.create(() -> new AutoCloseableStrategy<>(old, converter)), classOfE);
@@ -82,15 +81,15 @@ ExToDoubleBiFunction<A, ? super T, E>> {//*E*
 		return new RexDoubleStream<>(classOfE, supplierAC, convert);
 	}
 	protected @Override Function<? super T, ? extends IntStream> castToIntStream(
-	  ExBiFunction<A, ? super T, ? extends IntStream, E> mapper) {
+		ExBiFunction<A, ? super T, ? extends IntStream, E> mapper) {
 		return t -> mapper.uncheck(classOfE).apply(getCached(), t);
 	}
 	protected @Override Function<? super T, ? extends LongStream> castToLongStream(
-	  ExBiFunction<A, ? super T, ? extends LongStream, E> mapper) {
+		ExBiFunction<A, ? super T, ? extends LongStream, E> mapper) {
 		return t -> mapper.uncheck(classOfE).apply(getCached(), t);
 	}
 	protected @Override Function<? super T, ? extends DoubleStream> castToDoubleStream(
-	  ExBiFunction<A, ? super T, ? extends DoubleStream, E> mapper) {
+		ExBiFunction<A, ? super T, ? extends DoubleStream, E> mapper) {
 		return t -> mapper.uncheck(classOfE).apply(getCached(), t);
 	}
 	protected @Override ToIntFunction<? super T> castToInt(ExToIntBiFunction<A, ? super T, E> mapper) {
@@ -117,57 +116,60 @@ ExToDoubleBiFunction<A, ? super T, E>> {//*E*
 	public <R> RexStream<E, A, R> map(ExBiFunction<A, ? super T, ? extends R, E> mapping) {
 		return mapInternal(castToMapFunctions(mapping), cast());
 	}
-	public final @SafeVarargs <R> RexStream<E, A, R>
-	  map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
+	public final @SafeVarargs <R> RexStream<E, A, R> map(
+		Function<? super T, ? extends R> mapper,
+		Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? mapInternal(
-		  mapper,
-		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+			mapper,
+			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
 	public <R> RexStream<E, A, R> flatMap(ExBiFunction<A, ? super T, ? extends Stream<? extends R>, E> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public final @SafeVarargs <R> RexStream<E, A, R> flatMap(
-	  Function<? super T, ? extends Stream<? extends R>> mapper,
-	  Predicate<T>... allowed) {
+		Function<? super T, ? extends Stream<? extends R>> mapper,
+		Predicate<T>... allowed) {
 		return allowed != null && allowed.length > 0 ? flatMapInternal(
-		  mapper,
-		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(mapper, cast());
+			mapper,
+			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast())
+			: flatMapInternal(mapper, cast());
 	}
 	public <K> HashMap<K, ArrayList<T>> toMap(ExBiFunction<A, ? super T, ? extends K, E> classifier) throws E {
 		return toMapInternal(castToClassifier(classifier));
 	}
 	public final @SafeVarargs <K> HashMap<K, ArrayList<T>> toMap(
-	  Function<? super T, ? extends K> classifier,
-	  Predicate<T>... allowed) throws E {
+		Function<? super T, ? extends K> classifier,
+		Predicate<T>... allowed) throws E {
 		if(allowed != null && allowed.length > 0) {
 			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).toMapInternal(classifier);
 		}
 		return toMapInternal(classifier);
 	}
 	public <K, L, M> M toMultiMap(
-	  ExBiFunction<A, ? super T, ? extends K, E> classifier,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<ArrayList<T>, L> intoList) throws E {
+		ExBiFunction<A, ? super T, ? extends K, E> classifier,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<ArrayList<T>, L> intoList) throws E {
 		return toMultiMapInternal(castToClassifier(classifier), intoMap, intoList);
 	}
 	public final @SafeVarargs <K, L, M> M toMultiMap(
-	  Function<? super T, ? extends K> classifier,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<ArrayList<T>, L> intoList,
-	  Predicate<T>... allowed) throws E {
+		Function<? super T, ? extends K> classifier,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<ArrayList<T>, L> intoList,
+		Predicate<T>... allowed) throws E {
 		if(allowed != null && allowed.length > 0) {
 			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).toMultiMapInternal(
-			  classifier,
-			  intoMap,
-			  intoList);
+				classifier,
+				intoMap,
+				intoList);
 		}
 		return toMultiMapInternal(classifier, intoMap, intoList);
 	}
-	private <K> Function<? super T, ? extends K> castToClassifier(ExBiFunction<A, ? super T, ? extends K, E> classifier) {
+	private <K> Function<? super T, ? extends K>
+		castToClassifier(ExBiFunction<A, ? super T, ? extends K, E> classifier) {
 		return t -> classifier.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> Function<? super T, ? extends Stream<? extends R>> castToFlatMapFunctions(
-	  ExBiFunction<A, ? super T, ? extends Stream<? extends R>, E> mapper) {
+		ExBiFunction<A, ? super T, ? extends Stream<? extends R>, E> mapper) {
 		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> Function<? super T, ? extends R> castToMapFunctions(ExBiFunction<A, ? super T, ? extends R, E> mapping) {

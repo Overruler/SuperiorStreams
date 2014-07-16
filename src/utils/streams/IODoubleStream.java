@@ -40,7 +40,6 @@ IODoubleFunction<? extends DoubleStream>,
 IOToIntFunction<Double>,
 IOToLongFunction<Double>,
 IOToDoubleFunction<Double>> {//*E*
-
 	public IODoubleStream(Supplier<DoubleStream> supplier) {
 		super(supplier);
 	}
@@ -66,15 +65,15 @@ IOToDoubleFunction<Double>> {//*E*
 		return new IODoubleStream(supplier, func);
 	}
 	protected @Override Function<? super Double, ? extends IntStream> castToIntStream(
-	  IODoubleFunction<? extends IntStream> mapper) {
+		IODoubleFunction<? extends IntStream> mapper) {
 		return mapper.uncheck(classOfE())::apply;
 	}
 	protected @Override Function<? super Double, ? extends LongStream> castToLongStream(
-	  IODoubleFunction<? extends LongStream> mapper) {
+		IODoubleFunction<? extends LongStream> mapper) {
 		return mapper.uncheck(classOfE())::apply;
 	}
 	protected @Override Function<? super Double, ? extends DoubleStream> castToDoubleStream(
-	  IODoubleFunction<? extends DoubleStream> mapper) {
+		IODoubleFunction<? extends DoubleStream> mapper) {
 		return mapper.uncheck(classOfE())::apply;
 	}
 	protected @Override DoubleToIntFunction castToInt(IOToIntFunction<Double> mapper) {
@@ -100,35 +99,35 @@ IOToDoubleFunction<Double>> {//*E*
 	}
 	public final @SafeVarargs <R> IOStream<R> map(DoubleFunction<? extends R> mapper, DoublePredicate... allowed) {
 		return allowed != null && allowed.length > 0 ? mapInternal(
-		  mapper,
-		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+			mapper,
+			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
 	}
 	public <R> IOStream<R> flatMap(IODoubleFunction<? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public final @SafeVarargs <R> IOStream<R> flatMap(
-	  DoubleFunction<? extends Stream<? extends R>> mapper,
-	  DoublePredicate... allowed) {
+		DoubleFunction<? extends Stream<? extends R>> mapper,
+		DoublePredicate... allowed) {
 		return allowed != null && allowed.length > 0 ? flatMapInternal(
-		  mapper::apply,
-		  filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(
-		  mapper::apply,
-		  cast());
+			mapper::apply,
+			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(
+			mapper::apply,
+			cast());
 	}
 	public <K> HashMap<K, double[]> toMap(IODoubleFunction<? extends K> classifier) throws IOException {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(
-	  IODoubleFunction<? extends K> classifier,
-	  Function<HashMap<K, L>, M> intoMap,
-	  Function<double[], L> intoList) throws IOException {
+		IODoubleFunction<? extends K> classifier,
+		Function<HashMap<K, L>, M> intoMap,
+		Function<double[], L> intoList) throws IOException {
 		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
 	}
 	private <K> Function<IODoubleFunction<? extends K>, DoubleFunction<? extends K>> castToClassifier() {
 		return c -> c.uncheck(classOfE());
 	}
 	private <R> Function<Double, ? extends Stream<? extends R>> castToFlatMapFunctions(
-	  IODoubleFunction<? extends Stream<? extends R>> mapper) {
+		IODoubleFunction<? extends Stream<? extends R>> mapper) {
 		return mapper.uncheck(classOfE())::apply;
 	}
 	private <R> DoubleFunction<? extends R> castToMapFunctions(IODoubleFunction<? extends R> mapping) {

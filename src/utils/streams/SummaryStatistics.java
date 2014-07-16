@@ -7,7 +7,6 @@ import java.util.function.ToLongFunction;
 import java.util.stream.Collector;
 
 public class SummaryStatistics<T> implements Consumer<T> {
-
 	private long count;
 	private long sum;
 	private long min = Long.MAX_VALUE;
@@ -29,7 +28,7 @@ public class SummaryStatistics<T> implements Consumer<T> {
 		return SummaryStatistics::combine;
 	}
 	public static <T> Collector<? super T, SummaryStatistics<T>, SummaryStatistics<T>> collector(
-	  ToLongFunction<? super T> toValue) {
+		ToLongFunction<? super T> toValue) {
 		return Collector.of(supplier(toValue), SummaryStatistics::accept, SummaryStatistics::combine);
 	}
 	public @Override void accept(T t) {
@@ -81,12 +80,12 @@ public class SummaryStatistics<T> implements Consumer<T> {
 	}
 	public @Override String toString() {
 		return String.format(
-		  "%s{count=%d, sum=%d, min=%d, average=%f, max=%d}",
-		  this.getClass().getSimpleName(),
-		  getCount(),
-		  getSum(),
-		  getMin(),
-		  getAverage(),
-		  getMax());
+			"%s{count=%d, sum=%d, min=%d, average=%f, max=%d}",
+			this.getClass().getSimpleName(),
+			getCount(),
+			getSum(),
+			getMin(),
+			getAverage(),
+			getMax());
 	}
 }
