@@ -72,16 +72,15 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 		}
 	}
 	public SELF filter(PREDICATE allowed) {
-		return filterInternal(castToPredicates(allowed));
+		IntPredicate predicate = castToPredicates(allowed);
+		return asSELF(s -> s.filter(predicate));
 	}
 	public final @SafeVarargs SELF filter(IntPredicate allow, IntPredicate... allowed) {
 		for(IntPredicate predicate : allowed) {
 			allow = allow.and(predicate);
 		}
-		return filterInternal(allow);
-	}
-	protected SELF filterInternal(IntPredicate allowed) {
-		return asSELF(s -> s.filter(allowed));
+		IntPredicate predicate = allow;
+		return asSELF(s -> s.filter(predicate));
 	}
 	protected static <R, RS> RS mapInternal(
 		IntFunction<? extends R> mapper,
@@ -89,13 +88,16 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 		return cast.apply(s -> s.mapToObj(mapper));
 	}
 	public SELF mapToInt(TO_INT mapper) {
-		return asSELF(s -> s.map(castToInt(mapper)));
+		IntUnaryOperator mapper2 = castToInt(mapper);
+		return asSELF(s -> s.map(mapper2));
 	}
 	public LS mapToLong(TO_LONG mapper) {
-		return asLS(s -> s.mapToLong((IntToLongFunction) mapper));
+		IntToLongFunction mapper2 = castToLong(mapper);
+		return asLS(s -> s.mapToLong(mapper2));
 	}
 	public DS mapToDouble(TO_DOUBLE mapper) {
-		return asDS(s -> s.mapToDouble(castToDouble(mapper)));
+		IntToDoubleFunction mapper2 = castToDouble(mapper);
+		return asDS(s -> s.mapToDouble(mapper2));
 	}
 	protected static <R, RS> RS flatMapInternal(
 		Function<? super Integer, ? extends Stream<? extends R>> mapper,
@@ -103,13 +105,16 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 		return cast.apply(s -> s.boxed().flatMap(mapper));
 	}
 	public SELF flatMapToInt(TO_IS mapper) {
-		return asSELF(s -> s.boxed().flatMapToInt(castToIntStream(mapper)));
+		Function<? super Integer, ? extends IntStream> mapper2 = castToIntStream(mapper);
+		return asSELF(s -> s.boxed().flatMapToInt(mapper2));
 	}
 	public LS flatMapToLong(TO_LS mapper) {
-		return asLS(s -> s.boxed().flatMapToLong(castToLongStream(mapper)));
+		Function<? super Integer, ? extends LongStream> mapper2 = castToLongStream(mapper);
+		return asLS(s -> s.boxed().flatMapToLong(mapper2));
 	}
 	public DS flatMapToDouble(TO_DS mapper) {
-		return asDS(s -> s.boxed().flatMapToDouble(castToDoubleStream(mapper)));
+		Function<? super Integer, ? extends DoubleStream> mapper2 = castToDoubleStream(mapper);
+		return asDS(s -> s.boxed().flatMapToDouble(mapper2));
 	}
 	public SELF distinct() {
 		return asSELF(s -> s.distinct());
@@ -118,7 +123,8 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 		return asSELF(s -> s.sorted());
 	}
 	public SELF peek(CONSUMER action) {
-		return asSELF(s -> s.peek(castToConsumers(action)));
+		IntConsumer consumer = castToConsumers(action);
+		return asSELF(s -> s.peek(consumer));
 	}
 	public SELF limit(long maxSize) {
 		return asSELF(s -> s.limit(maxSize));
@@ -127,10 +133,12 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 		return asSELF(s -> s.skip(n));
 	}
 	public void forEach(CONSUMER action) throws E {
-		terminal(s -> s.forEach(castToConsumers(action)), maker(), classOfE());
+		IntConsumer consumer = castToConsumers(action);
+		terminal(s -> s.forEach(consumer), maker(), classOfE());
 	}
 	public void forEachOrdered(CONSUMER action) throws E {
-		terminal(s -> s.forEachOrdered(castToConsumers(action)), maker(), classOfE());
+		IntConsumer consumer = castToConsumers(action);
+		terminal(s -> s.forEachOrdered(consumer), maker(), classOfE());
 	}
 	public String toUnicodeString() throws E {
 		int[] array = toArray();
@@ -166,10 +174,12 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 			classOfE());
 	}
 	public int reduce(int identity, BINARY_OPERATOR accumulator) throws E {
-		return terminalAsInt(s -> s.reduce(identity, castToBinaryOperators(accumulator)), maker(), classOfE());
+		IntBinaryOperator operator = castToBinaryOperators(accumulator);
+		return terminalAsInt(s -> s.reduce(identity, operator), maker(), classOfE());
 	}
 	public OptionalInt reduce(BINARY_OPERATOR accumulator) throws E {
-		return terminalAsObj(s -> s.reduce(castToBinaryOperators(accumulator)), maker(), classOfE());
+		IntBinaryOperator operator = castToBinaryOperators(accumulator);
+		return terminalAsObj(s -> s.reduce(operator), maker(), classOfE());
 	}
 	public <U> U reduce(U identity, BiFunction<U, ? super Integer, U> accumulator, BinaryOperator<U> combiner) throws E {
 		return terminalAsObj(s -> s.boxed().reduce(identity, accumulator, combiner), maker(), classOfE());
@@ -195,14 +205,17 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 	public IntSummaryStatistics summaryStatistics() throws E {
 		return terminalAsObj(s -> s.summaryStatistics(), maker(), classOfE());
 	}
-	public boolean anyMatch(PREDICATE predicate) throws E {
-		return terminalAsBoolean(s -> s.anyMatch(castToPredicates(predicate)), maker(), classOfE());
+	public boolean anyMatch(PREDICATE test) throws E {
+		IntPredicate predicate = castToPredicates(test);
+		return terminalAsBoolean(s -> s.anyMatch(predicate), maker(), classOfE());
 	}
-	public boolean allMatch(PREDICATE predicate) throws E {
-		return terminalAsBoolean(s -> s.allMatch(castToPredicates(predicate)), maker(), classOfE());
+	public boolean allMatch(PREDICATE test) throws E {
+		IntPredicate predicate = castToPredicates(test);
+		return terminalAsBoolean(s -> s.allMatch(predicate), maker(), classOfE());
 	}
-	public boolean noneMatch(PREDICATE predicate) throws E {
-		return terminalAsBoolean(s -> s.noneMatch(castToPredicates(predicate)), maker(), classOfE());
+	public boolean noneMatch(PREDICATE test) throws E {
+		IntPredicate predicate = castToPredicates(test);
+		return terminalAsBoolean(s -> s.noneMatch(predicate), maker(), classOfE());
 	}
 	public OptionalInt findFirst() throws E {
 		return terminalAsObj(s -> s.findFirst(), maker(), classOfE());

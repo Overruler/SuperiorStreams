@@ -48,28 +48,32 @@ implements Streamable<T, E> {//*E*
 		return () -> iterator;
 	}
 	public SELF filter(PREDICATE allowed) {
-		return asSELF(s -> s.filter(castToPredicates(allowed)));
+		Predicate<? super T> predicate = castToPredicates(allowed);
+		return asSELF(s -> s.filter(predicate));
 	}
 	public final @SafeVarargs SELF filter(Predicate<? super T> allow, Predicate<? super T>... allowed) {
 		Predicate<T> allow2 = allow::test;
 		for(Predicate<? super T> predicate : allowed) {
 			allow2 = allow2.and(predicate);
 		}
-		Predicate<T> allow3 = allow2;
-		return asSELF(s -> s.filter(allow3));
+		Predicate<? super T> predicate = allow2;
+		return asSELF(s -> s.filter(predicate));
 	}
 	public IS mapToInt(TO_INT mapper) {
-		return asIS(s -> s.mapToInt(castToInt(mapper)));
+		ToIntFunction<? super T> mapper2 = castToInt(mapper);
+		return asIS(s -> s.mapToInt(mapper2));
 	}
 	public LS mapToLong(TO_LONG mapper) {
 		ToLongFunction<? super T> mapper2 = castToLong(mapper);
 		return asLS(s -> s.mapToLong(mapper2));
 	}
 	public DS mapToDouble(TO_DOUBLE mapper) {
-		return asDS(s -> s.mapToDouble(castToDouble(mapper)));
+		ToDoubleFunction<? super T> mapper2 = castToDouble(mapper);
+		return asDS(s -> s.mapToDouble(mapper2));
 	}
 	public IS flatMapToInt(TO_IS mapper) {
-		return asIS(s -> s.flatMapToInt(castToIntStream(mapper)));
+		Function<? super T, ? extends IntStream> mapper2 = castToIntStream(mapper);
+		return asIS(s -> s.flatMapToInt(mapper2));
 	}
 	public DS flatMapToDouble(TO_DS mapper) {
 		Function<? super T, ? extends DoubleStream> mapper2 = castToDoubleStream(mapper);
@@ -92,37 +96,40 @@ implements Streamable<T, E> {//*E*
 		return asSELF(s -> s.skip(n));
 	}
 	public SELF peek(CONSUMER action) {
-		return asSELF(s -> s.peek(castToConsumers(action)));
+		Consumer<? super T> consumer = castToConsumers(action);
+		return asSELF(s -> s.peek(consumer));
 	}
 	public final @SafeVarargs SELF peek(Consumer<? super T> action, Consumer<? super T>... actions) {
 		Consumer<T> action2 = action::accept;
 		for(Consumer<? super T> consumer : actions) {
 			action2 = action2.andThen(consumer);
 		}
-		Consumer<T> action3 = action2;
-		return asSELF(s -> s.peek(action3));
+		Consumer<? super T> consumer = action2;
+		return asSELF(s -> s.peek(consumer));
 	}
 	public void forEach(CONSUMER action) throws E {
-		terminal(s -> s.forEach(castToConsumers(action)), maker(), classOfE());
+		Consumer<? super T> consumer = castToConsumers(action);
+		terminal(s -> s.forEach(consumer), maker(), classOfE());
 	}
 	public final @SafeVarargs void forEach(Consumer<? super T> action, Consumer<? super T>... actions) throws E {
 		Consumer<T> action2 = action::accept;
 		for(Consumer<? super T> consumer : actions) {
 			action2 = action2.andThen(consumer);
 		}
-		Consumer<T> action3 = action2;
+		Consumer<? super T> action3 = action2;
 		terminal(s -> s.forEach(action3), maker(), classOfE());
 	}
 	public void forEachOrdered(CONSUMER action) throws E {
-		terminal(s -> s.forEachOrdered(castToConsumers(action)), maker(), classOfE());
+		Consumer<? super T> consumer = castToConsumers(action);
+		terminal(s -> s.forEachOrdered(consumer), maker(), classOfE());
 	}
 	public final @SafeVarargs void forEachOrdered(Consumer<? super T> action, Consumer<? super T>... actions) throws E {
 		Consumer<T> action2 = action::accept;
 		for(Consumer<? super T> consumer : actions) {
 			action2 = action2.andThen(consumer);
 		}
-		Consumer<T> action3 = action2;
-		terminal(s -> s.forEachOrdered(action3), maker(), classOfE());
+		Consumer<? super T> consumer = action2;
+		terminal(s -> s.forEachOrdered(consumer), maker(), classOfE());
 	}
 	public IS asIntStream() {
 		return asIS(s -> s.mapToInt(AbstractIntStream::toInt));
@@ -173,12 +180,12 @@ implements Streamable<T, E> {//*E*
 		return asSELF(s -> Stream.concat(s, after.maker().get()));
 	}
 	public HashMap<Boolean, ArrayList<T>> partition(PREDICATE allowed) throws E {
-		return terminalAsObj(
-			s -> s.collect(collectingAndThen(
-				partitioningBy(castToPredicates(allowed), Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
-				m -> new HashMap<>(m))),
-			maker(),
-			classOfE());
+		Predicate<? super T> predicate = castToPredicates(allowed);
+		Collector<T, Object, HashMap<Boolean, ArrayList<T>>> collector =
+			collectingAndThen(
+				partitioningBy(predicate, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
+				m -> new HashMap<>(m));
+		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
 	}
 	public final @SafeVarargs HashMap<Boolean, ArrayList<T>> partition(
 		Predicate<? super T> allow,
@@ -187,13 +194,12 @@ implements Streamable<T, E> {//*E*
 		for(Predicate<? super T> predicate : allowed) {
 			allow2 = allow2.and(predicate);
 		}
-		Predicate<T> allow3 = allow2;
-		return terminalAsObj(
-			s -> s.collect(collectingAndThen(
-				partitioningBy(allow3, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
-				m -> new HashMap<>(m))),
-			maker(),
-			classOfE());
+		Predicate<? super T> predicate = allow2;
+		Collector<T, Object, HashMap<Boolean, ArrayList<T>>> collector =
+			collectingAndThen(
+				partitioningBy(predicate, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
+				m -> new HashMap<>(m));
+		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
 	}
 	public <R> R collect(Supplier<R> initial, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner) throws E {
 		return terminalAsObj(s -> s.collect(initial, accumulator, combiner), maker(), classOfE());
@@ -202,13 +208,16 @@ implements Streamable<T, E> {//*E*
 		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
 	}
 	public SELF sorted(COMPARATOR comparator) {
-		return asSELF(s -> s.sorted(castToComparators(comparator)));
+		Comparator<? super T> comparator2 = castToComparators(comparator);
+		return asSELF(s -> s.sorted(comparator2));
 	}
 	public Optional<T> min(COMPARATOR comparator) throws E {
-		return terminalAsObj(s -> s.min(castToComparators(comparator)), maker(), classOfE());
+		Comparator<? super T> comparator2 = castToComparators(comparator);
+		return terminalAsObj(s -> s.min(comparator2), maker(), classOfE());
 	}
 	public Optional<T> max(COMPARATOR comparator) throws E {
-		return terminalAsObj(s -> s.max(castToComparators(comparator)), maker(), classOfE());
+		Comparator<? super T> comparator2 = castToComparators(comparator);
+		return terminalAsObj(s -> s.max(comparator2), maker(), classOfE());
 	}
 	public SummaryStatistics<T> summaryStatistics(TO_LONG attribute) throws E {
 		ToLongFunction<? super T> attribute2 = castToLong(attribute);
@@ -217,7 +226,8 @@ implements Streamable<T, E> {//*E*
 		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
 	}
 	public OptionalDouble average(TO_DOUBLE attribute) throws E {
-		return terminalAsObj(s -> s.mapToDouble(castToDouble(attribute)).average(), maker(), classOfE());
+		ToDoubleFunction<? super T> mapper = castToDouble(attribute);
+		return terminalAsObj(s -> s.mapToDouble(mapper).average(), maker(), classOfE());
 	}
 	protected <K> HashMap<K, ArrayList<T>> toMapInternal(Function<? super T, ? extends K> classifier) throws E {
 		return terminalAsMapToList(classifier, Function.identity(), Function.identity(), maker(), classOfE());
@@ -229,55 +239,62 @@ implements Streamable<T, E> {//*E*
 		return terminalAsMapToList(apply, intoMap, intoList, maker(), classOfE());
 	}
 	public T reduce(T start, BINARY_OPERATOR add) throws E {
-		return reduce(start, castToBinaryOperators(add));
+		BinaryOperator<T> accumulator = castToBinaryOperators(add);
+		return terminalAsObj(s -> s.reduce(start, accumulator), maker(), classOfE());
 	}
 	public final @SafeVarargs T reduce(T start, BinaryOperator<T> add, Function<T, T>... extras) throws E {
 		for(Function<T, T> accumulator2 : extras) {
 			add = add.andThen(accumulator2)::apply;
 		}
-		return reduce(start, add);
+		BinaryOperator<T> accumulator = add;
+		return terminalAsObj(s -> s.reduce(start, accumulator), maker(), classOfE());
 	}
 	public Optional<T> reduce(BINARY_OPERATOR add) throws E {
-		return reduceInternal(castToBinaryOperators(add));
+		BinaryOperator<T> accumulator = castToBinaryOperators(add);
+		return terminalAsObj(s -> s.reduce(accumulator), maker(), classOfE());
 	}
 	public final @SafeVarargs Optional<T> reduce(BinaryOperator<T> add, Function<T, T>... extras) throws E {
 		for(Function<T, T> accumulator2 : extras) {
 			add = add.andThen(accumulator2)::apply;
 		}
-		return reduceInternal(add);
+		BinaryOperator<T> accumulator = add;
+		return terminalAsObj(s -> s.reduce(accumulator), maker(), classOfE());
 	}
 	public boolean anyMatch(PREDICATE test) throws E {
-		return anyMatch(castToPredicates(test));
+		Predicate<? super T> predicate = castToPredicates(test);
+		return terminalAsBoolean(s -> s.anyMatch(predicate), maker(), classOfE());
 	}
 	public final @SafeVarargs boolean anyMatch(Predicate<? super T> test, Predicate<? super T>... tests) throws E {
 		Predicate<T> test2 = test::test;
 		for(Predicate<? super T> predicate2 : tests) {
 			test2 = test2.and(predicate2);
 		}
-		Predicate<? super T> test3 = test;
-		return terminalAsBoolean(s -> s.anyMatch(test3), maker(), classOfE());
+		Predicate<? super T> predicate = test2;
+		return terminalAsBoolean(s -> s.anyMatch(predicate), maker(), classOfE());
 	}
-	public boolean allMatch(PREDICATE predicate) throws E {
-		return allMatch(castToPredicates(predicate));
+	public boolean allMatch(PREDICATE test) throws E {
+		Predicate<? super T> predicate = castToPredicates(test);
+		return terminalAsBoolean(s -> s.allMatch(predicate), maker(), classOfE());
 	}
 	public final @SafeVarargs boolean allMatch(Predicate<? super T> test, Predicate<? super T>... tests) throws E {
 		Predicate<T> test2 = test::test;
 		for(Predicate<? super T> predicate2 : tests) {
 			test2 = test2.and(predicate2);
 		}
-		Predicate<T> test3 = test2;
-		return terminalAsBoolean(s -> s.allMatch(test3), maker(), classOfE());
+		Predicate<? super T> predicate = test2;
+		return terminalAsBoolean(s -> s.allMatch(predicate), maker(), classOfE());
 	}
 	public boolean noneMatch(PREDICATE test) throws E {
-		return terminalAsBoolean(s -> s.noneMatch(castToPredicates(test)), maker(), classOfE());
+		Predicate<? super T> predicate = castToPredicates(test);
+		return terminalAsBoolean(s -> s.noneMatch(predicate), maker(), classOfE());
 	}
 	public final @SafeVarargs boolean noneMatch(Predicate<? super T> test, Predicate<? super T>... tests) throws E {
 		Predicate<T> test2 = test::test;
 		for(Predicate<? super T> predicate2 : tests) {
 			test2 = test2.and(predicate2);
 		}
-		Predicate<T> test3 = test2;
-		return terminalAsBoolean(s -> s.noneMatch(test3), maker(), classOfE());
+		Predicate<? super T> predicate = test2;
+		return terminalAsBoolean(s -> s.noneMatch(predicate), maker(), classOfE());
 	}
 	protected <R, RS> RS mapInternal(
 		Function<? super T, ? extends R> mapper,
@@ -288,9 +305,6 @@ implements Streamable<T, E> {//*E*
 		Function<? super T, ? extends Stream<? extends R>> mapper,
 		Function<Function<Stream<T>, Stream<R>>, RS> cast) {
 		return cast.apply(s -> s.flatMap(mapper));
-	}
-	protected Optional<T> reduceInternal(BinaryOperator<T> accumulator) throws E {
-		return terminalAsObj(s -> s.reduce(accumulator), maker(), classOfE());
 	}
 
 	protected final Supplier<Stream<T>> supplier;
