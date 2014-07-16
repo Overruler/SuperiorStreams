@@ -5,9 +5,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.BiConsumer
  * @param <T>
  * @param <U>
+ * @see java.util.function.BiConsumer
  */
 @FunctionalInterface
 public interface IOBiConsumer<T, U> extends ExBiConsumer<T, U, IOException> {
@@ -28,7 +28,7 @@ public interface IOBiConsumer<T, U> extends ExBiConsumer<T, U, IOException> {
 			}
 		};
 	}
-	default java.util.function.BiConsumer<T, U> uncheck() {
+	default BiConsumer<T, U> uncheck() {
 		return (T t, U u) -> {
 			try {
 				accept(t, u);

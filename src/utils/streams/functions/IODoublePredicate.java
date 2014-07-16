@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.DoublePredicate
-
  */
 @FunctionalInterface
 public interface IODoublePredicate extends ExDoublePredicate<IOException> {
@@ -31,7 +30,7 @@ public interface IODoublePredicate extends ExDoublePredicate<IOException> {
 			}
 		};
 	}
-	default java.util.function.DoublePredicate uncheck() {
+	default DoublePredicate uncheck() {
 		return (double t) -> {
 			try {
 				return test(t);

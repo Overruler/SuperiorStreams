@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.DoubleToLongFunction
  * @param <E>
+ * @see java.util.function.DoubleToLongFunction
  */
 @FunctionalInterface
 public interface ExDoubleToLongFunction<E extends Exception> {
@@ -29,7 +29,7 @@ public interface ExDoubleToLongFunction<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.DoubleToLongFunction uncheck(Class<E> classOfE) {
+	default DoubleToLongFunction uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (double t) -> {
 			try {

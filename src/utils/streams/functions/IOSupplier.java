@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.Supplier
  * @param <T>
+ * @see java.util.function.Supplier
  */
 @FunctionalInterface
 public interface IOSupplier<T> extends ExSupplier<T, IOException> {
@@ -20,7 +20,7 @@ public interface IOSupplier<T> extends ExSupplier<T, IOException> {
 			}
 		};
 	}
-	default java.util.function.Supplier<T> uncheck() {
+	default Supplier<T> uncheck() {
 		return () -> {
 			try {
 				return get();

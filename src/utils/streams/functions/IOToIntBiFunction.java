@@ -5,9 +5,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ToIntBiFunction
  * @param <T>
  * @param <U>
+ * @see java.util.function.ToIntBiFunction
  */
 @FunctionalInterface
 public interface IOToIntBiFunction<T, U> extends ExToIntBiFunction<T, U, IOException> {
@@ -21,7 +21,7 @@ public interface IOToIntBiFunction<T, U> extends ExToIntBiFunction<T, U, IOExcep
 			}
 		};
 	}
-	default java.util.function.ToIntBiFunction<T, U> uncheck() {
+	default ToIntBiFunction<T, U> uncheck() {
 		return (T t, U u) -> {
 			try {
 				return applyAsInt(t, u);

@@ -122,9 +122,9 @@ class Signature {
 	}
 	String javadocForClass(boolean includeException) {
 		String genericTypes =
-			asTypeArguments(includeException).stream().map(bt -> " * @param <" + bt.argumentVariant + ">").collect(
-				joining("\n"));
-		return "/**\n * @see java.util.function." + uncheckVariant + "\n" + genericTypes + "\n */";
+			asTypeArguments(includeException).stream().map(bt -> " * @param <" + bt.argumentVariant + ">\n").collect(
+				joining());
+		return "/**\n" + genericTypes + " * @see java.util.function." + uncheckVariant + "\n */";
 	}
 	String javadocForMethod(String exceptionName) {
 		String returnJavadoc = returns == VOID ? "" : "\t * @return " + returns.argumentVariant + "\n";

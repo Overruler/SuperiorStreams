@@ -4,9 +4,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ObjDoubleConsumer
  * @param <T>
  * @param <E>
+ * @see java.util.function.ObjDoubleConsumer
  */
 @FunctionalInterface
 public interface ExObjDoubleConsumer<T, E extends Exception> {
@@ -37,7 +37,7 @@ public interface ExObjDoubleConsumer<T, E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.ObjDoubleConsumer<T> uncheck(Class<E> classOfE) {
+	default ObjDoubleConsumer<T> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (T t, double u) -> {
 			try {

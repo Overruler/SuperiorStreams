@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ToDoubleFunction
  * @param <T>
+ * @see java.util.function.ToDoubleFunction
  */
 @FunctionalInterface
 public interface IOToDoubleFunction<T> extends ExToDoubleFunction<T, IOException> {
@@ -20,7 +20,7 @@ public interface IOToDoubleFunction<T> extends ExToDoubleFunction<T, IOException
 			}
 		};
 	}
-	default java.util.function.ToDoubleFunction<T> uncheck() {
+	default ToDoubleFunction<T> uncheck() {
 		return (T t) -> {
 			try {
 				return applyAsDouble(t);

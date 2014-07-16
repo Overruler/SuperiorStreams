@@ -5,10 +5,10 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.BiFunction
  * @param <T>
  * @param <U>
  * @param <R>
+ * @see java.util.function.BiFunction
  */
 @FunctionalInterface
 public interface IOBiFunction<T, U, R> extends ExBiFunction<T, U, R, IOException> {
@@ -26,7 +26,7 @@ public interface IOBiFunction<T, U, R> extends ExBiFunction<T, U, R, IOException
 			}
 		};
 	}
-	default java.util.function.BiFunction<T, U, R> uncheck() {
+	default BiFunction<T, U, R> uncheck() {
 		return (T t, U u) -> {
 			try {
 				return apply(t, u);

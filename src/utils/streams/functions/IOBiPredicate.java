@@ -5,9 +5,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.BiPredicate
  * @param <T>
  * @param <U>
+ * @see java.util.function.BiPredicate
  */
 @FunctionalInterface
 public interface IOBiPredicate<T, U> extends ExBiPredicate<T, U, IOException> {
@@ -32,7 +32,7 @@ public interface IOBiPredicate<T, U> extends ExBiPredicate<T, U, IOException> {
 			}
 		};
 	}
-	default java.util.function.BiPredicate<T, U> uncheck() {
+	default BiPredicate<T, U> uncheck() {
 		return (T t, U u) -> {
 			try {
 				return test(t, u);

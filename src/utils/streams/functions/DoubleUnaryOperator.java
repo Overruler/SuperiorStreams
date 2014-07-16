@@ -1,10 +1,10 @@
 package utils.streams.functions;
 
 import java.util.Objects;
+import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.DoubleUnaryOperator
-
  */
 @FunctionalInterface
 public interface DoubleUnaryOperator extends ExDoubleUnaryOperator<RuntimeException>, java.util.function.DoubleUnaryOperator {
@@ -18,5 +18,15 @@ public interface DoubleUnaryOperator extends ExDoubleUnaryOperator<RuntimeExcept
 	}
 	static DoubleUnaryOperator identity() {
 		return t -> t;
+	}
+	default <E extends Exception> ExDoubleUnaryOperator<E> recheck(Class<E> classOfE) {
+		Objects.requireNonNull(classOfE);
+		return (double t) -> {
+			try {
+				return applyAsDouble(t);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 }

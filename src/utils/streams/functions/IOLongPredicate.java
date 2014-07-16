@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.LongPredicate
-
  */
 @FunctionalInterface
 public interface IOLongPredicate extends ExLongPredicate<IOException> {
@@ -31,7 +30,7 @@ public interface IOLongPredicate extends ExLongPredicate<IOException> {
 			}
 		};
 	}
-	default java.util.function.LongPredicate uncheck() {
+	default LongPredicate uncheck() {
 		return (long t) -> {
 			try {
 				return test(t);

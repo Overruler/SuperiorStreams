@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.LongConsumer
-
  */
 @FunctionalInterface
 public interface IOLongConsumer extends ExLongConsumer<IOException> {
@@ -27,7 +26,7 @@ public interface IOLongConsumer extends ExLongConsumer<IOException> {
 			}
 		};
 	}
-	default java.util.function.LongConsumer uncheck() {
+	default LongConsumer uncheck() {
 		return (long t) -> {
 			try {
 				accept(t);

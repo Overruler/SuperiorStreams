@@ -22,7 +22,7 @@ interface Templates {
 	+ "			}\n"
 	+ "		};\n"
 	+ "	}\n"
-	+ "	default java.util.function.IntBinaryOperator uncheck(Class<E> classOfE) {\n"
+	+ "	default IntBinaryOperator uncheck(Class<E> classOfE) {\n"
 	+ "		Objects.requireNonNull(classOfE);\n"
 	+ "		return (int t, int u) -> {\n"
 	+ "			try {\n"
@@ -156,7 +156,7 @@ interface Templates {
 				"	static <T, E extends Exception> ExUnaryOperator<T, E> identity() {\n" +
 				"		return t -> t;\n" +
 				"	}\n" +
-				EX_RECHECK_UNCHECK.replace("default java.", "default @Override java.");
+				EX_RECHECK_UNCHECK.replace("default ", "default @Override ");
 			}
 			public @Override String binaryOperatorLike() {
 				return "package utils.streams.functions;\n" +
@@ -176,7 +176,7 @@ interface Templates {
 				"		Objects.requireNonNull(comparator);\n" +
 				"		return (a, b) -> comparator.compare(a, b) >= 0 ? a : b;\n" +
 				"	}\n" +
-				EX_RECHECK_UNCHECK.replace("default java.", "default @Override java.");
+				EX_RECHECK_UNCHECK.replace("default ", "default @Override ");
 			}
 			public @Override String biFunctionLike() {
 				return ("package utils.streams.functions;\n"
@@ -216,7 +216,7 @@ interface Templates {
 		+ "			}\n"
 		+ "		};\n"
 		+ "	}\n"
-		+ "	default java.util.function.IntBinaryOperator uncheck() {\n"
+		+ "	default IntBinaryOperator uncheck() {\n"
 		+ "		return (int t, int u) -> {\n"
 		+ "			try {\n"
 		+ "				return applyAsInt(t, u);\n"
@@ -346,7 +346,7 @@ interface Templates {
 				"	static <T> IOUnaryOperator<T> identity() {\n" +
 				"		return t -> t;\n" +
 				"	}\n" +
-				IO_RECHECK_UNCHECK.replace("default java.", "default @Override java.");
+				IO_RECHECK_UNCHECK.replace("default ", "default @Override ");
 			}
 			public @Override String binaryOperatorLike() {
 				return "package utils.streams.functions;\n" +
@@ -367,7 +367,7 @@ interface Templates {
 				"		Objects.requireNonNull(comparator);\n" +
 				"		return (a, b) -> comparator.compare(a, b) >= 0 ? a : b;\n" +
 				"	}\n" +
-				IO_RECHECK_UNCHECK.replace("default java.", "default @Override java.");
+				IO_RECHECK_UNCHECK.replace("default ", "default @Override ");
 			}
 			public @Override String biFunctionLike() {
 				return ("package utils.streams.functions;\n"
@@ -393,24 +393,39 @@ interface Templates {
 			}
 		};
 	}
+
+	static final String RECHECK =
+		("	default <E extends Exception> ExIntBinaryOperator<E> recheck(Class<E> classOfE) {\n"
+		+ "		Objects.requireNonNull(classOfE);\n"
+		+ "		return (int t, int u) -> {\n"
+		+ "			try {\n"
+		+ "				return this.applyAsInt(t, u);\n"
+		+ "			} catch(RuntimeException e) {\n"
+		+ "				throw WrapperException.show(e, classOfE);\n"
+		+ "			}\n"
+		+ "		};\n"
+		+ "	}\n"
+		+ "}\n"
+		+ "").replace("<E extends Exception> ", "<E extends RuntimeException> ");
+
 	static Templates forRuntimeException() {
 		return new Templates() {
 			public @Override String supplierLike() {
-				return "package utils.streams.functions;\n"
-				+ "\n"
-				+ "/**\n"
-				+ " * @see java.util.function.IntBinaryOperator\n"
-				+ " * @author Timo Kinnunen\n"
-				+ " */\n"
-				+ "/** class */\n"
-				+ "@FunctionalInterface\n"
-				+ "public interface IntBinaryOperator extends ExIntBinaryOperator<RuntimeException>, java.util.function.IntBinaryOperator {}\n"
-				+ "";
+				return "package utils.streams.functions;\n" +
+				"\n" +
+				"import java.util.Objects;\n" +
+				"import utils.streams.WrapperException;\n" +
+				"\n" +
+				"/** class */\n" +
+				"@FunctionalInterface\n" +
+				"public interface IntBinaryOperator extends ExIntBinaryOperator<RuntimeException>, java.util.function.IntBinaryOperator {\n" +
+				RECHECK;
 			}
 			public @Override String predicateLike() {
 				return ("package utils.streams.functions;\n"
 				+ "\n"
 				+ "import java.util.Objects;\n"
+				+ "import utils.streams.WrapperException;\n"
 				+ "\n"
 				+ "/** class */\n"
 				+ "@FunctionalInterface\n"
@@ -425,19 +440,19 @@ interface Templates {
 				+ "	default BiPredicate<T, U> or(BiPredicate<? super T, ? super U> other) {\n"
 				+ "		Objects.requireNonNull(other);\n"
 				+ "		return (T t, U u) -> test(t, u) || other.test(t, u);\n"
-				+ "	}\n"
-				+ "}\n"
-				+ "")
+				+ "	}\n")
 				/**/.replace("ExBiPredicate<T, U, ", "ExIntBinaryOperator<")
 				/**/.replace("BiPredicate<T, U>", "IntBinaryOperator")
 				/**/.replace("BiPredicate<? super T, ? super U>", "IntBinaryOperator<SUPER_T, SUPER_U>")
 				/**/.replace("(T t, U u)", "(int t, int u)")
-				/**/.replace("test(", "applyAsInt(");
+				/**/.replace("test(", "applyAsInt(") +
+				RECHECK;
 			}
 			public @Override String functionLike() {
 				return ("package utils.streams.functions;\n"
 				+ "\n"
 				+ "import java.util.Objects;\n"
+				+ "import utils.streams.WrapperException;\n"
 				+ "\n"
 				+ "/** class */\n"
 				+ "@FunctionalInterface\n"
@@ -452,9 +467,7 @@ interface Templates {
 				+ "	}\n"
 				+ "	static <T> Function<T, T> identity() {\n"
 				+ "		return t -> t;\n"
-				+ "	}\n"
-				+ "}\n"
-				+ "")
+				+ "	}\n")
 				/**/.replace("? super ", "SUPER_")
 				/**/.replace("? extends ", "EXTENDS_")
 				/**/.replace("ExFunction<T, R, ", "ExIntBinaryOperator<")
@@ -463,12 +476,14 @@ interface Templates {
 				/**/.replace("@IntBinaryOperator", "@Function")
 				/**/.replace("apply", "applyAsInt")
 				/**/.replace("(T t)", "(TAIL t)")
-				/**/.replace("(V v)", "(HEAD v)");
+				/**/.replace("(V v)", "(HEAD v)") +
+				RECHECK;
 			}
 			public @Override String consumerLike() {
 				return ("package utils.streams.functions;\n"
 				+ "\n"
 				+ "import java.util.Objects;\n"
+				+ "import utils.streams.WrapperException;\n"
 				+ "\n"
 				+ "/** class */\n"
 				+ "@FunctionalInterface\n"
@@ -479,62 +494,62 @@ interface Templates {
 				+ "			accept(t, u);\n"
 				+ "			after.accept(t, u);\n"
 				+ "		};\n"
-				+ "	}\n"
-				+ "}\n"
-				+ "")
+				+ "	}\n")
 				/**/.replace("ExBiConsumer<T, U, ", "ExIntBinaryOperator<")
 				/**/.replace("BiConsumer<T, U>", "IntBinaryOperator")
 				/**/.replace("(T t, U u)", "(int t, int u)")
-				/**/.replace("accept", "applyAsInt");
+				/**/.replace("accept", "applyAsInt") +
+				RECHECK;
 			}
 			public @Override String unaryOperatorLike() {
-				return "package utils.streams.functions;\n"
-				+ "\n"
-				+ "import java.util.Objects;\n"
-				+ "\n"
-				+ "/** class */\n"
-				+ "@FunctionalInterface\n"
-				+ "public interface UnaryOperator<T> extends ExUnaryOperator<T, RuntimeException>, Function<T, T>,\n"
-				+ "	java.util.function.UnaryOperator<T> {\n"
-				+ "	default UnaryOperator<T> compose(UnaryOperator<T> before) {\n"
-				+ "		Objects.requireNonNull(before);\n"
-				+ "		return (T t) -> apply(before.apply(t));\n"
-				+ "	}\n"
-				+ "	default UnaryOperator<T> andThen(UnaryOperator<T> after) {\n"
-				+ "		Objects.requireNonNull(after);\n"
-				+ "		return (T t) -> after.apply(apply(t));\n"
-				+ "	}\n"
-				+ "	static <T> UnaryOperator<T> identity() {\n"
-				+ "		return t -> t;\n"
-				+ "	}\n"
-				+ "}\n"
-				+ "";
+				return "package utils.streams.functions;\n" +
+				"\n" +
+				"import java.util.Objects;\n" +
+				"import utils.streams.WrapperException;\n" +
+				"\n" +
+				"/** class */\n" +
+				"@FunctionalInterface\n" +
+				"public interface UnaryOperator<T> extends ExUnaryOperator<T, RuntimeException>, Function<T, T>,\n" +
+				"	java.util.function.UnaryOperator<T> {\n" +
+				"	default UnaryOperator<T> compose(UnaryOperator<T> before) {\n" +
+				"		Objects.requireNonNull(before);\n" +
+				"		return (T t) -> apply(before.apply(t));\n" +
+				"	}\n" +
+				"	default UnaryOperator<T> andThen(UnaryOperator<T> after) {\n" +
+				"		Objects.requireNonNull(after);\n" +
+				"		return (T t) -> after.apply(apply(t));\n" +
+				"	}\n" +
+				"	static <T> UnaryOperator<T> identity() {\n" +
+				"		return t -> t;\n" +
+				"	}\n" +
+				RECHECK.replace("default ", "default @Override ");
 			}
 			public @Override String binaryOperatorLike() {
-				return "package utils.streams.functions;\n"
-				+ "\n"
-				+ "import java.util.Comparator;\n"
-				+ "import java.util.Objects;\n"
-				+ "\n"
-				+ "/** class */\n"
-				+ "@FunctionalInterface\n"
-				+ "public interface BinaryOperator<T> extends ExBinaryOperator<T, RuntimeException>, BiFunction<T, T, T>,\n"
-				+ "	java.util.function.BinaryOperator<T> {\n"
-				+ "	static <T> BinaryOperator<T> minBy(Comparator<? super T> comparator) {\n"
-				+ "		Objects.requireNonNull(comparator);\n"
-				+ "		return (a, b) -> comparator.compare(a, b) <= 0 ? a : b;\n"
-				+ "	}\n"
-				+ "	static <T> BinaryOperator<T> maxBy(Comparator<? super T> comparator) {\n"
-				+ "		Objects.requireNonNull(comparator);\n"
-				+ "		return (a, b) -> comparator.compare(a, b) >= 0 ? a : b;\n"
-				+ "	}\n"
-				+ "}\n"
-				+ "";
+				return "package utils.streams.functions;\n" +
+				"\n" +
+				"import java.util.Comparator;\n" +
+				"import java.util.Objects;\n" +
+				"import utils.streams.WrapperException;\n" +
+				"\n" +
+				"/** class */\n" +
+				"@FunctionalInterface\n" +
+				"public interface BinaryOperator<T> extends ExBinaryOperator<T, RuntimeException>, BiFunction<T, T, T>,\n" +
+				"	java.util.function.BinaryOperator<T> {\n" +
+				"	static <T> BinaryOperator<T> minBy(Comparator<? super T> comparator) {\n" +
+				"		Objects.requireNonNull(comparator);\n" +
+				"		return (a, b) -> comparator.compare(a, b) <= 0 ? a : b;\n" +
+				"	}\n" +
+				"	static <T> BinaryOperator<T> maxBy(Comparator<? super T> comparator) {\n" +
+				"		Objects.requireNonNull(comparator);\n" +
+				"		return (a, b) -> comparator.compare(a, b) >= 0 ? a : b;\n" +
+				"	}\n" +
+				RECHECK.replace("default ", "default @Override ");
 			}
 			public @Override String biFunctionLike() {
 				return ("package utils.streams.functions;\n"
 				+ "\n"
 				+ "import java.util.Objects;\n"
+				+ "import utils.streams.WrapperException;\n"
 				+ "\n"
 				+ "/** class */\n"
 				+ "@FunctionalInterface\n"
@@ -543,15 +558,14 @@ interface Templates {
 				+ "	default <V> BiFunction<T, U, V> andThen(Function<? super R, ? extends V> after) {\n"
 				+ "		Objects.requireNonNull(after);\n"
 				+ "		return (T t, U u) -> after.apply(apply(t, u));\n"
-				+ "	}\n"
-				+ "}\n"
-				+ "")
+				+ "	}\n")
 				/**/.replace("ExBiFunction<T, U, R, ", "ExIntBinaryOperator<")
 				/**/.replace("BiFunction<T, U, R>", "IntBinaryOperator")
 				/**/.replace("BiFunction<T, U, V>", "IntBinaryOperator<T, R>")
 				/**/.replace("(T t1, U t2)", "(int t, int u)")
 				/**/.replace("(T t, U u)", "(int t, int u)")
-				/**/.replace("(apply(", "(applyAsInt(");
+				/**/.replace("(apply(", "(applyAsInt(") +
+				RECHECK;
 			}
 		};
 	}

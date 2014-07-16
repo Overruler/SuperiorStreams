@@ -5,9 +5,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ToLongBiFunction
  * @param <T>
  * @param <U>
+ * @see java.util.function.ToLongBiFunction
  */
 @FunctionalInterface
 public interface IOToLongBiFunction<T, U> extends ExToLongBiFunction<T, U, IOException> {
@@ -21,7 +21,7 @@ public interface IOToLongBiFunction<T, U> extends ExToLongBiFunction<T, U, IOExc
 			}
 		};
 	}
-	default java.util.function.ToLongBiFunction<T, U> uncheck() {
+	default ToLongBiFunction<T, U> uncheck() {
 		return (T t, U u) -> {
 			try {
 				return applyAsLong(t, u);

@@ -66,6 +66,7 @@ public class ConversionsBaseClassGenerator {
 		CALL_ARGUMENTS_v2           ("(t, u)",                                                 s -> s.getMethodArguments("t", "u", "v", "w")),
 		TYPE_VARIABLES              ("<E extends Exception> ",                                 s -> s.getTypeVariables(true).trim().replace(">", "> ")),
 		TYPE_VARIABLES1             ("<E extends IOException> ",                               s -> s.getTypeVariables(false).trim().replace(">", "> ")),
+		TYPE_VARIABLES2             ("<E extends RuntimeException> ",                          s -> "<E extends Exception> "),
 		METHOD_NAME                 ("applyAsInt",                                             s -> s.method),
 		RETURN_TYPE                 ("int ",                                                   s -> s.returns.asReturn() + " "),
 		RETURN1                     ("return this.",                                           s -> s.returns == VOID ? "" : "return "),

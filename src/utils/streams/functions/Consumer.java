@@ -1,10 +1,11 @@
 package utils.streams.functions;
 
 import java.util.Objects;
+import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.Consumer
  * @param <T>
+ * @see java.util.function.Consumer
  */
 @FunctionalInterface
 public interface Consumer<T> extends ExConsumer<T, RuntimeException>, java.util.function.Consumer<T> {
@@ -13,6 +14,16 @@ public interface Consumer<T> extends ExConsumer<T, RuntimeException>, java.util.
 		return (T t) -> {
 			accept(t);
 			after.accept(t);
+		};
+	}
+	default <E extends Exception> ExConsumer<T, E> recheck(Class<E> classOfE) {
+		Objects.requireNonNull(classOfE);
+		return (T t) -> {
+			try {
+				accept(t);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
 		};
 	}
 }

@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.IntUnaryOperator
-
  */
 @FunctionalInterface
 public interface IOIntUnaryOperator extends ExIntUnaryOperator<IOException> {
@@ -31,7 +30,7 @@ public interface IOIntUnaryOperator extends ExIntUnaryOperator<IOException> {
 			}
 		};
 	}
-	default java.util.function.IntUnaryOperator uncheck() {
+	default IntUnaryOperator uncheck() {
 		return (int t) -> {
 			try {
 				return applyAsInt(t);

@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.DoubleSupplier
-
  */
 @FunctionalInterface
 public interface IODoubleSupplier extends ExDoubleSupplier<IOException> {
@@ -20,7 +19,7 @@ public interface IODoubleSupplier extends ExDoubleSupplier<IOException> {
 			}
 		};
 	}
-	default java.util.function.DoubleSupplier uncheck() {
+	default DoubleSupplier uncheck() {
 		return () -> {
 			try {
 				return getAsDouble();

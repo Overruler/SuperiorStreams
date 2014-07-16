@@ -5,9 +5,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ToDoubleBiFunction
  * @param <T>
  * @param <U>
+ * @see java.util.function.ToDoubleBiFunction
  */
 @FunctionalInterface
 public interface IOToDoubleBiFunction<T, U> extends ExToDoubleBiFunction<T, U, IOException> {
@@ -21,7 +21,7 @@ public interface IOToDoubleBiFunction<T, U> extends ExToDoubleBiFunction<T, U, I
 			}
 		};
 	}
-	default java.util.function.ToDoubleBiFunction<T, U> uncheck() {
+	default ToDoubleBiFunction<T, U> uncheck() {
 		return (T t, U u) -> {
 			try {
 				return applyAsDouble(t, u);

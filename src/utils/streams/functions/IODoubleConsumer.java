@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.DoubleConsumer
-
  */
 @FunctionalInterface
 public interface IODoubleConsumer extends ExDoubleConsumer<IOException> {
@@ -27,7 +26,7 @@ public interface IODoubleConsumer extends ExDoubleConsumer<IOException> {
 			}
 		};
 	}
-	default java.util.function.DoubleConsumer uncheck() {
+	default DoubleConsumer uncheck() {
 		return (double t) -> {
 			try {
 				accept(t);

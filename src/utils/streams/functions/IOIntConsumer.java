@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.IntConsumer
-
  */
 @FunctionalInterface
 public interface IOIntConsumer extends ExIntConsumer<IOException> {
@@ -27,7 +26,7 @@ public interface IOIntConsumer extends ExIntConsumer<IOException> {
 			}
 		};
 	}
-	default java.util.function.IntConsumer uncheck() {
+	default IntConsumer uncheck() {
 		return (int t) -> {
 			try {
 				accept(t);

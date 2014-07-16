@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.DoubleBinaryOperator
-
  */
 @FunctionalInterface
 public interface IODoubleBinaryOperator extends ExDoubleBinaryOperator<IOException> {
@@ -20,7 +19,7 @@ public interface IODoubleBinaryOperator extends ExDoubleBinaryOperator<IOExcepti
 			}
 		};
 	}
-	default java.util.function.DoubleBinaryOperator uncheck() {
+	default DoubleBinaryOperator uncheck() {
 		return (double t, double u) -> {
 			try {
 				return applyAsDouble(t, u);

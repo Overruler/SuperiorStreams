@@ -4,10 +4,10 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.BiConsumer
  * @param <T>
  * @param <U>
  * @param <E>
+ * @see java.util.function.BiConsumer
  */
 @FunctionalInterface
 public interface ExBiConsumer<T, U, E extends Exception> {
@@ -38,7 +38,7 @@ public interface ExBiConsumer<T, U, E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.BiConsumer<T, U> uncheck(Class<E> classOfE) {
+	default BiConsumer<T, U> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (T t, U u) -> {
 			try {

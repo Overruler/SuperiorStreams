@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ToIntFunction
  * @param <T>
+ * @see java.util.function.ToIntFunction
  */
 @FunctionalInterface
 public interface IOToIntFunction<T> extends ExToIntFunction<T, IOException> {
@@ -20,7 +20,7 @@ public interface IOToIntFunction<T> extends ExToIntFunction<T, IOException> {
 			}
 		};
 	}
-	default java.util.function.ToIntFunction<T> uncheck() {
+	default ToIntFunction<T> uncheck() {
 		return (T t) -> {
 			try {
 				return applyAsInt(t);

@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.IntPredicate
-
  */
 @FunctionalInterface
 public interface IOIntPredicate extends ExIntPredicate<IOException> {
@@ -31,7 +30,7 @@ public interface IOIntPredicate extends ExIntPredicate<IOException> {
 			}
 		};
 	}
-	default java.util.function.IntPredicate uncheck() {
+	default IntPredicate uncheck() {
 		return (int t) -> {
 			try {
 				return test(t);

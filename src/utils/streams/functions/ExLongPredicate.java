@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.LongPredicate
  * @param <E>
+ * @see java.util.function.LongPredicate
  */
 @FunctionalInterface
 public interface ExLongPredicate<E extends Exception> {
@@ -40,7 +40,7 @@ public interface ExLongPredicate<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.LongPredicate uncheck(Class<E> classOfE) {
+	default LongPredicate uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (long t) -> {
 			try {

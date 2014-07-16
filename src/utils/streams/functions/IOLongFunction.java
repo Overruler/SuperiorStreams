@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.LongFunction
  * @param <R>
+ * @see java.util.function.LongFunction
  */
 @FunctionalInterface
 public interface IOLongFunction<R> extends ExLongFunction<R, IOException> {
@@ -24,7 +24,7 @@ public interface IOLongFunction<R> extends ExLongFunction<R, IOException> {
 			}
 		};
 	}
-	default java.util.function.LongFunction<R> uncheck() {
+	default LongFunction<R> uncheck() {
 		return (long t) -> {
 			try {
 				return apply(t);

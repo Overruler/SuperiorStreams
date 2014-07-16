@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.DoublePredicate
  * @param <E>
+ * @see java.util.function.DoublePredicate
  */
 @FunctionalInterface
 public interface ExDoublePredicate<E extends Exception> {
@@ -40,7 +40,7 @@ public interface ExDoublePredicate<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.DoublePredicate uncheck(Class<E> classOfE) {
+	default DoublePredicate uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (double t) -> {
 			try {

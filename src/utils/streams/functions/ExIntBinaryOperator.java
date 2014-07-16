@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.IntBinaryOperator
  * @param <E>
+ * @see java.util.function.IntBinaryOperator
  */
 @FunctionalInterface
 public interface ExIntBinaryOperator<E extends Exception> {
@@ -30,7 +30,7 @@ public interface ExIntBinaryOperator<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.IntBinaryOperator uncheck(Class<E> classOfE) {
+	default IntBinaryOperator uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (int t, int u) -> {
 			try {

@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.DoubleUnaryOperator
  * @param <E>
+ * @see java.util.function.DoubleUnaryOperator
  */
 @FunctionalInterface
 public interface ExDoubleUnaryOperator<E extends Exception> {
@@ -40,7 +40,7 @@ public interface ExDoubleUnaryOperator<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.DoubleUnaryOperator uncheck(Class<E> classOfE) {
+	default DoubleUnaryOperator uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (double t) -> {
 			try {

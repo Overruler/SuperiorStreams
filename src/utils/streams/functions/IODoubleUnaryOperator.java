@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.DoubleUnaryOperator
-
  */
 @FunctionalInterface
 public interface IODoubleUnaryOperator extends ExDoubleUnaryOperator<IOException> {
@@ -31,7 +30,7 @@ public interface IODoubleUnaryOperator extends ExDoubleUnaryOperator<IOException
 			}
 		};
 	}
-	default java.util.function.DoubleUnaryOperator uncheck() {
+	default DoubleUnaryOperator uncheck() {
 		return (double t) -> {
 			try {
 				return applyAsDouble(t);

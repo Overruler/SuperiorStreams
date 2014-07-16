@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.IntBinaryOperator
-
  */
 @FunctionalInterface
 public interface IOIntBinaryOperator extends ExIntBinaryOperator<IOException> {
@@ -20,7 +19,7 @@ public interface IOIntBinaryOperator extends ExIntBinaryOperator<IOException> {
 			}
 		};
 	}
-	default java.util.function.IntBinaryOperator uncheck() {
+	default IntBinaryOperator uncheck() {
 		return (int t, int u) -> {
 			try {
 				return applyAsInt(t, u);

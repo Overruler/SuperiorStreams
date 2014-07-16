@@ -4,9 +4,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.Consumer
  * @param <T>
  * @param <E>
+ * @see java.util.function.Consumer
  */
 @FunctionalInterface
 public interface ExConsumer<T, E extends Exception> {
@@ -36,7 +36,7 @@ public interface ExConsumer<T, E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.Consumer<T> uncheck(Class<E> classOfE) {
+	default Consumer<T> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (T t) -> {
 			try {

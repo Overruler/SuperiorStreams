@@ -4,10 +4,10 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.BiPredicate
  * @param <T>
  * @param <U>
  * @param <E>
+ * @see java.util.function.BiPredicate
  */
 @FunctionalInterface
 public interface ExBiPredicate<T, U, E extends Exception> {
@@ -43,7 +43,7 @@ public interface ExBiPredicate<T, U, E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.BiPredicate<T, U> uncheck(Class<E> classOfE) {
+	default BiPredicate<T, U> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (T t, U u) -> {
 			try {

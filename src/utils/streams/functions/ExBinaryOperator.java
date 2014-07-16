@@ -5,9 +5,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.BinaryOperator
  * @param <T>
  * @param <E>
+ * @see java.util.function.BinaryOperator
  */
 @FunctionalInterface
 public interface ExBinaryOperator<T, E extends Exception> extends ExBiFunction<T, T, T, E> {
@@ -32,7 +32,7 @@ public interface ExBinaryOperator<T, E extends Exception> extends ExBiFunction<T
 			}
 		};
 	}
-	default @Override java.util.function.BinaryOperator<T> uncheck(Class<E> classOfE) {
+	default @Override BinaryOperator<T> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (T t, T u) -> {
 			try {

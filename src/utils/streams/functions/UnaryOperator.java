@@ -1,10 +1,11 @@
 package utils.streams.functions;
 
 import java.util.Objects;
+import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.UnaryOperator
  * @param <T>
+ * @see java.util.function.UnaryOperator
  */
 @FunctionalInterface
 public interface UnaryOperator<T> extends ExUnaryOperator<T, RuntimeException>, Function<T, T>,
@@ -19,5 +20,15 @@ public interface UnaryOperator<T> extends ExUnaryOperator<T, RuntimeException>, 
 	}
 	static <T> UnaryOperator<T> identity() {
 		return t -> t;
+	}
+	default @Override <E extends Exception> ExUnaryOperator<T, E> recheck(Class<E> classOfE) {
+		Objects.requireNonNull(classOfE);
+		return (T t) -> {
+			try {
+				return apply(t);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 }

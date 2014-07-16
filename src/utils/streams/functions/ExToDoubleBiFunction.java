@@ -4,10 +4,10 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ToDoubleBiFunction
  * @param <T>
  * @param <U>
  * @param <E>
+ * @see java.util.function.ToDoubleBiFunction
  */
 @FunctionalInterface
 public interface ExToDoubleBiFunction<T, U, E extends Exception> {
@@ -32,7 +32,7 @@ public interface ExToDoubleBiFunction<T, U, E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.ToDoubleBiFunction<T, U> uncheck(Class<E> classOfE) {
+	default ToDoubleBiFunction<T, U> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (T t, U u) -> {
 			try {

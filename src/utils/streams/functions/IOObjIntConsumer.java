@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ObjIntConsumer
  * @param <T>
+ * @see java.util.function.ObjIntConsumer
  */
 @FunctionalInterface
 public interface IOObjIntConsumer<T> extends ExObjIntConsumer<T, IOException> {
@@ -27,7 +27,7 @@ public interface IOObjIntConsumer<T> extends ExObjIntConsumer<T, IOException> {
 			}
 		};
 	}
-	default java.util.function.ObjIntConsumer<T> uncheck() {
+	default ObjIntConsumer<T> uncheck() {
 		return (T t, int u) -> {
 			try {
 				accept(t, u);

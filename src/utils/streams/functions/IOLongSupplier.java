@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.LongSupplier
-
  */
 @FunctionalInterface
 public interface IOLongSupplier extends ExLongSupplier<IOException> {
@@ -20,7 +19,7 @@ public interface IOLongSupplier extends ExLongSupplier<IOException> {
 			}
 		};
 	}
-	default java.util.function.LongSupplier uncheck() {
+	default LongSupplier uncheck() {
 		return () -> {
 			try {
 				return getAsLong();

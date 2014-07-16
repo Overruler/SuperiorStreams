@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.LongConsumer
  * @param <E>
+ * @see java.util.function.LongConsumer
  */
 @FunctionalInterface
 public interface ExLongConsumer<E extends Exception> {
@@ -35,7 +35,7 @@ public interface ExLongConsumer<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.LongConsumer uncheck(Class<E> classOfE) {
+	default LongConsumer uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (long t) -> {
 			try {

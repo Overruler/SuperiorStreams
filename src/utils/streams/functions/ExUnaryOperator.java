@@ -4,9 +4,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.UnaryOperator
  * @param <T>
  * @param <E>
+ * @see java.util.function.UnaryOperator
  */
 @FunctionalInterface
 public interface ExUnaryOperator<T, E extends Exception> extends ExFunction<T, T, E> {
@@ -34,7 +34,7 @@ public interface ExUnaryOperator<T, E extends Exception> extends ExFunction<T, T
 			}
 		};
 	}
-	default @Override java.util.function.UnaryOperator<T> uncheck(Class<E> classOfE) {
+	default @Override UnaryOperator<T> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (T t) -> {
 			try {

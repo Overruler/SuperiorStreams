@@ -6,8 +6,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.BinaryOperator
  * @param <T>
+ * @see java.util.function.BinaryOperator
  */
 @FunctionalInterface
 public interface IOBinaryOperator<T> extends ExBinaryOperator<T, IOException>, IOBiFunction<T, T, T> {
@@ -29,7 +29,7 @@ public interface IOBinaryOperator<T> extends ExBinaryOperator<T, IOException>, I
 			}
 		};
 	}
-	default @Override java.util.function.BinaryOperator<T> uncheck() {
+	default @Override BinaryOperator<T> uncheck() {
 		return (T t, T u) -> {
 			try {
 				return apply(t, u);

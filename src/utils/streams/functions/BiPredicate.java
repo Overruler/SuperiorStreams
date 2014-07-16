@@ -1,11 +1,12 @@
 package utils.streams.functions;
 
 import java.util.Objects;
+import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.BiPredicate
  * @param <T>
  * @param <U>
+ * @see java.util.function.BiPredicate
  */
 @FunctionalInterface
 public interface BiPredicate<T, U> extends ExBiPredicate<T, U, RuntimeException>, java.util.function.BiPredicate<T, U> {
@@ -19,5 +20,15 @@ public interface BiPredicate<T, U> extends ExBiPredicate<T, U, RuntimeException>
 	default BiPredicate<T, U> or(BiPredicate<? super T, ? super U> other) {
 		Objects.requireNonNull(other);
 		return (T t, U u) -> test(t, u) || other.test(t, u);
+	}
+	default <E extends Exception> ExBiPredicate<T, U, E> recheck(Class<E> classOfE) {
+		Objects.requireNonNull(classOfE);
+		return (T t, U u) -> {
+			try {
+				return test(t, u);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 }

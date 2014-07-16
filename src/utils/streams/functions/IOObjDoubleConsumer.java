@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ObjDoubleConsumer
  * @param <T>
+ * @see java.util.function.ObjDoubleConsumer
  */
 @FunctionalInterface
 public interface IOObjDoubleConsumer<T> extends ExObjDoubleConsumer<T, IOException> {
@@ -27,7 +27,7 @@ public interface IOObjDoubleConsumer<T> extends ExObjDoubleConsumer<T, IOExcepti
 			}
 		};
 	}
-	default java.util.function.ObjDoubleConsumer<T> uncheck() {
+	default ObjDoubleConsumer<T> uncheck() {
 		return (T t, double u) -> {
 			try {
 				accept(t, u);

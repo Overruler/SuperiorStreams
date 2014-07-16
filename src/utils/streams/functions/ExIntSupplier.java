@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.IntSupplier
  * @param <E>
+ * @see java.util.function.IntSupplier
  */
 @FunctionalInterface
 public interface ExIntSupplier<E extends Exception> {
@@ -28,7 +28,7 @@ public interface ExIntSupplier<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.IntSupplier uncheck(Class<E> classOfE) {
+	default IntSupplier uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return () -> {
 			try {

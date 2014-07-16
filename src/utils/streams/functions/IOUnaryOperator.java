@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.UnaryOperator
  * @param <T>
+ * @see java.util.function.UnaryOperator
  */
 @FunctionalInterface
 public interface IOUnaryOperator<T> extends ExUnaryOperator<T, IOException>, IOFunction<T, T> {
@@ -31,7 +31,7 @@ public interface IOUnaryOperator<T> extends ExUnaryOperator<T, IOException>, IOF
 			}
 		};
 	}
-	default @Override java.util.function.UnaryOperator<T> uncheck() {
+	default @Override UnaryOperator<T> uncheck() {
 		return (T t) -> {
 			try {
 				return apply(t);

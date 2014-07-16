@@ -1,10 +1,10 @@
 package utils.streams.functions;
 
 import java.util.Objects;
+import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.LongUnaryOperator
-
  */
 @FunctionalInterface
 public interface LongUnaryOperator extends ExLongUnaryOperator<RuntimeException>, java.util.function.LongUnaryOperator {
@@ -18,5 +18,15 @@ public interface LongUnaryOperator extends ExLongUnaryOperator<RuntimeException>
 	}
 	static LongUnaryOperator identity() {
 		return t -> t;
+	}
+	default <E extends Exception> ExLongUnaryOperator<E> recheck(Class<E> classOfE) {
+		Objects.requireNonNull(classOfE);
+		return (long t) -> {
+			try {
+				return applyAsLong(t);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 }

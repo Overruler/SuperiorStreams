@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.IntSupplier
-
  */
 @FunctionalInterface
 public interface IOIntSupplier extends ExIntSupplier<IOException> {
@@ -20,7 +19,7 @@ public interface IOIntSupplier extends ExIntSupplier<IOException> {
 			}
 		};
 	}
-	default java.util.function.IntSupplier uncheck() {
+	default IntSupplier uncheck() {
 		return () -> {
 			try {
 				return getAsInt();

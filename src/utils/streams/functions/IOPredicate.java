@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.Predicate
  * @param <T>
+ * @see java.util.function.Predicate
  */
 @FunctionalInterface
 public interface IOPredicate<T> extends ExPredicate<T, IOException> {
@@ -31,7 +31,7 @@ public interface IOPredicate<T> extends ExPredicate<T, IOException> {
 			}
 		};
 	}
-	default java.util.function.Predicate<T> uncheck() {
+	default Predicate<T> uncheck() {
 		return (T t) -> {
 			try {
 				return test(t);

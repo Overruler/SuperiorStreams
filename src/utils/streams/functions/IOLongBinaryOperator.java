@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.LongBinaryOperator
-
  */
 @FunctionalInterface
 public interface IOLongBinaryOperator extends ExLongBinaryOperator<IOException> {
@@ -20,7 +19,7 @@ public interface IOLongBinaryOperator extends ExLongBinaryOperator<IOException> 
 			}
 		};
 	}
-	default java.util.function.LongBinaryOperator uncheck() {
+	default LongBinaryOperator uncheck() {
 		return (long t, long u) -> {
 			try {
 				return applyAsLong(t, u);

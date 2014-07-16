@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.LongBinaryOperator
  * @param <E>
+ * @see java.util.function.LongBinaryOperator
  */
 @FunctionalInterface
 public interface ExLongBinaryOperator<E extends Exception> {
@@ -30,7 +30,7 @@ public interface ExLongBinaryOperator<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.LongBinaryOperator uncheck(Class<E> classOfE) {
+	default LongBinaryOperator uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (long t, long u) -> {
 			try {

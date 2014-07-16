@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.IntToDoubleFunction
-
  */
 @FunctionalInterface
 public interface IOIntToDoubleFunction extends ExIntToDoubleFunction<IOException> {
@@ -20,7 +19,7 @@ public interface IOIntToDoubleFunction extends ExIntToDoubleFunction<IOException
 			}
 		};
 	}
-	default java.util.function.IntToDoubleFunction uncheck() {
+	default IntToDoubleFunction uncheck() {
 		return (int t) -> {
 			try {
 				return applyAsDouble(t);

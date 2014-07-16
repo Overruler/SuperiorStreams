@@ -4,10 +4,10 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ToIntBiFunction
  * @param <T>
  * @param <U>
  * @param <E>
+ * @see java.util.function.ToIntBiFunction
  */
 @FunctionalInterface
 public interface ExToIntBiFunction<T, U, E extends Exception> {
@@ -32,7 +32,7 @@ public interface ExToIntBiFunction<T, U, E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.ToIntBiFunction<T, U> uncheck(Class<E> classOfE) {
+	default ToIntBiFunction<T, U> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (T t, U u) -> {
 			try {

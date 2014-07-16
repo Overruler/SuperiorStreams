@@ -1,11 +1,12 @@
 package utils.streams.functions;
 
 import java.util.Objects;
+import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.BiConsumer
  * @param <T>
  * @param <U>
+ * @see java.util.function.BiConsumer
  */
 @FunctionalInterface
 public interface BiConsumer<T, U> extends ExBiConsumer<T, U, RuntimeException>, java.util.function.BiConsumer<T, U> {
@@ -14,6 +15,16 @@ public interface BiConsumer<T, U> extends ExBiConsumer<T, U, RuntimeException>, 
 		return (T t, U u) -> {
 			accept(t, u);
 			after.accept(t, u);
+		};
+	}
+	default <E extends Exception> ExBiConsumer<T, U, E> recheck(Class<E> classOfE) {
+		Objects.requireNonNull(classOfE);
+		return (T t, U u) -> {
+			try {
+				accept(t, u);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
 		};
 	}
 }

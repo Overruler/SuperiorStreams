@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.IntUnaryOperator
  * @param <E>
+ * @see java.util.function.IntUnaryOperator
  */
 @FunctionalInterface
 public interface ExIntUnaryOperator<E extends Exception> {
@@ -40,7 +40,7 @@ public interface ExIntUnaryOperator<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.IntUnaryOperator uncheck(Class<E> classOfE) {
+	default IntUnaryOperator uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (int t) -> {
 			try {

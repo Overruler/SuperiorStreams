@@ -4,9 +4,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ToIntFunction
  * @param <T>
  * @param <E>
+ * @see java.util.function.ToIntFunction
  */
 @FunctionalInterface
 public interface ExToIntFunction<T, E extends Exception> {
@@ -30,7 +30,7 @@ public interface ExToIntFunction<T, E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.ToIntFunction<T> uncheck(Class<E> classOfE) {
+	default ToIntFunction<T> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (T t) -> {
 			try {

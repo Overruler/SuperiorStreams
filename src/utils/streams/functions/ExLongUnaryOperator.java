@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.LongUnaryOperator
  * @param <E>
+ * @see java.util.function.LongUnaryOperator
  */
 @FunctionalInterface
 public interface ExLongUnaryOperator<E extends Exception> {
@@ -40,7 +40,7 @@ public interface ExLongUnaryOperator<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.LongUnaryOperator uncheck(Class<E> classOfE) {
+	default LongUnaryOperator uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (long t) -> {
 			try {

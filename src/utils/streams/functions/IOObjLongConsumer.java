@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.ObjLongConsumer
  * @param <T>
+ * @see java.util.function.ObjLongConsumer
  */
 @FunctionalInterface
 public interface IOObjLongConsumer<T> extends ExObjLongConsumer<T, IOException> {
@@ -27,7 +27,7 @@ public interface IOObjLongConsumer<T> extends ExObjLongConsumer<T, IOException> 
 			}
 		};
 	}
-	default java.util.function.ObjLongConsumer<T> uncheck() {
+	default ObjLongConsumer<T> uncheck() {
 		return (T t, long u) -> {
 			try {
 				accept(t, u);

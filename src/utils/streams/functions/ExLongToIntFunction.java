@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.LongToIntFunction
  * @param <E>
+ * @see java.util.function.LongToIntFunction
  */
 @FunctionalInterface
 public interface ExLongToIntFunction<E extends Exception> {
@@ -29,7 +29,7 @@ public interface ExLongToIntFunction<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.LongToIntFunction uncheck(Class<E> classOfE) {
+	default LongToIntFunction uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (long t) -> {
 			try {

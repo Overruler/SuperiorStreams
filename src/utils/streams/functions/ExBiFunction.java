@@ -4,11 +4,11 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.BiFunction
  * @param <T>
  * @param <U>
  * @param <R>
  * @param <E>
+ * @see java.util.function.BiFunction
  */
 @FunctionalInterface
 public interface ExBiFunction<T, U, R, E extends Exception> {
@@ -37,7 +37,7 @@ public interface ExBiFunction<T, U, R, E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.BiFunction<T, U, R> uncheck(Class<E> classOfE) {
+	default BiFunction<T, U, R> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (T t, U u) -> {
 			try {

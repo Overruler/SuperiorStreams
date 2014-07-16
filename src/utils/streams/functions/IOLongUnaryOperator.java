@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.LongUnaryOperator
-
  */
 @FunctionalInterface
 public interface IOLongUnaryOperator extends ExLongUnaryOperator<IOException> {
@@ -31,7 +30,7 @@ public interface IOLongUnaryOperator extends ExLongUnaryOperator<IOException> {
 			}
 		};
 	}
-	default java.util.function.LongUnaryOperator uncheck() {
+	default LongUnaryOperator uncheck() {
 		return (long t) -> {
 			try {
 				return applyAsLong(t);

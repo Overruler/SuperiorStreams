@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.IntFunction
  * @param <R>
+ * @see java.util.function.IntFunction
  */
 @FunctionalInterface
 public interface IOIntFunction<R> extends ExIntFunction<R, IOException> {
@@ -24,7 +24,7 @@ public interface IOIntFunction<R> extends ExIntFunction<R, IOException> {
 			}
 		};
 	}
-	default java.util.function.IntFunction<R> uncheck() {
+	default IntFunction<R> uncheck() {
 		return (int t) -> {
 			try {
 				return apply(t);

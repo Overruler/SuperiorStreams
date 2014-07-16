@@ -5,9 +5,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.Function
  * @param <T>
  * @param <R>
+ * @see java.util.function.Function
  */
 @FunctionalInterface
 public interface IOFunction<T, R> extends ExFunction<T, R, IOException> {
@@ -32,7 +32,7 @@ public interface IOFunction<T, R> extends ExFunction<T, R, IOException> {
 			}
 		};
 	}
-	default java.util.function.Function<T, R> uncheck() {
+	default Function<T, R> uncheck() {
 		return (T t) -> {
 			try {
 				return apply(t);

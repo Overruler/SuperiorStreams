@@ -4,9 +4,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.LongFunction
  * @param <R>
  * @param <E>
+ * @see java.util.function.LongFunction
  */
 @FunctionalInterface
 public interface ExLongFunction<R, E extends Exception> {
@@ -34,7 +34,7 @@ public interface ExLongFunction<R, E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.LongFunction<R> uncheck(Class<E> classOfE) {
+	default LongFunction<R> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (long t) -> {
 			try {

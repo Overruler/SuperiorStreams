@@ -4,8 +4,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.IntToDoubleFunction
  * @param <E>
+ * @see java.util.function.IntToDoubleFunction
  */
 @FunctionalInterface
 public interface ExIntToDoubleFunction<E extends Exception> {
@@ -29,7 +29,7 @@ public interface ExIntToDoubleFunction<E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.IntToDoubleFunction uncheck(Class<E> classOfE) {
+	default IntToDoubleFunction uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (int t) -> {
 			try {

@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.LongToDoubleFunction
-
  */
 @FunctionalInterface
 public interface IOLongToDoubleFunction extends ExLongToDoubleFunction<IOException> {
@@ -20,7 +19,7 @@ public interface IOLongToDoubleFunction extends ExLongToDoubleFunction<IOExcepti
 			}
 		};
 	}
-	default java.util.function.LongToDoubleFunction uncheck() {
+	default LongToDoubleFunction uncheck() {
 		return (long t) -> {
 			try {
 				return applyAsDouble(t);

@@ -6,7 +6,6 @@ import utils.streams.WrapperException;
 
 /**
  * @see java.util.function.LongToIntFunction
-
  */
 @FunctionalInterface
 public interface IOLongToIntFunction extends ExLongToIntFunction<IOException> {
@@ -20,7 +19,7 @@ public interface IOLongToIntFunction extends ExLongToIntFunction<IOException> {
 			}
 		};
 	}
-	default java.util.function.LongToIntFunction uncheck() {
+	default LongToIntFunction uncheck() {
 		return (long t) -> {
 			try {
 				return applyAsInt(t);

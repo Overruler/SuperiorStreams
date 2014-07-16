@@ -1,10 +1,11 @@
 package utils.streams.functions;
 
 import java.util.Objects;
+import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.Predicate
  * @param <T>
+ * @see java.util.function.Predicate
  */
 @FunctionalInterface
 public interface Predicate<T> extends ExPredicate<T, RuntimeException>, java.util.function.Predicate<T> {
@@ -18,5 +19,15 @@ public interface Predicate<T> extends ExPredicate<T, RuntimeException>, java.uti
 	default Predicate<T> or(Predicate<? super T> other) {
 		Objects.requireNonNull(other);
 		return (T t) -> test(t) || other.test(t);
+	}
+	default <E extends Exception> ExPredicate<T, E> recheck(Class<E> classOfE) {
+		Objects.requireNonNull(classOfE);
+		return (T t) -> {
+			try {
+				return test(t);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
 	}
 }

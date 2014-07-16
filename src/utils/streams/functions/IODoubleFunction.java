@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.DoubleFunction
  * @param <R>
+ * @see java.util.function.DoubleFunction
  */
 @FunctionalInterface
 public interface IODoubleFunction<R> extends ExDoubleFunction<R, IOException> {
@@ -24,7 +24,7 @@ public interface IODoubleFunction<R> extends ExDoubleFunction<R, IOException> {
 			}
 		};
 	}
-	default java.util.function.DoubleFunction<R> uncheck() {
+	default DoubleFunction<R> uncheck() {
 		return (double t) -> {
 			try {
 				return apply(t);

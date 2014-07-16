@@ -4,9 +4,9 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.Predicate
  * @param <T>
  * @param <E>
+ * @see java.util.function.Predicate
  */
 @FunctionalInterface
 public interface ExPredicate<T, E extends Exception> {
@@ -41,7 +41,7 @@ public interface ExPredicate<T, E extends Exception> {
 			}
 		};
 	}
-	default java.util.function.Predicate<T> uncheck(Class<E> classOfE) {
+	default Predicate<T> uncheck(Class<E> classOfE) {
 		Objects.requireNonNull(classOfE);
 		return (T t) -> {
 			try {

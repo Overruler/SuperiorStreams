@@ -1,12 +1,21 @@
 package utils.streams.functions;
 
-/**
- * @see java.util.function.LongBinaryOperator
- * @author Timo Kinnunen
- */
-/**
- * @see java.util.function.LongBinaryOperator
+import java.util.Objects;
+import utils.streams.WrapperException;
 
+/**
+ * @see java.util.function.LongBinaryOperator
  */
 @FunctionalInterface
-public interface LongBinaryOperator extends ExLongBinaryOperator<RuntimeException>, java.util.function.LongBinaryOperator {}
+public interface LongBinaryOperator extends ExLongBinaryOperator<RuntimeException>, java.util.function.LongBinaryOperator {
+	default <E extends Exception> ExLongBinaryOperator<E> recheck(Class<E> classOfE) {
+		Objects.requireNonNull(classOfE);
+		return (long t, long u) -> {
+			try {
+				return applyAsLong(t, u);
+			} catch(RuntimeException e) {
+				throw WrapperException.show(e, classOfE);
+			}
+		};
+	}
+}

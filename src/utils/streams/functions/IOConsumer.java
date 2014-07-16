@@ -5,8 +5,8 @@ import java.util.Objects;
 import utils.streams.WrapperException;
 
 /**
- * @see java.util.function.Consumer
  * @param <T>
+ * @see java.util.function.Consumer
  */
 @FunctionalInterface
 public interface IOConsumer<T> extends ExConsumer<T, IOException> {
@@ -27,7 +27,7 @@ public interface IOConsumer<T> extends ExConsumer<T, IOException> {
 			}
 		};
 	}
-	default java.util.function.Consumer<T> uncheck() {
+	default Consumer<T> uncheck() {
 		return (T t) -> {
 			try {
 				accept(t);
