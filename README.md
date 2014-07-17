@@ -36,7 +36,7 @@ Resources are released as soon as they are no longer needed, automatically and t
 ```java
 static void example2(Path install, Predicate<Path> isJdk) throws IOException {
 
-	IOStream<Path> s1 = Streams.filesList(install);
+	IOStream<Path> s1 = Files.list(install);
 	IOStream<Path> s2 = s1.filter(isJdk);
 	for(Path path : s1.iterable()) {
 		System.out.println(path);
@@ -47,8 +47,8 @@ static void example2(Path install, Predicate<Path> isJdk) throws IOException {
 
 	// JDK Streams need to be manually tracked at each use site:
 
-	try(java.util.stream.Stream<Path> s11 = Files.list(install);
-		java.util.stream.Stream<Path> s12 = Files.list(install);) {
+	try(java.util.stream.Stream<Path> s11 = java.nio.file.Files.list(install);
+		java.util.stream.Stream<Path> s12 = java.nio.file.Files.list(install);) {
 
 		java.util.stream.Stream<Path> s22 = s12.filter(isJdk);
 		for(Path path : (Iterable<Path>) () -> s11.iterator()) {
@@ -82,7 +82,7 @@ return new Object[] {isPrefix1,isPrefix2}; }
 Replacements for standard library ArrayList, HashSet and HashMap collections:
 
 ```java
-static Object[] example7() {
+static Object[] example4() {
 	ArrayList<String> list = new ArrayList<>();
 	HashSet<String> set = list.add("1").add("2").toHashSet();
 
@@ -104,8 +104,10 @@ static ArrayList<String> removeBadWords(List<String> list) {
 
 Streams of RGB pixels for color manipulation using red, green, blue channels:
 
+![Screenshot showing images produced by the examples](https://raw.github.com/Overruler/SuperiorStreams/master/Screenshot.png)
+
 ```java
-static void example4() throws IOException {
+static void example6() throws IOException {
 	RGBStream stream = Streams.loadImageInRGB("pagoda.jpg");
 	stream.swapRedAndGreen().save("pagoda_rg.jpg");
 	stream.swapRedAndBlue().save("pagoda_rb.jpg");
@@ -117,21 +119,22 @@ static void example4() throws IOException {
 Image color manipulation in HSB changing hue, saturation and brightness values:
 
 ```java
-static void example5() throws IOException {
+static void example7() throws IOException {
 	HSBStream hsb = Streams.loadImageInHSB("pagoda.jpg");
 	hsb.mapBrightness((h, s, b, a) -> b * 0.25).save("pagoda_dark.jpg");
-	hsb.mapHue((h, s, b, a) -> h + 10).save("pagoda_altered_hue.jpg");
+	hsb.mapHue((h, s, b, a) -> h + 60).save("pagoda_altered_hue.jpg");
 }
 ```
 
 Gamma adjustments:
 
 ```java
-static void example6(RGBStream stream) throws IOException {
+static void example8() throws IOException {
+	RGBStream stream = Streams.loadImageInRGB("pagoda.jpg");
 	stream.gammaExpand(2.4).save("pagoda_texture.jpg");
 	HSBStream bw = stream.toBlackAndWhite();
 	bw.save("pagoda_bw.jpg");
-	bw.gammaCompress(0.5).save("pagoda_bw_05.jpg");
+	bw.gammaCompress(0.5).save("pagoda_bw2.jpg");
 }
 ```
 
