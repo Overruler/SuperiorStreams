@@ -94,8 +94,6 @@ static Object[] example7() {
 return new Object[] {immutableList,immutableSet}; }
 ```
 
-## New Features
-
 Helper methods for WHERE clauses over Lists, Maps and Sets:
 
 ```java
