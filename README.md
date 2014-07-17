@@ -79,7 +79,7 @@ return new Object[] {isPrefix1,isPrefix2}; }
 
 ## New Features
 
-Replacements for standard library ArrayList, HashSet and HashMap collections:
+### Replacements for standard library ArrayList, HashSet and HashMap collections
 
 ```java
 static Object[] example4() {
@@ -94,17 +94,11 @@ static Object[] example4() {
 return new Object[] {immutableList,immutableSet}; }
 ```
 
-Helper methods for WHERE clauses over Lists, Maps and Sets:
-
-```java
-static ArrayList<String> removeBadWords(List<String> list) {
-  return Streams.where(list, s -> s.contains("fuck") == false);
-}
-```
-
-Streams of RGB pixels for color manipulation using red, green, blue channels:
+### Streams of RGB pixels for image manipulation
 
 ![Screenshot showing images produced by the examples](https://raw.github.com/Overruler/SuperiorStreams/master/Screenshot.png)
+
+Image manipulation using red, green, blue channels:
 
 ```java
 static void example6() throws IOException {
@@ -135,6 +129,14 @@ static void example8() throws IOException {
 	HSBStream bw = stream.toBlackAndWhite();
 	bw.save("pagoda_bw.jpg");
 	bw.gammaCompress(0.5).save("pagoda_bw2.jpg");
+}
+```
+
+### Helper methods for WHERE clauses over Lists, Maps and Sets
+
+```java
+static ArrayList<String> removeBadWords(List<String> list) {
+  return Streams.where(list, s -> s.contains("fuck") == false);
 }
 ```
 
