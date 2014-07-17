@@ -5,19 +5,20 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.jar.JarFile;
-import java.util.stream.Stream;
-import utils.streams.HSBStream;
-import utils.streams.IOStream;
-import utils.streams.RGBStream;
-import utils.streams.Stream2;
-import utils.streams.Streams;
+import utils.lists2.ArrayList;
+import utils.lists2.HashSet;
+import utils.lists2.List;
+import utils.lists2.Set;
+import utils.streams.functions.Function;
 import utils.streams.functions.IOFunction;
+import utils.streams.functions.Predicate;
+import utils.streams.functions.Supplier;
+import utils.streams2.HSBStream;
+import utils.streams2.IOStream;
+import utils.streams2.RGBStream;
+import utils.streams2.Stream;
+import utils.streams2.Streams;
 
 //*Q*
 public class ReadmeMd {
@@ -28,6 +29,8 @@ SuperiorStreams
 It is possible to have your cake and eat it too.
 
 The Streams API in Java 8 doesn't handle exceptions or resources properly. Superior Streams are a wrapper around the JDK Streams API that adds proper exception passing and resource management without complicating the API.
+
+New: Experimental Collections API replacement featuring regular and immutable versions of Map, Set and List. This is integrated to a new version of the Stream API. Still to-do: rework flatMap methods.
 
 ## Superior examples
 
@@ -72,10 +75,10 @@ static void example2(Path install, Predicate<Path> isJdk) throws IOException {
 
 	// JDK Streams need to be manually tracked at each use site:
 
-	try(Stream<Path> s11 = Files.list(install);
-		Stream<Path> s12 = Files.list(install);) {
+	try(java.util.stream.Stream<Path> s11 = Files.list(install);
+		java.util.stream.Stream<Path> s12 = Files.list(install);) {
 
-		Stream<Path> s22 = s12.filter(isJdk);
+		java.util.stream.Stream<Path> s22 = s12.filter(isJdk);
 		for(Path path : (Iterable<Path>) () -> s11.iterator()) {
 			System.out.println(path);
 		}
@@ -91,17 +94,36 @@ Superior Streams can be freely reused as many times as needed:
 
 ```java
 /*/
-static Object[] example3(List<String> JDK_PROJECTS) {
+static Object[] example3(List<String> JDK_PROJECTS1, java.util.List<String> JDK_PROJECTS2) {
 
-	Stream2<String> projects1 = Streams.from(JDK_PROJECTS);
+	Stream<String> projects1 = JDK_PROJECTS1.stream();
 	Predicate<String> isPrefix1 = (String path) -> projects1.anyMatch(path::startsWith);
 
 	// Each Stream from JDK can only be used once or the result is an exception at runtime:
 
-	Supplier<Stream<String>> projects2 = () -> JDK_PROJECTS.stream();
+	Supplier<java.util.stream.Stream<String>> projects2 = () -> JDK_PROJECTS2.stream();
 	Predicate<String> isPrefix2 = (String path) -> projects2.get().anyMatch(path::startsWith);
 
 return new Object[] {isPrefix1,isPrefix2}; }
+/*/
+```
+
+## New Features
+
+Replacements for standard library ArrayList, HashSet and HashMap collections:
+
+```java
+/*/
+static Object[] example7() {
+	ArrayList<String> list = new ArrayList<>();
+	HashSet<String> set = list.add("1").add("2").toHashSet();
+
+	// Immutable versions use the same API but return copies when changed:
+
+	List<String> immutableList = list.toList();
+	Set<String> immutableSet = set.toSet().replaceAll(s -> "log: " + s);
+
+return new Object[] {immutableList,immutableSet}; }
 /*/
 ```
 
@@ -167,6 +189,8 @@ Your choice of:
 - [BSD](http://opensource.org/licenses/bsd-license.php)
 - [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 - [Eclipse Public License (EPL) v1.0](http://wiki.eclipse.org/EPL)
+
+Several collections classes in the utils.lists2 package are based on classes from [gs-collections](https://github.com/goldmansachs/gs-collections) by Goldman Sachs and are licensed under the Apache License, Version 2.0.
 
 The image pagoda.jpg, by the author plusgood, is licensed under the Creative Commons Attribution 2.0 Generic license. Downloaded from the [Wikimedia Commons](http://en.wikipedia.org/wiki/File:Silverpagoda.jpg).
 */
