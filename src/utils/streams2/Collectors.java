@@ -141,17 +141,17 @@ public final class Collectors {
 		};
 		@SuppressWarnings("unchecked")
 		java.util.function.Supplier<HashMap<K, A>> mangledFactory =
-		(java.util.function.Supplier<HashMap<K, A>>) mapFactory;
+			(java.util.function.Supplier<HashMap<K, A>>) mapFactory;
 		if(downstream.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
 			@SuppressWarnings("unchecked")
 			java.util.function.Function<HashMap<K, A>, M> castingIdentity = i -> (M) i;
 			Collector<T, HashMap<K, A>, M> collectorImpl2 =
-			Collector.of(
-				mangledFactory,
-				accumulator,
-				merger,
-				castingIdentity,
-				Collector.Characteristics.IDENTITY_FINISH);
+				Collector.of(
+					mangledFactory,
+					accumulator,
+					merger,
+					castingIdentity,
+					Collector.Characteristics.IDENTITY_FINISH);
 			return collectorImpl2;
 		}
 		@SuppressWarnings("unchecked")
@@ -202,9 +202,9 @@ public final class Collectors {
 		BiConsumer<ConcurrentMap<K, D>, T> accumulator;
 		if(downstream.characteristics().contains(Collector.Characteristics.CONCURRENT)) {
 			accumulator =
-			(m, t) -> downstreamAccumulator.accept(
-				m.computeIfAbsent(classifier.apply(t), k -> downstreamSupplier.get()),
-				t);
+				(m, t) -> downstreamAccumulator.accept(
+					m.computeIfAbsent(classifier.apply(t), k -> downstreamSupplier.get()),
+					t);
 		} else {
 			accumulator = (m, t) -> {
 				D resultContainer = m.computeIfAbsent(classifier.apply(t), k -> downstreamSupplier.get());
@@ -249,12 +249,12 @@ public final class Collectors {
 		java.util.function.BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
 		java.util.function.BinaryOperator<A> op = downstream.combiner();
 		BiConsumer<Pair<A, A>, T> accumulator =
-		(result, t) -> downstreamAccumulator.accept(predicate.test(t) ? result.lhs : result.rhs, t);
+			(result, t) -> downstreamAccumulator.accept(predicate.test(t) ? result.lhs : result.rhs, t);
 		BinaryOperator<Pair<A, A>> merger =
-		(left, right) -> new Pair<>(op.apply(left.lhs, right.lhs), op.apply(left.rhs, right.rhs));
+			(left, right) -> new Pair<>(op.apply(left.lhs, right.lhs), op.apply(left.rhs, right.rhs));
 		Supplier<Pair<A, A>> supplier = () -> new Pair<>(downstream.supplier().get(), downstream.supplier().get());
 		Function<Pair<A, A>, Map<Boolean, D>> finisher =
-		pair -> Map.of(true, downstream.finisher().apply(pair.lhs), false, downstream.finisher().apply(pair.rhs));
+			pair -> Map.of(true, downstream.finisher().apply(pair.lhs), false, downstream.finisher().apply(pair.rhs));
 		return Collector.of(supplier, accumulator, merger, finisher);
 	}
 	public static <T, K, U> Collector<T, HashMap<K, U>, HashMap<K, U>> toMap(
@@ -277,7 +277,7 @@ public final class Collectors {
 		BinaryOperator<U> mergeFunction,
 		Supplier<M> mapSupplier) {
 		BiConsumer<M, T> accumulator =
-		(map, element) -> map.merge(keyMapper.apply(element), valueMapper.apply(element), mergeFunction);
+			(map, element) -> map.merge(keyMapper.apply(element), valueMapper.apply(element), mergeFunction);
 		BinaryOperator<M> mapMerger = (m1, m2) -> {
 			for(HashMap.Entry<K, U> e : m2.entrySet()) {
 				m1.merge(e.getKey(), e.getValue(), mergeFunction);

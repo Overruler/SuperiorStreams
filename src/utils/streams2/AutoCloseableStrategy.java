@@ -16,7 +16,7 @@ final class AutoCloseableStrategy<RESOURCE, USER> {
 		Function<HOLDER, USER> resourceUserSupplier) {
 		this.resource = resourceSupplier.get();
 		this.user =
-		resourceUserSupplier.apply(resourceAttacher.apply(resource, resourceHolderSupplier.apply(resource)));
+			resourceUserSupplier.apply(resourceAttacher.apply(resource, resourceHolderSupplier.apply(resource)));
 	}
 
 	public final RESOURCE resource;
