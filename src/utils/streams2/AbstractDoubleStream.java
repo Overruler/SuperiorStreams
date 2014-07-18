@@ -95,9 +95,9 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		return asSELF(s -> s.map(mapper2));
 	}
 	protected static <R, RS> RS flatMapInternal(
-		Function<? super Double, ? extends java.util.stream.Stream<? extends R>> mapper,
+		DoubleFunction<? extends java.util.stream.Stream<? extends R>> mapper,
 		Function<Function<java.util.stream.DoubleStream, java.util.stream.Stream<R>>, RS> cast) {
-		return cast.apply(s -> s.boxed().flatMap(mapper));
+		return cast.apply(s -> s.boxed().flatMap(mapper::apply));
 	}
 	public IS flatMapToInt(TO_IS mapper) {
 		Function<? super Double, ? extends java.util.stream.IntStream> mapper2 = castToIntStream(mapper);
@@ -337,7 +337,7 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		};
 		Collector<Double, double[][], L> collectingAndThen = collectingAndThen(toContainer, intoList.compose(before));
 		Collector<Double, ?, M> collectMap =
-		collectingAndThen(groupingBy(classifier::apply, HashMap<K, L>::new, collectingAndThen), intoMap);
+			collectingAndThen(groupingBy(classifier::apply, HashMap<K, L>::new, collectingAndThen), intoMap);
 		try(java.util.stream.DoubleStream s = supplier.get()) {
 			return s.boxed().collect(collectMap);
 		} catch(RuntimeException e) {

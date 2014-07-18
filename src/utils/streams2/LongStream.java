@@ -85,25 +85,27 @@ ToDoubleFunction<Long>> {//*E*
 	protected @Override LongPredicate castToPredicates(LongPredicate test) {
 		return test;
 	}
-	public <R> Stream<R> map(LongFunction<? extends R> mapping) {
-		return mapInternal(castToMapFunctions(mapping), cast());
+	public <R> Stream<R> map(LongFunction<? extends R> mapper) {
+		return mapInternal(mapper, cast());
 	}
 	public final @SafeVarargs <R> Stream<R> map(LongFunction<? extends R> mapper, LongPredicate... allowed) {
-		return allowed != null && allowed.length > 0 ? mapInternal(
-			mapper,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+		if(allowed != null && allowed.length > 0) {
+			LongStream filter = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return mapInternal(mapper, filter.cast());
+		}
+		return mapInternal(mapper, cast());
 	}
-	public <R> Stream<R> flatMap(LongFunction<? extends java.util.stream.Stream<? extends R>> mapper) {
+	public <R> Stream<R> flatMap(LongFunction<? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public final @SafeVarargs <R> Stream<R> flatMap(
-		LongFunction<? extends java.util.stream.Stream<? extends R>> mapper,
+		LongFunction<? extends Stream<? extends R>> mapper,
 		LongPredicate... allowed) {
-		return allowed != null && allowed.length > 0 ? flatMapInternal(
-			mapper::apply,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(
-			mapper::apply,
-			cast());
+		if(allowed != null && allowed.length > 0) {
+			LongStream filter = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return flatMapInternal(castToFlatMapFunctions(mapper), filter.cast());
+		}
+		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public <K> HashMap<K, long[]> toMap(LongFunction<? extends K> classifier) throws RuntimeException {
 		return toMapInternal(classifier, castToClassifier());
@@ -120,12 +122,9 @@ ToDoubleFunction<Long>> {//*E*
 	private static <K> Function<LongFunction<? extends K>, LongFunction<? extends K>> castToClassifier() {
 		return c -> c;
 	}
-	private static <R> Function<Long, ? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(
-		LongFunction<? extends java.util.stream.Stream<? extends R>> mapper) {
-		return mapper::apply;
-	}
-	private static <R> LongFunction<? extends R> castToMapFunctions(LongFunction<? extends R> mapping) {
-		return mapping;
+	private static <R> LongFunction<? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(
+		LongFunction<? extends Stream<? extends R>> mapper) {
+		return t -> mapper.apply(t).maker().get();
 	}
 	private <R> Function<Function<java.util.stream.LongStream, java.util.stream.Stream<R>>, Stream<R>> cast() {
 		return f -> new Stream<>(supplier, f);

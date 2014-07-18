@@ -87,25 +87,27 @@ ToDoubleFunction<Double>> {//*E*
 	protected @Override DoublePredicate castToPredicates(DoublePredicate test) {
 		return test;
 	}
-	public <R> Stream<R> map(DoubleFunction<? extends R> mapping) {
-		return mapInternal(castToMapFunctions(mapping), cast());
+	public <R> Stream<R> map(DoubleFunction<? extends R> mapper) {
+		return mapInternal(mapper, cast());
 	}
 	public final @SafeVarargs <R> Stream<R> map(DoubleFunction<? extends R> mapper, DoublePredicate... allowed) {
-		return allowed != null && allowed.length > 0 ? mapInternal(
-			mapper,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+		if(allowed != null && allowed.length > 0) {
+			DoubleStream stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return mapInternal(mapper, stream.cast());
+		}
+		return mapInternal(mapper, cast());
 	}
-	public <R> Stream<R> flatMap(DoubleFunction<? extends java.util.stream.Stream<? extends R>> mapper) {
+	public <R> Stream<R> flatMap(DoubleFunction<? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public final @SafeVarargs <R> Stream<R> flatMap(
-		DoubleFunction<? extends java.util.stream.Stream<? extends R>> mapper,
+		DoubleFunction<? extends Stream<? extends R>> mapper,
 		DoublePredicate... allowed) {
-		return allowed != null && allowed.length > 0 ? flatMapInternal(
-			mapper::apply,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(
-			mapper::apply,
-			cast());
+		if(allowed != null && allowed.length > 0) {
+			DoubleStream stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return flatMapInternal(castToFlatMapFunctions(mapper), stream.cast());
+		}
+		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public <K> HashMap<K, double[]> toMap(DoubleFunction<? extends K> classifier) {
 		return toMapInternal(classifier, castToClassifier());
@@ -122,12 +124,9 @@ ToDoubleFunction<Double>> {//*E*
 	private static <K> Function<DoubleFunction<? extends K>, DoubleFunction<? extends K>> castToClassifier() {
 		return c -> c;
 	}
-	private static <R> Function<Double, ? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(
-		DoubleFunction<? extends java.util.stream.Stream<? extends R>> mapper) {
-		return mapper::apply;
-	}
-	private static <R> DoubleFunction<? extends R> castToMapFunctions(DoubleFunction<? extends R> mapping) {
-		return mapping;
+	private static <R> DoubleFunction<? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(
+		DoubleFunction<? extends Stream<? extends R>> mapper) {
+		return t -> mapper.apply(t).maker().get();
 	}
 	private <R> Function<Function<java.util.stream.DoubleStream, java.util.stream.Stream<R>>, Stream<R>> cast() {
 		return f -> new Stream<>(supplier, f);

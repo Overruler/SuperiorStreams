@@ -5,6 +5,7 @@ import java.util.Comparator;
 import utils.lists2.ArrayList;
 import utils.lists2.Arrays;
 import utils.lists2.HashMap;
+import utils.streams.functions.BiFunction;
 import utils.streams.functions.BinaryOperator;
 import utils.streams.functions.Consumer;
 import utils.streams.functions.Function;
@@ -42,10 +43,10 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 
 	public RioStream(Supplier<A> allocator, Function<A, java.util.stream.Stream<T>> converter, Consumer<A> releaser) {
 		this(CachedSupplier.create(() -> new AutoCloseableStrategy<>(
-		allocator,
-		converter,
-		(a, s) -> s.onClose(() -> releaser.accept(a)),
-		Function.identity())));
+			allocator,
+			converter,
+			(a, s) -> s.onClose(() -> releaser.accept(a)),
+			Function.identity())));
 	}
 	<OLD> RioStream(Supplier<AutoCloseableStrategy<A, OLD>> old, Function<OLD, java.util.stream.Stream<T>> converter) {
 		this(CachedSupplier.create(() -> new AutoCloseableStrategy<>(old, converter)));
@@ -112,25 +113,29 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 	protected @Override Predicate<? super T> castToPredicates(IOBiPredicate<A, ? super T> test) {
 		return t -> test.uncheck(classOfE()).test(getCached(), t);
 	}
-	public <R> RioStream<A, R> map(IOBiFunction<A, ? super T, ? extends R> mapping) {
-		return mapInternal(castToMapFunctions(mapping), cast());
+	public <R> RioStream<A, R> map(IOBiFunction<A, ? super T, ? extends R> mapper) {
+		return mapInternal(castToMapFunctions(mapper.uncheck()), cast());
 	}
-	public final @SafeVarargs <R> RioStream<A, R> map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
-		return allowed != null && allowed.length > 0 ? mapInternal(
-			mapper,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+	public final @SafeVarargs <R> RioStream<A, R> map(
+		BiFunction<A, ? super T, ? extends R> mapper,
+		Predicate<T>... allowed) {
+		if(allowed != null && allowed.length > 0) {
+			RioStream<A, T> stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return mapInternal(castToMapFunctions(mapper), stream.cast());
+		}
+		return mapInternal(castToMapFunctions(mapper), cast());
 	}
-	public <R> RioStream<A, R>
-		flatMap(IOBiFunction<A, ? super T, ? extends java.util.stream.Stream<? extends R>> mapper) {
-		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
+	public <R> RioStream<A, R> flatMap(IOBiFunction<A, ? super T, ? extends RioStream<A, ? extends R>> mapper) {
+		return flatMapInternal(castToFlatMapFunctions(mapper.uncheck()), cast());
 	}
 	public final @SafeVarargs <R> RioStream<A, R> flatMap(
-		Function<? super T, ? extends java.util.stream.Stream<? extends R>> mapper,
-			Predicate<T>... allowed) {
-		return allowed != null && allowed.length > 0 ? flatMapInternal(
-			mapper,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast())
-			: flatMapInternal(mapper, cast());
+		BiFunction<A, ? super T, ? extends RioStream<A, ? extends R>> mapper,
+		Predicate<T>... allowed) {
+		if(allowed != null && allowed.length > 0) {
+			RioStream<A, T> stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return flatMapInternal(castToFlatMapFunctions(mapper), stream.cast());
+		}
+		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public <K> HashMap<K, ArrayList<T>> toMap(IOBiFunction<A, ? super T, ? extends K> classifier) throws IOException {
 		return toMapInternal(castToClassifier(classifier));
@@ -166,11 +171,11 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 		return t -> classifier.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> Function<? super T, ? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(
-		IOBiFunction<A, ? super T, ? extends java.util.stream.Stream<? extends R>> mapper) {
-		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
+		BiFunction<A, ? super T, ? extends RioStream<A, ? extends R>> mapper) {
+		return t -> mapper.apply(getCached(), t).maker().get();
 	}
-	private <R> Function<? super T, ? extends R> castToMapFunctions(IOBiFunction<A, ? super T, ? extends R> mapping) {
-		return t -> mapping.uncheck(classOfE()).apply(getCached(), t);
+	private <R> Function<? super T, ? extends R> castToMapFunctions(BiFunction<A, ? super T, ? extends R> mapper2) {
+		return t -> mapper2.apply(getCached(), t);
 	}
 	private <R> Function<Function<java.util.stream.Stream<T>, java.util.stream.Stream<R>>, RioStream<A, R>> cast() {
 		return f -> new RioStream<>(supplierAC, f);

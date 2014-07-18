@@ -101,26 +101,29 @@ ToDoubleFunction<? super float[]>> {//*E*
 	protected @Override Predicate<? super float[]> castToPredicates(Predicate<? super float[]> allowed) {
 		return allowed;
 	}
-	public <R> Stream<R> map(Function<? super float[], ? extends R> mapping) {
-		return mapInternal(castToMapFunctions(mapping), cast());
+	public <R> Stream<R> map(Function<? super float[], ? extends R> mapper) {
+		return mapInternal(mapper, cast());
 	}
 	public final @SafeVarargs <R> Stream<R> map(
 		Function<? super float[], ? extends R> mapper,
-		Predicate<float[]>... allowed) {
-		return allowed != null && allowed.length > 0 ? mapInternal(
-			mapper,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+		Predicate<? super float[]>... allowed) {
+		if(allowed != null && allowed.length > 0) {
+			HSBStream stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return mapInternal(mapper, stream.cast());
+		}
+		return mapInternal(mapper, cast());
 	}
 	public <R> Stream<R> flatMap(Function<? super float[], ? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public final @SafeVarargs <R> Stream<R> flatMap(
-		Function<? super float[], ? extends java.util.stream.Stream<? extends R>> mapper,
-		Predicate<float[]>... allowed) {
-		return allowed != null && allowed.length > 0 ? flatMapInternal(
-			mapper,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast())
-			: flatMapInternal(mapper, cast());
+		Function<? super float[], ? extends Stream<? extends R>> mapper,
+		Predicate<? super float[]>... allowed) {
+		if(allowed != null && allowed.length > 0) {
+			HSBStream stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return flatMapInternal(castToFlatMapFunctions(mapper), stream.cast());
+		}
+		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public <K> HashMap<K, ArrayList<float[]>> toMap(Function<? super float[], ? extends K> classifier) {
 		return toMapInternal(castToClassifier(classifier));
@@ -156,13 +159,9 @@ ToDoubleFunction<? super float[]>> {//*E*
 		Function<? super float[], ? extends K> classifier) {
 		return classifier;
 	}
-	private static <R> Function<? super float[], ? extends Stream<? extends R>> castToFlatMapFunctions(
-		Function<? super float[], ? extends Stream<? extends R>> mapper) {
-		return mapper;
-	}
-	private static <R> Function<? super float[], ? extends R> castToMapFunctions(
-		Function<? super float[], ? extends R> mapping) {
-		return mapping;
+	private static <R> Function<? super float[], ? extends java.util.stream.Stream<? extends R>>
+		castToFlatMapFunctions(Function<? super float[], ? extends Stream<? extends R>> mapper) {
+		return t -> mapper.apply(t).maker().get();
 	}
 	private <R> Function<Function<java.util.stream.Stream<float[]>, java.util.stream.Stream<R>>, Stream<R>> cast() {
 		return f -> new Stream<>(supplier, f);

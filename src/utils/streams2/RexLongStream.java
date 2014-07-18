@@ -1,7 +1,9 @@
 package utils.streams2;
 
+import java.util.stream.Stream;
 import utils.lists2.Arrays;
 import utils.lists2.HashMap;
+import utils.streams.functions.BiFunction;
 import utils.streams.functions.Consumer;
 import utils.streams.functions.ExBiFunction;
 import utils.streams.functions.ExBiPredicate;
@@ -42,10 +44,10 @@ ExToDoubleBiFunction<A, Long, E>> {//*E*
 	public RexLongStream(Class<E> classOfE, Supplier<A> allocator, Function<A, java.util.stream.LongStream> converter,
 		Consumer<A> releaser) {
 		this(CachedSupplier.create(() -> new AutoCloseableStrategy<>(
-		allocator,
-		converter,
-		(a, s) -> s.onClose(() -> releaser.accept(a)),
-		Function.identity())), classOfE);
+			allocator,
+			converter,
+			(a, s) -> s.onClose(() -> releaser.accept(a)),
+			Function.identity())), classOfE);
 	}
 	<OLD> RexLongStream(Class<E> classOfE, Supplier<AutoCloseableStrategy<A, OLD>> old,
 		Function<OLD, java.util.stream.LongStream> converter) {
@@ -112,25 +114,31 @@ ExToDoubleBiFunction<A, Long, E>> {//*E*
 	protected @Override LongPredicate castToPredicates(ExBiPredicate<A, Long, E> test) {
 		return t -> test.uncheck(classOfE).test(getCached(), t);
 	}
-	public <R> RexStream<E, A, R> map(ExBiFunction<A, Long, ? extends R, E> mapping) {
-		return mapInternal(castToMapFunctions(mapping), cast());
+	public <R> RexStream<E, A, R> map(ExBiFunction<A, Long, ? extends R, E> mapper) {
+		return mapInternal(castToMapFunctions(mapper.uncheck(classOfE())), cast());
 	}
-	public final @SafeVarargs <R> RexStream<E, A, R> map(LongFunction<? extends R> mapper, LongPredicate... allowed) {
-		return allowed != null && allowed.length > 0 ? mapInternal(
-			mapper,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+	public final @SafeVarargs <R> RexStream<E, A, R> map(
+		BiFunction<A, Long, ? extends R> mapper,
+		LongPredicate... allowed) {
+		if(allowed != null && allowed.length > 0) {
+			RexLongStream<E, A> stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return mapInternal(castToMapFunctions(mapper), stream.cast());
+		}
+		return mapInternal(castToMapFunctions(mapper), cast());
 	}
-	public <R> RexStream<E, A, R> flatMap(
-		ExBiFunction<A, Long, ? extends java.util.stream.Stream<? extends R>, E> mapper) {
-		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
+	public <R> RexStream<E, A, R> flatMap(ExBiFunction<A, Long, ? extends RexStream<E, A, ? extends R>, E> mapper) {
+		BiFunction<A, Long, ? extends RexStream<E, A, ? extends R>> mapper2 = mapper.uncheck(classOfE());
+		LongFunction<? extends Stream<? extends R>> mapper3 = castToFlatMapFunctions(mapper2);
+		return flatMapInternal(mapper3, cast());
 	}
 	public final @SafeVarargs <R> RexStream<E, A, R> flatMap(
-		Function<Long, ? extends java.util.stream.Stream<? extends R>> mapper,
-			LongPredicate... allowed) {
-		return allowed != null && allowed.length > 0 ? flatMapInternal(
-			mapper,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast())
-			: flatMapInternal(mapper, cast());
+		BiFunction<A, Long, ? extends RexStream<E, A, ? extends R>> mapper,
+		LongPredicate... allowed) {
+		if(allowed != null && allowed.length > 0) {
+			RexLongStream<E, A> stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return flatMapInternal(castToFlatMapFunctions(mapper), stream.cast());
+		}
+		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public <K> HashMap<? extends K, long[]> toMap(ExBiFunction<A, Long, ? extends K, E> classifier) throws E {
 		return toMapInternal(classifier, castToClassifier());
@@ -144,12 +152,12 @@ ExToDoubleBiFunction<A, Long, E>> {//*E*
 	private <K> Function<ExBiFunction<A, Long, ? extends K, E>, LongFunction<? extends K>> castToClassifier() {
 		return c -> t -> c.uncheck(classOfE()).apply(getCached(), t);
 	}
-	private <R> Function<Long, ? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(
-		ExBiFunction<A, Long, ? extends java.util.stream.Stream<? extends R>, E> mapper) {
-		return t -> mapper.uncheck(classOfE()).apply(getCached(), t);
+	private <R> LongFunction<? extends Stream<? extends R>> castToFlatMapFunctions(
+		BiFunction<A, Long, ? extends RexStream<E, A, ? extends R>> mapper2) {
+		return t -> mapper2.apply(getCached(), t).maker().get();
 	}
-	private <R> LongFunction<? extends R> castToMapFunctions(ExBiFunction<A, Long, ? extends R, E> mapping) {
-		return t -> mapping.uncheck(classOfE()).apply(getCached(), t);
+	private <R> LongFunction<? extends R> castToMapFunctions(BiFunction<A, Long, ? extends R> mapper2) {
+		return t -> mapper2.apply(getCached(), t);
 	}
 	private <R> Function<Function<java.util.stream.LongStream, java.util.stream.Stream<R>>, RexStream<E, A, R>> cast() {
 		return f -> new RexStream<>(classOfE, supplierAC, f);

@@ -86,25 +86,27 @@ ToDoubleFunction<Integer>> {//*E*
 	protected @Override IntPredicate castToPredicates(IntPredicate test) {
 		return test;
 	}
-	public <R> Stream<R> map(IntFunction<? extends R> mapping) {
-		return mapInternal(castToMapFunctions(mapping), cast());
+	public <R> Stream<R> map(IntFunction<? extends R> mapper) {
+		return mapInternal(mapper, cast());
 	}
 	public final @SafeVarargs <R> Stream<R> map(IntFunction<? extends R> mapper, IntPredicate... allowed) {
-		return allowed != null && allowed.length > 0 ? mapInternal(
-			mapper,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+		if(allowed != null && allowed.length > 0) {
+			IntStream stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return mapInternal(mapper, stream.cast());
+		}
+		return mapInternal(mapper, cast());
 	}
 	public <R> Stream<R> flatMap(IntFunction<? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public final @SafeVarargs <R> Stream<R> flatMap(
-		IntFunction<? extends java.util.stream.Stream<? extends R>> mapper,
-			IntPredicate... allowed) {
-		return allowed != null && allowed.length > 0 ? flatMapInternal(
-			mapper::apply,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : flatMapInternal(
-				mapper::apply,
-				cast());
+		IntFunction<? extends Stream<? extends R>> mapper,
+		IntPredicate... allowed) {
+		if(allowed != null && allowed.length > 0) {
+			IntStream stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return flatMapInternal(castToFlatMapFunctions(mapper), stream.cast());
+		}
+		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public <K> HashMap<K, int[]> toMap(IntFunction<? extends K> classifier) {
 		return toMapInternal(classifier, castToClassifier());
@@ -121,12 +123,9 @@ ToDoubleFunction<Integer>> {//*E*
 	private static <K> Function<IntFunction<? extends K>, IntFunction<? extends K>> castToClassifier() {
 		return c -> c;
 	}
-	private static <R> Function<Integer, ? extends Stream<? extends R>> castToFlatMapFunctions(
+	private static <R> IntFunction<? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(
 		IntFunction<? extends Stream<? extends R>> mapper) {
-		return mapper::apply;
-	}
-	private static <R> IntFunction<? extends R> castToMapFunctions(IntFunction<? extends R> mapping) {
-		return mapping;
+		return t -> mapper.apply(t).maker().get();
 	}
 	private <R> Function<Function<java.util.stream.IntStream, java.util.stream.Stream<R>>, Stream<R>> cast() {
 		return f -> new Stream<>(supplier, f);

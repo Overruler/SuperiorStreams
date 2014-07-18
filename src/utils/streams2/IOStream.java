@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 import utils.lists2.ArrayList;
 import utils.lists2.Arrays;
 import utils.lists2.HashMap;
@@ -97,24 +98,27 @@ IOToDoubleFunction<? super T>> {//*E*
 	protected @Override Predicate<? super T> castToPredicates(IOPredicate<? super T> allowed) {
 		return allowed.uncheck(classOfE());
 	}
-	public <R> IOStream<R> map(IOFunction<? super T, ? extends R> mapping) {
-		return mapInternal(castToMapFunctions(mapping), cast());
+	public <R> IOStream<R> map(IOFunction<? super T, ? extends R> mapper) {
+		return mapInternal(mapper.uncheck(), cast());
 	}
 	public final @SafeVarargs <R> IOStream<R> map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
-		return allowed != null && allowed.length > 0 ? mapInternal(
-			mapper,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast()) : mapInternal(mapper, cast());
+		if(allowed != null && allowed.length > 0) {
+			IOStream<T> stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return mapInternal(mapper, stream.cast());
+		}
+		return mapInternal(mapper, cast());
 	}
-	public <R> IOStream<R> flatMap(IOFunction<? super T, ? extends Stream<? extends R>> mapper) {
-		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
+	public <R> IOStream<R> flatMap(IOFunction<? super T, ? extends IOStream<? extends R>> mapper) {
+		return flatMapInternal(castToFlatMapFunctions(mapper.uncheck()), cast());
 	}
 	public final @SafeVarargs <R> IOStream<R> flatMap(
-		Function<? super T, ? extends java.util.stream.Stream<? extends R>> mapper,
+		Function<? super T, ? extends IOStream<? extends R>> mapper,
 		Predicate<T>... allowed) {
-		return allowed != null && allowed.length > 0 ? flatMapInternal(
-			mapper,
-			filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).cast())
-			: flatMapInternal(mapper, cast());
+		if(allowed != null && allowed.length > 0) {
+			IOStream<T> stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
+			return flatMapInternal(castToFlatMapFunctions(mapper), stream.cast());
+		}
+		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public <K> HashMap<K, ArrayList<T>> toMap(IOFunction<? super T, ? extends K> classifier) throws IOException {
 		return toMapInternal(castToClassifier(classifier));
@@ -150,11 +154,8 @@ IOToDoubleFunction<? super T>> {//*E*
 		return classifier.uncheck(IOException.class);
 	}
 	private <R> Function<? super T, ? extends Stream<? extends R>> castToFlatMapFunctions(
-		IOFunction<? super T, ? extends Stream<? extends R>> mapper) {
-		return mapper.uncheck(IOException.class);
-	}
-	private <R> Function<? super T, ? extends R> castToMapFunctions(IOFunction<? super T, ? extends R> mapping) {
-		return mapping.uncheck(IOException.class);
+		Function<? super T, ? extends IOStream<? extends R>> mapper) {
+		return t -> mapper.apply(t).maker().get();
 	}
 	private <R> Function<Function<java.util.stream.Stream<T>, java.util.stream.Stream<R>>, IOStream<R>> cast() {
 		return f -> new IOStream<>(supplier, f);

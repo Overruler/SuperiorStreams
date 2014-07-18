@@ -88,7 +88,7 @@ ToDoubleFunction<? super T>> {//*E*
 		return allowed;
 	}
 	public <R> Stream<R> map(Function<? super T, ? extends R> mapping) {
-		return mapInternal(castToMapFunctions(mapping), cast());
+		return mapInternal(mapping, cast());
 	}
 	public final @SafeVarargs <R> Stream<R> map(Function<? super T, ? extends R> mapper, Predicate<T>... allowed) {
 		if(allowed != null && allowed.length > 0) {
@@ -97,17 +97,17 @@ ToDoubleFunction<? super T>> {//*E*
 		}
 		return mapInternal(mapper, cast());
 	}
-	public <R> Stream<R> flatMap(Function<? super T, ? extends java.util.stream.Stream<? extends R>> mapper) {
+	public <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public final @SafeVarargs <R> Stream<R> flatMap(
-		Function<? super T, ? extends java.util.stream.Stream<? extends R>> mapper,
+		Function<? super T, ? extends Stream<? extends R>> mapper,
 		Predicate<T>... allowed) {
 		if(allowed != null && allowed.length > 0) {
 			Stream<T> stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
-			return flatMapInternal(mapper, stream.cast());
+			return flatMapInternal(castToFlatMapFunctions(mapper), stream.cast());
 		}
-		return flatMapInternal(mapper, cast());
+		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
 	public <K> HashMap<K, ArrayList<T>> toMap(Function<? super T, ? extends K> classifier) {
 		return toMapInternal(castToClassifier(classifier));
@@ -145,11 +145,8 @@ ToDoubleFunction<? super T>> {//*E*
 		return classifier;
 	}
 	private <R> Function<? super T, ? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(
-		Function<? super T, ? extends java.util.stream.Stream<? extends R>> mapper) {
-		return mapper;
-	}
-	private <R> Function<? super T, ? extends R> castToMapFunctions(Function<? super T, ? extends R> mapping) {
-		return mapping;
+		Function<? super T, ? extends Stream<? extends R>> mapper) {
+		return t -> mapper.apply(t).maker().get();
 	}
 	private <R> Function<Function<java.util.stream.Stream<T>, java.util.stream.Stream<R>>, Stream<R>> cast() {
 		return f -> new Stream<>(supplier, f);

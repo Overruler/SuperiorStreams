@@ -97,9 +97,9 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 		return asDS(s -> s.mapToDouble(mapper2));
 	}
 	protected static <R, RS> RS flatMapInternal(
-		Function<? super Integer, ? extends java.util.stream.Stream<? extends R>> mapper,
+		IntFunction<? extends java.util.stream.Stream<? extends R>> mapper,
 		Function<Function<java.util.stream.IntStream, java.util.stream.Stream<R>>, RS> cast) {
-		return cast.apply(s -> s.boxed().flatMap(mapper));
+		return cast.apply(s -> s.boxed().flatMap(mapper::apply));
 	}
 	public SELF flatMapToInt(TO_IS mapper) {
 		Function<? super Integer, ? extends java.util.stream.IntStream> mapper2 = castToIntStream(mapper);
