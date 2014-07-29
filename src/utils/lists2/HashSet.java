@@ -89,7 +89,7 @@ public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 		return wrapped.contains(o);
 	}
 	public @Override <C extends Collection<T, C>> boolean containsAll(C c) {
-		return wrapped.containsAll(Arrays.asList(c.stream().toArray()));
+		return wrapped.containsAll(new java.util.HashSet<>(java.util.Arrays.asList(c.stream().toArray())));
 	}
 	public @Override HashSet<T> add(T item) {
 		wrapped.add(item);
@@ -112,13 +112,13 @@ public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 	public @Override <C extends Collection<T, C>> HashSet<T> retainAll(C c) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
-		wrapped.retainAll(Arrays.asList(array));
+		wrapped.retainAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
 		return this;
 	}
 	public @Override <C extends Collection<T, C>> HashSet<T> removeAll(C c) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
-		wrapped.removeAll(Arrays.asList(array));
+		wrapped.removeAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
 		return this;
 	}
 	public @Override <U, E extends Exception> HashSet<U> map(ExFunction<T, U, E> mapper) throws E {

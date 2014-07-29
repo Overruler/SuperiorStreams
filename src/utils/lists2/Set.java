@@ -109,7 +109,7 @@ public class Set<T> implements CollectionSetAPI<T, Set<T>> {
 		return wrapped.contains(o);
 	}
 	public @Override <C extends Collection<T, C>> boolean containsAll(C c) {
-		return wrapped.containsAll(java.util.Arrays.asList(c.stream().toArray()));
+		return wrapped.containsAll(new java.util.HashSet<>(java.util.Arrays.asList(c.stream().toArray())));
 	}
 	public @Override Set<T> add(T item) {
 		java.util.HashSet<T> copy = copy();
@@ -135,14 +135,14 @@ public class Set<T> implements CollectionSetAPI<T, Set<T>> {
 		java.util.HashSet<T> copy = copy();
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
-		copy.retainAll(java.util.Arrays.asList(array));
+		copy.retainAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
 		return next(copy);
 	}
 	public @Override <C extends Collection<T, C>> Set<T> removeAll(C c) {
 		java.util.HashSet<T> copy = copy();
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
-		copy.removeAll(java.util.Arrays.asList(array));
+		copy.removeAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
 		return next(copy);
 	}
 	public @Override <U, E extends Exception> Set<U> map(ExFunction<T, U, E> mapper) throws E {
