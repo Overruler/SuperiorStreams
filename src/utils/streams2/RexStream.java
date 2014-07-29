@@ -154,6 +154,21 @@ ExToDoubleBiFunction<A, ? super T, E>> {//*E*
 		}
 		return toMapInternal(classifier);
 	}
+	public <K, V> HashMap<K, V> toMap(
+		ExBiFunction<A, ? super T, ? extends K, E> keyMapper,
+		ExBiFunction<A, ? super T, ? extends V, E> valueMapper) throws E {
+		return collect(Collectors.toMap(castToClassifier(keyMapper), castToClassifier(valueMapper)));
+	}
+	public final @SafeVarargs <K, V> HashMap<K, V> toMap(
+		Function<? super T, ? extends K> keyMapper,
+		Function<? super T, ? extends V> valueMapper,
+		Predicate<T>... allowed) throws E {
+		if(allowed != null && allowed.length > 0) {
+			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).collect(
+				Collectors.toMap(keyMapper, valueMapper));
+		}
+		return collect(Collectors.toMap(keyMapper, valueMapper));
+	}
 	public <K, L, M> M toMultiMap(
 		ExBiFunction<A, ? super T, ? extends K, E> classifier,
 		Function<HashMap<K, L>, M> intoMap,
