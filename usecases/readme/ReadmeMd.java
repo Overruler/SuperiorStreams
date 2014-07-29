@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.util.jar.JarFile;
 import utils.lists2.ArrayList;
 import utils.lists2.Files;
+import utils.lists2.HashMap;
 import utils.lists2.HashSet;
 import utils.lists2.List;
 import utils.lists2.Set;
@@ -114,6 +116,8 @@ return new Object[] {isPrefix1,isPrefix2}; }/*/
 
 ### Replacements for standard library ArrayList, HashSet and HashMap collections
 
+Mutable and immutable versions:
+
 ```java
 //*/
 static Object[] example4() {
@@ -126,6 +130,34 @@ static Object[] example4() {
 	Set<String> immutableSet = set.toSet().replaceAll(s -> "log: " + s);
 
 return new Object[] {immutableList,immutableSet}; }/*/
+```
+
+With exceptions passing through as expected:
+
+```java
+//*/
+static FileTime getLastModifiedTime(Path path) throws IOException {
+	return lastModifiedCache.computeIfAbsent(path, p -> Files.getLastModifiedTime(path)).get(path);
+}
+private static HashMap<Path, FileTime> lastModifiedCache = new HashMap<>();
+
+// Standard library version requires lots of catching and re-throwing:
+
+static FileTime getLastModifiedTimeStandard(Path path) throws IOException {
+	try {
+		return lastModifiedCache2.computeIfAbsent(path, p -> {
+			try {
+				return Files.getLastModifiedTime(path);
+			} catch(IOException e) {
+				throw new UncheckedIOException(e);
+			}
+		});
+	} catch(UncheckedIOException e) {
+		throw e.getCause();
+	}
+}
+private static java.util.Map<Path, FileTime> lastModifiedCache2 = new java.util.HashMap<>();
+/*/
 ```
 
 ### Streams of RGB pixels for image manipulation
