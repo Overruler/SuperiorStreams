@@ -167,6 +167,9 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 		}
 		return toMultiMapInternal(classifier, intoMap, intoList);
 	}
+	public IOStream<T> toIO() {
+		return new IOStream<>(() -> supplierAC.get().user);
+	}
 	private <K> Function<? super T, ? extends K> castToClassifier(IOBiFunction<A, ? super T, ? extends K> classifier) {
 		return t -> classifier.uncheck(classOfE()).apply(getCached(), t);
 	}

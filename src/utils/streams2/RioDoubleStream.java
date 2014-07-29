@@ -145,6 +145,9 @@ IOToDoubleBiFunction<A, Double>> {//*E*
 		Function<double[], L> intoList) throws IOException {
 		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
 	}
+	public IODoubleStream toIO() {
+		return new IODoubleStream(() -> supplierAC.get().user);
+	}
 	private <K> Function<IOBiFunction<A, Double, ? extends K>, DoubleFunction<? extends K>> castToClassifier() {
 		return c -> t -> c.uncheck(classOfE()).apply(getCached(), t);
 	}
