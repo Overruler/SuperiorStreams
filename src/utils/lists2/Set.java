@@ -3,11 +3,11 @@ package utils.lists2;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExPredicate;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 public class Set<T> implements CollectionSetAPI<T, Set<T>> {
 	final java.util.HashSet<T> wrapped;
@@ -45,19 +45,19 @@ public class Set<T> implements CollectionSetAPI<T, Set<T>> {
 	private Set(java.util.Collection<T> iterable) {
 		this(iterable.size());
 		for(T item : iterable) {
-			add(item);
+			wrapped.add(item);
 		}
 	}
 	private <C extends Collection<T, C>> Set(C iterable) {
 		this(iterable.size());
 		for(T item : iterable) {
-			add(item);
+			wrapped.add(item);
 		}
 	}
 	private Set(Iterable<T> iterable) {
 		this();
 		for(T item : iterable) {
-			add(item);
+			wrapped.add(item);
 		}
 	}
 	public @Override String toString() {

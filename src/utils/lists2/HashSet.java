@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExPredicate;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 	final java.util.Set<T> wrapped;
@@ -37,7 +37,7 @@ public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 	public HashSet(java.util.Collection<T> iterable) {
 		this(iterable.size());
 		for(T item : iterable) {
-			add(item);
+			wrapped.add(item);
 		}
 	}
 	public @Override String toString() {
