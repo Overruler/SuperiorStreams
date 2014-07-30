@@ -143,7 +143,7 @@ private static HashMap<Path, FileTime> lastModifiedCache = new HashMap<>();
 
 // Standard library version requires lots of catching and re-throwing:
 
-static FileTime getLastModifiedTimeStandard(Path path) throws IOException {
+static FileTime getLastModifiedTime2(Path path) throws IOException {
 	try {
 		return lastModifiedCache2.computeIfAbsent(path, p -> {
 			try {
