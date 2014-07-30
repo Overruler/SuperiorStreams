@@ -26,7 +26,6 @@ import java.util.RandomAccess;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExObjIntConsumer;
@@ -35,6 +34,7 @@ import utils.streams.functions.ExToDoubleFunction;
 import utils.streams.functions.ExToIntFunction;
 import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 /**
  * FastList (here ArrayList) is an attempt to provide the same functionality as ArrayList without the support for concurrent
@@ -128,7 +128,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		StringBuilder buf = new StringBuilder();
 		buf.append('[');
 		T[] localItems = items;
-		for(int i = 0, n = localItems.length; i < n; i++) {
+		for(int i = 0, n = size; i < n; i++) {
 			T item = localItems[i];
 			if(i > 0) {
 				buf.append(", ");
