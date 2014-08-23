@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExObjIntConsumer;
@@ -34,6 +33,7 @@ import utils.streams.functions.ExToDoubleFunction;
 import utils.streams.functions.ExToIntFunction;
 import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 /**
  * An ImmutableArrayList (here ListOfN) wraps a Java array but it cannot be modified after creation.
@@ -459,7 +459,7 @@ class ListOfN<T> extends List<T> {
 	}
 	private static <T> T[] newArray(int size) {
 		@SuppressWarnings("unchecked")
-		T[] array = (T[]) new Object[size + 1];
+		T[] array = (T[]) new Object[size];
 		return array;
 	}
 	private static boolean notEmptyArrayIterate(Object[] array) {
