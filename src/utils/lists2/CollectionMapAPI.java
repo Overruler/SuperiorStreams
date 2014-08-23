@@ -29,6 +29,7 @@ public interface CollectionMapAPI<K, V,
 	<E extends Exception> MAP each(ExBiConsumer<K, V, E> action) throws E;
 	<E extends Exception> MAP replaceAll(ExBiFunction<K, V, V, E> function) throws E;
 	MAP putIfAbsent(K key, V value);
+	MAP remove(K key);
 	MAP remove(K key, V value);
 	MAP replace(K key, V oldValue, V newValue);
 	MAP replace(K key, V value);

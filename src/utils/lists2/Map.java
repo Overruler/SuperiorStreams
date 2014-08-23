@@ -1,10 +1,10 @@
 package utils.lists2;
 
 import utils.lists.Pair;
-import utils.streams2.WrapperException;
 import utils.streams.functions.ExBiConsumer;
 import utils.streams.functions.ExBiFunction;
 import utils.streams.functions.ExFunction;
+import utils.streams2.WrapperException;
 
 public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<Pair<K, V>>, List<V>, Pair<K, V>> {
 	final java.util.HashMap<K, V> wrapped;
@@ -128,6 +128,12 @@ public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<
 	public Map<K, V> putIfAbsent(K key, V value) {
 		Map<K, V> next = next();
 		next.wrapped.putIfAbsent(key, value);
+		return next;
+	}
+	@Override
+	public Map<K, V> remove(K key) {
+		Map<K, V> next = next();
+		next.wrapped.remove(key);
 		return next;
 	}
 	@Override

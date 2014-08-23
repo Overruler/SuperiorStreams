@@ -1,10 +1,10 @@
 package utils.lists2;
 
 import utils.lists.Pair;
-import utils.streams2.WrapperException;
 import utils.streams.functions.ExBiConsumer;
 import utils.streams.functions.ExBiFunction;
 import utils.streams.functions.ExFunction;
+import utils.streams2.WrapperException;
 
 public class HashMap<K, V> implements
 	CollectionMapAPI<K, V, HashMap<K, V>, HashSet<K>, HashSet<HashMap.Entry<K, V>>, ArrayList<V>, HashMap.Entry<K, V>> {
@@ -148,6 +148,11 @@ public class HashMap<K, V> implements
 	@Override
 	public HashMap<K, V> putIfAbsent(K key, V value) {
 		wrapped.putIfAbsent(key, value);
+		return this;
+	}
+	@Override
+	public HashMap<K, V> remove(K key) {
+		wrapped.remove(key);
 		return this;
 	}
 	@Override
