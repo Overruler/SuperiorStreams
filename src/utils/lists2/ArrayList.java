@@ -424,7 +424,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		int currentFilledIndex = 0;
 		for(int i = 0, n = size; i < n; i++) {
 			T item = items[i];
-			if(!predicate.test(item)) {
+			if(predicate.test(item)) {
 				// keep it
 				if(currentFilledIndex != i) {
 					items[currentFilledIndex] = item;
