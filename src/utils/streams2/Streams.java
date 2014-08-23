@@ -1,8 +1,10 @@
 package utils.streams2;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +38,7 @@ import utils.streams.functions.Predicate;
 import utils.streams.functions.Supplier;
 
 public class Streams {
+
 	public static @SafeVarargs <T> Stream<T> of(T... array) {
 		return from(java.util.Arrays.asList(array.clone()));
 	}
@@ -211,5 +214,26 @@ public class Streams {
 		int[] data = new int[w * h];
 		image.getRGB(0, 0, w, h, data, 0, w);
 		return new RGBStream(() -> java.util.stream.IntStream.of(data), w, h);
+	}
+	public static byte[] readFully(InputStream in) throws IOException {
+		return readFully(in, new byte[10240]);
+	}
+	public static byte[] readFully(InputStream in, byte[] buffer) throws IOException {
+		try {
+			return readAllBytes(in, buffer);
+		} finally {
+			in.close();
+		}
+	}
+	public static byte[] readAllBytes(InputStream in) throws IOException {
+		return readAllBytes(in, new byte[10240]);
+	}
+	public static byte[] readAllBytes(InputStream in, byte[] buffer) throws IOException {
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(buffer.length);
+		int count;
+		while((count = in.read(buffer)) > 0) {
+			bout.write(buffer, 0, count);
+		}
+		return bout.toByteArray();
 	}
 }
