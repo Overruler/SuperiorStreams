@@ -148,10 +148,27 @@ ToDoubleFunction<? super T>> {//*E*
 		Function<ArrayList<T>, L> intoList,
 		Predicate<T>... allowed) {
 		if(allowed != null && allowed.length > 0) {
-			Stream<T> stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
-			return stream.toMultiMapInternal(classifier, intoMap, intoList);
+			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).toMultiMapInternal(
+				classifier,
+				intoMap,
+				intoList);
 		}
 		return toMultiMapInternal(classifier, intoMap, intoList);
+	}
+	public <K, V> HashMap<K, ArrayList<V>> toMultiMap(
+		Function<? super T, ? extends K> keyMapper,
+		Function<? super T, ? extends V> valueMapper) {
+		return collect(Collectors.groupingBy(keyMapper, Collectors.mapping(valueMapper, Collectors.toList())));
+	}
+	public final @SafeVarargs <K, V> HashMap<K, ArrayList<V>> toMultiMap(
+		Function<? super T, ? extends K> keyMapper,
+		Function<? super T, ? extends V> valueMapper,
+		Predicate<T>... allowed) {
+		if(allowed != null && allowed.length > 0) {
+			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).collect(
+				Collectors.groupingBy(keyMapper, Collectors.mapping(valueMapper, Collectors.toList())));
+		}
+		return collect(Collectors.groupingBy(keyMapper, Collectors.mapping(valueMapper, Collectors.toList())));
 	}
 	public IOStream<T> toIO() {
 		return new IOStream<>(supplier);

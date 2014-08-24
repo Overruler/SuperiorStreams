@@ -182,6 +182,23 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 		}
 		return toMultiMapInternal(classifier, intoMap, intoList);
 	}
+	public <K, V> HashMap<K, ArrayList<V>> toMultiMap(
+		IOBiFunction<A, ? super T, ? extends K> keyMapper,
+		IOBiFunction<A, ? super T, ? extends V> valueMapper) throws IOException {
+		return collect(Collectors.groupingBy(
+			castToClassifier(keyMapper),
+			Collectors.mapping(castToClassifier(valueMapper), Collectors.toList())));
+	}
+	public final @SafeVarargs <K, V> HashMap<K, ArrayList<V>> toMultiMap(
+		Function<? super T, ? extends K> keyMapper,
+		Function<? super T, ? extends V> valueMapper,
+		Predicate<T>... allowed) throws IOException {
+		if(allowed != null && allowed.length > 0) {
+			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).collect(
+				Collectors.groupingBy(keyMapper, Collectors.mapping(valueMapper, Collectors.toList())));
+		}
+		return collect(Collectors.groupingBy(keyMapper, Collectors.mapping(valueMapper, Collectors.toList())));
+	}
 	public IOStream<T> toIO() {
 		return new IOStream<>(() -> supplierAC.get().user);
 	}
