@@ -6,7 +6,7 @@ import utils.streams.functions.ExBiFunction;
 import utils.streams.functions.ExFunction;
 
 //*Q*
-public interface CollectionMapAPI<K, V,
+interface CollectionMapAPI<K, V,
 	MAP     extends CollectionMapAPI<K, V, MAP, KEY_SET, ALL_SET, VALUES, PAIR>,
 	KEY_SET extends CollectionSetAPI<K, KEY_SET>,
 	ALL_SET extends CollectionSetAPI<PAIR, ALL_SET>,
