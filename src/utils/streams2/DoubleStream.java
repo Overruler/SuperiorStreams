@@ -121,6 +121,15 @@ ToDoubleFunction<Double>> {//*E*
 	public IODoubleStream toIO() {
 		return new IODoubleStream(supplier);
 	}
+	public static DoubleStream of() {
+		return new DoubleStream(() -> java.util.stream.DoubleStream.empty());
+	}
+	public static DoubleStream of(double value) {
+		return new DoubleStream(() -> java.util.stream.DoubleStream.of(value));
+	}
+	public static DoubleStream of(double... values) {
+		return new DoubleStream(() -> java.util.stream.DoubleStream.of(values));
+	}
 	private static <K> Function<DoubleFunction<? extends K>, DoubleFunction<? extends K>> castToClassifier() {
 		return c -> c;
 	}

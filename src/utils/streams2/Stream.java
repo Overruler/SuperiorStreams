@@ -173,6 +173,15 @@ ToDoubleFunction<? super T>> {//*E*
 	public IOStream<T> toIO() {
 		return new IOStream<>(supplier);
 	}
+	public static <T> Stream<T> of() {
+		return new Stream<>(() -> java.util.stream.Stream.empty());
+	}
+	public static <T> Stream<T> of(T value) {
+		return new Stream<>(() -> java.util.stream.Stream.of(value));
+	}
+	public static @SafeVarargs <T> Stream<T> of(T... values) {
+		return new Stream<>(() -> java.util.stream.Stream.of(values));
+	}
 	private <K> Function<? super T, ? extends K> castToClassifier(Function<? super T, ? extends K> classifier) {
 		return classifier;
 	}

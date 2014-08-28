@@ -40,7 +40,7 @@ import utils.streams.functions.Supplier;
 public class Streams {
 
 	public static @SafeVarargs <T> Stream<T> of(T... array) {
-		return from(java.util.Arrays.asList(array.clone()));
+		return Stream.of(array.clone());
 	}
 	public static <T> Stream<T> iterating(Iterable<T> iterable) {
 		return new Stream<>(() -> iterableToStream(iterable));
@@ -50,16 +50,13 @@ public class Streams {
 		return StreamSupport.stream(() -> spliterator, spliterator.characteristics(), false);
 	}
 	public static IntStream ints(int... array) {
-		int[] clone = array.clone();
-		return new IntStream(() -> java.util.stream.IntStream.of(clone));
+		return IntStream.of(array.clone());
 	}
 	public static LongStream longs(long... array) {
-		long[] clone = array.clone();
-		return new LongStream(() -> java.util.stream.LongStream.of(clone));
+		return LongStream.of(array.clone());
 	}
 	public static DoubleStream doubles(double... array) {
-		double[] clone = array.clone();
-		return new DoubleStream(() -> java.util.stream.DoubleStream.of(clone));
+		return DoubleStream.of(array.clone());
 	}
 	public static <T> Stream<T> from(java.util.Collection<T> collection) {
 		return new Stream<>(() -> collection.stream());

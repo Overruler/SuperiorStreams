@@ -119,6 +119,15 @@ ToDoubleFunction<Long>> {//*E*
 	public IOLongStream toIO() {
 		return new IOLongStream(supplier);
 	}
+	public static LongStream of() {
+		return new LongStream(() -> java.util.stream.LongStream.empty());
+	}
+	public static LongStream of(long value) {
+		return new LongStream(() -> java.util.stream.LongStream.of(value));
+	}
+	public static LongStream of(long... values) {
+		return new LongStream(() -> java.util.stream.LongStream.of(values));
+	}
 	private static <K> Function<LongFunction<? extends K>, LongFunction<? extends K>> castToClassifier() {
 		return c -> c;
 	}

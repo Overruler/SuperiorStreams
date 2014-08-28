@@ -120,6 +120,15 @@ ToDoubleFunction<Integer>> {//*E*
 	public IOIntStream toIO() {
 		return new IOIntStream(supplier);
 	}
+	public static IntStream of() {
+		return new IntStream(() -> java.util.stream.IntStream.empty());
+	}
+	public static IntStream of(int value) {
+		return new IntStream(() -> java.util.stream.IntStream.of(value));
+	}
+	public static IntStream of(int... values) {
+		return new IntStream(() -> java.util.stream.IntStream.of(values));
+	}
 	private static <K> Function<IntFunction<? extends K>, IntFunction<? extends K>> castToClassifier() {
 		return c -> c;
 	}
