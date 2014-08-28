@@ -155,7 +155,8 @@ public final class Collectors {
 			return collectorImpl2;
 		}
 		@SuppressWarnings("unchecked")
-		java.util.function.Function<A, A> downstreamFinisher = (Function<A, A>) downstream.finisher();
+		java.util.function.Function<A, A> downstreamFinisher =
+			(java.util.function.Function<A, A>) downstream.finisher();
 		java.util.function.Function<HashMap<K, A>, M> finisher = intermediate -> {
 			intermediate.replaceAll((k, v) -> downstreamFinisher.apply(v));
 			@SuppressWarnings("unchecked")
