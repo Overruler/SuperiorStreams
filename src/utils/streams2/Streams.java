@@ -10,11 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Spliterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collector;
-import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -43,11 +41,7 @@ public class Streams {
 		return Stream.of(array.clone());
 	}
 	public static <T> Stream<T> iterating(Iterable<T> iterable) {
-		return new Stream<>(() -> iterableToStream(iterable));
-	}
-	private static <T> java.util.stream.Stream<T> iterableToStream(Iterable<T> iterable) {
-		Spliterator<T> spliterator = iterable.spliterator();
-		return StreamSupport.stream(() -> spliterator, spliterator.characteristics(), false);
+		return Stream.from(iterable);
 	}
 	public static IntStream ints(int... array) {
 		return IntStream.of(array.clone());
@@ -62,7 +56,7 @@ public class Streams {
 		return new Stream<>(() -> collection.stream());
 	}
 	public static IntStream fromCodepoints(String string) {
-		return new IntStream(() -> string.codePoints());
+		return IntStream.from(string);
 	}
 	public static <P, T> IOStream<T> from(IOFunction<P, java.util.stream.Stream<T>> changer, P parameter) {
 		Function<P, java.util.stream.Stream<T>> function = changer.uncheck(IOException.class);

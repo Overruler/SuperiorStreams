@@ -129,6 +129,9 @@ ToDoubleFunction<Integer>> {//*E*
 	public static IntStream of(int... values) {
 		return new IntStream(() -> java.util.stream.IntStream.of(values));
 	}
+	public static IntStream from(String string) {
+		return new IntStream(() -> string.codePoints());
+	}
 	private static <K> Function<IntFunction<? extends K>, IntFunction<? extends K>> castToClassifier() {
 		return c -> c;
 	}

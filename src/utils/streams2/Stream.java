@@ -1,6 +1,8 @@
 package utils.streams2;
 
 import java.util.Comparator;
+import java.util.Spliterator;
+import java.util.stream.StreamSupport;
 import utils.lists2.ArrayList;
 import utils.lists2.Arrays;
 import utils.lists2.HashMap;
@@ -181,6 +183,13 @@ ToDoubleFunction<? super T>> {//*E*
 	}
 	public static @SafeVarargs <T> Stream<T> of(T... values) {
 		return new Stream<>(() -> java.util.stream.Stream.of(values));
+	}
+	public static <T> Stream<T> from(Iterable<T> iterable) {
+		return new Stream<>(() -> iterableToStream(iterable));
+	}
+	private static <T> java.util.stream.Stream<T> iterableToStream(Iterable<T> iterable) {
+		Spliterator<T> spliterator = iterable.spliterator();
+		return StreamSupport.stream(() -> spliterator, spliterator.characteristics(), false);
 	}
 	private <K> Function<? super T, ? extends K> castToClassifier(Function<? super T, ? extends K> classifier) {
 		return classifier;
