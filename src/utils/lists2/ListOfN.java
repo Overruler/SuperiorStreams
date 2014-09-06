@@ -191,7 +191,7 @@ class ListOfN<T> extends List<T> {
 	@Override
 	public List<T> add(T element) {
 		int size = size();
-		T[] array = newArray(size);
+		T[] array = newArray(size + 1);
 		System.arraycopy(items, 0, array, 0, size);
 		array[size] = element;
 		return new ListOfN<>(array);
@@ -202,7 +202,7 @@ class ListOfN<T> extends List<T> {
 			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
 		}
 		int size = size();
-		T[] array = newArray(size);
+		T[] array = newArray(size + 1);
 		System.arraycopy(items, 0, array, 0, index);
 		array[index] = element;
 		System.arraycopy(items, index, array, index + 1, size - index);
