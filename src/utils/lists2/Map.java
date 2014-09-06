@@ -60,6 +60,9 @@ public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<
 	public @Override boolean equals(Object o) {
 		return wrapped.equals(o);
 	}
+	public @Override int size() {
+		return wrapped.size();
+	}
 	@Override
 	public boolean containsKey(K key) {
 		return wrapped.containsKey(key);

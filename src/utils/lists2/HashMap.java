@@ -85,6 +85,9 @@ public class HashMap<K, V> implements
 	public @Override boolean equals(Object o) {
 		return wrapped.equals(o);
 	}
+	public @Override int size() {
+		return wrapped.size();
+	}
 	@Override
 	public boolean containsKey(K key) {
 		return wrapped.containsKey(key);
