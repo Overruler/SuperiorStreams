@@ -63,6 +63,12 @@ public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<
 	public @Override int size() {
 		return wrapped.size();
 	}
+	public @Override boolean isEmpty() {
+		return wrapped.isEmpty();
+	}
+	public @Override boolean notEmpty() {
+		return wrapped.isEmpty() == false;
+	}
 	@Override
 	public boolean containsKey(K key) {
 		return wrapped.containsKey(key);

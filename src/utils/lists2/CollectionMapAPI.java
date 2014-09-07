@@ -17,6 +17,8 @@ interface CollectionMapAPI<K, V,
 	public @Override int hashCode();
 	public @Override boolean equals(Object o);
 	int size();
+	boolean isEmpty();
+	boolean notEmpty();
 	boolean containsKey(K key);
 	boolean containsValue(K value);
 	V get(K key);
