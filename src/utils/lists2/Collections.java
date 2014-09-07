@@ -85,7 +85,7 @@ public class Collections {//*Q*
 	public static <T> List<T> shuffle(List<T> list) {
 		java.util.ArrayList<T> javaList = list.toJavaList();
 		java.util.Collections.shuffle(javaList);
-		return List.fromJavaCollection(javaList);
+		return List.from(javaList);
 	}
 	public static <T> ArrayList<T> shuffle(ArrayList<T> list, Random rnd) {
 		java.util.ArrayList<T> javaList = list.toJavaList();
@@ -95,7 +95,7 @@ public class Collections {//*Q*
 	public static <T> List<T> shuffle(List<T> list, Random rnd) {
 		java.util.ArrayList<T> javaList = list.toJavaList();
 		java.util.Collections.shuffle(javaList, rnd);
-		return List.fromJavaCollection(javaList);
+		return List.from(javaList);
 	}
 	public static <T> List<T> swap(List<T> list, int i, int j) {
 		return swap(list.toArrayList(), i, j).toList();
@@ -138,12 +138,12 @@ public class Collections {//*Q*
 	public static <T> List<T> rotate(List<T> list, int distance) {
 		java.util.ArrayList<T> list2 = list.toJavaList();
 		java.util.Collections.rotate(list2, distance);
-		return List.fromJavaCollection(list2);
+		return List.from(list2);
 	}
 	public static <T> ArrayList<T> rotate(ArrayList<T> list, int distance) {
 		java.util.ArrayList<T> list2 = list.toJavaList();
 		java.util.Collections.rotate(list2, distance);
-		return list.clear().addAll(ArrayList.fromJavaCollection(list2));
+		return list.clear().addAll(ArrayList.from(list2));
 	}
 	public static <T extends Comparable<T>, A extends RandomAccess<T, A>> int binarySearch(
 		RandomAccess<T, A> list,

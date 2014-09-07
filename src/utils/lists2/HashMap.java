@@ -225,7 +225,7 @@ public class HashMap<K, V> implements
 		return new java.util.HashMap<>(wrapped);
 	}
 	public @Override Map<K, V> toMap() {
-		return Map.from(this);
+		return Map.fromHashMap(this);
 	}
 	public @Override HashMap<K, V> toHashMap() {
 		return new HashMap<>(this);

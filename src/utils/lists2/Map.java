@@ -9,10 +9,10 @@ import utils.streams2.WrapperException;
 public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<Pair<K, V>>, List<V>, Pair<K, V>> {
 	final java.util.HashMap<K, V> wrapped;
 
-	public static <K, V> Map<K, V> from(HashMap<K, V> source) {
+	static <K, V> Map<K, V> fromHashMap(HashMap<K, V> source) {
 		return new Map<>(source);
 	}
-	public static <K, V> Map<K, V> fromJavaMap(java.util.Map<K, V> source) {
+	public static <K, V> Map<K, V> from(java.util.Map<K, V> source) {
 		return new Map<>(source);
 	}
 	public static <K, V> Map<K, V> of() {

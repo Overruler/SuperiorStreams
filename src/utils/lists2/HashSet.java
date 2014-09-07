@@ -16,6 +16,15 @@ public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 	public static @SafeVarargs <T> HashSet<T> of(T... elements) {
 		return new HashSet<>(java.util.Arrays.asList(elements));
 	}
+	public static <T, C extends Collection<T, C>> HashSet<T> from(C set) {
+		return new HashSet<>(set);
+	}
+	public static <T> HashSet<T> from(java.util.Collection<T> set) {
+		return new HashSet<>(set);
+	}
+	public static <T> HashSet<T> fromIterable(Iterable<T> set) {
+		return new HashSet<>(set);
+	}
 	static <T> HashSet<T> wrap(java.util.Set<T> wrapped) {
 		return new HashSet<>(wrapped);
 	}
@@ -36,6 +45,12 @@ public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 	}
 	public HashSet(java.util.Collection<T> iterable) {
 		this(iterable.size());
+		for(T item : iterable) {
+			wrapped.add(item);
+		}
+	}
+	private HashSet(Iterable<T> iterable) {
+		this();
 		for(T item : iterable) {
 			wrapped.add(item);
 		}

@@ -70,10 +70,18 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	public static @SafeVarargs <T> ArrayList<T> of(T... elements) {
 		return new ArrayList<>(elements.length, elements);
 	}
-	public static <T> ArrayList<T> fromJavaCollection(java.util.Collection<T> collection) {
+	public static <T, C extends Collection<T, C>> ArrayList<T> from(C collection) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) collection.toArray();
 		return of(array);
+	}
+	public static <T> ArrayList<T> from(java.util.Collection<T> collection) {
+		@SuppressWarnings("unchecked")
+		T[] array = (T[]) collection.toArray();
+		return of(array);
+	}
+	public static <T> ArrayList<T> fromIterable(Iterable<T> iterable) {
+		return new ArrayList<>(iterable);
 	}
 	public ArrayList() {
 		@SuppressWarnings("unchecked")
@@ -93,6 +101,12 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	}
 	public ArrayList(java.util.Collection<T> collection) {
 		this(collection.size());
+		for(T item : collection) {
+			add(item);
+		}
+	}
+	private ArrayList(Iterable<T> collection) {
+		this();
 		for(T item : collection) {
 			add(item);
 		}

@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExObjIntConsumer;
@@ -30,6 +29,7 @@ import utils.streams.functions.ExToDoubleFunction;
 import utils.streams.functions.ExToIntFunction;
 import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 /**
  * This is an immutable zero element {@link java.util.List} replacement which is created by calling the List.of() method.
@@ -71,10 +71,13 @@ public class List<T> implements CollectionListAPI<T, List<T>> {
 		T[] array = (T[]) collection.toArray();
 		return of(array);
 	}
-	public static <T> List<T> fromJavaCollection(java.util.Collection<T> collection) {
+	public static <T> List<T> from(java.util.Collection<T> collection) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) collection.toArray();
 		return of(array);
+	}
+	public static <T> List<T> fromIterable(Iterable<T> iterable) {
+		return ArrayList.fromIterable(iterable).toList();
 	}
 	public @Override String toString() {
 		return "[]";

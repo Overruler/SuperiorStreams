@@ -18,10 +18,10 @@ public class Set<T> implements CollectionSetAPI<T, Set<T>> {
 	public static <T, C extends Collection<T, C>> Set<T> from(C set) {
 		return new Set<>(set);
 	}
-	public static <T> Set<T> fromJavaCollection(java.util.Collection<T> set) {
+	public static <T> Set<T> from(java.util.Collection<T> set) {
 		return new Set<>(set);
 	}
-	static <T> Set<T> from(Iterable<T> set) {
+	public static <T> Set<T> fromIterable(Iterable<T> set) {
 		return new Set<>(set);
 	}
 	private Set() {
