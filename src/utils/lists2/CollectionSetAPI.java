@@ -20,6 +20,7 @@ public interface CollectionSetAPI<T, SET extends CollectionSetAPI<T, SET>> exten
 	public @Override T[] toArray(T[] a);
 	public @Override int size();
 	public @Override boolean isEmpty();
+	public @Override boolean notEmpty();
 	public @Override boolean contains(T o);
 	public @Override <C extends Collection<T, C>> boolean containsAll(C c);
 	public @Override SET add(T e);
