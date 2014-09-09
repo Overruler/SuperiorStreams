@@ -8,6 +8,8 @@ import utils.streams.functions.IOIntBinaryOperator;
 import utils.streams.functions.IOIntConsumer;
 import utils.streams.functions.IOIntFunction;
 import utils.streams.functions.IOIntPredicate;
+import utils.streams.functions.IOIntSupplier;
+import utils.streams.functions.IOIntUnaryOperator;
 import utils.streams.functions.IOToDoubleFunction;
 import utils.streams.functions.IOToIntFunction;
 import utils.streams.functions.IOToLongFunction;
@@ -121,6 +123,12 @@ IOToDoubleFunction<Integer>> {//*E*
 		Function<HashMap<K, L>, M> intoMap,
 		Function<int[], L> intoList) throws IOException {
 		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
+	}
+	public static IOIntStream iterate(int seed, IOIntUnaryOperator function) {
+		return new IOIntStream(() -> java.util.stream.IntStream.iterate(seed, function.uncheck()));
+	}
+	public static IOIntStream generate(IOIntSupplier supplier) {
+		return new IOIntStream(() -> java.util.stream.IntStream.generate(supplier.uncheck()));
 	}
 	private <K> Function<IOIntFunction<? extends K>, IntFunction<? extends K>> castToClassifier() {
 		return c -> c.uncheck(classOfE());

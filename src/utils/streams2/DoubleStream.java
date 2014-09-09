@@ -6,6 +6,7 @@ import utils.streams.functions.DoubleBinaryOperator;
 import utils.streams.functions.DoubleConsumer;
 import utils.streams.functions.DoubleFunction;
 import utils.streams.functions.DoublePredicate;
+import utils.streams.functions.DoubleSupplier;
 import utils.streams.functions.DoubleToIntFunction;
 import utils.streams.functions.DoubleToLongFunction;
 import utils.streams.functions.DoubleUnaryOperator;
@@ -129,6 +130,12 @@ ToDoubleFunction<Double>> {//*E*
 	}
 	public static DoubleStream of(double... values) {
 		return new DoubleStream(() -> java.util.stream.DoubleStream.of(values));
+	}
+	public static DoubleStream iterate(double seed, DoubleUnaryOperator function) {
+		return new DoubleStream(() -> java.util.stream.DoubleStream.iterate(seed, function));
+	}
+	public static DoubleStream generate(DoubleSupplier supplier) {
+		return new DoubleStream(() -> java.util.stream.DoubleStream.generate(supplier));
 	}
 	private static <K> Function<DoubleFunction<? extends K>, DoubleFunction<? extends K>> castToClassifier() {
 		return c -> c;

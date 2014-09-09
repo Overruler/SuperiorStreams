@@ -14,6 +14,7 @@ import utils.streams.functions.Supplier;
 import utils.streams.functions.ToDoubleFunction;
 import utils.streams.functions.ToIntFunction;
 import utils.streams.functions.ToLongFunction;
+import utils.streams.functions.UnaryOperator;
 
 //*Q*
 public class Stream<T> extends AbstractStream<T, RuntimeException,
@@ -186,6 +187,12 @@ ToDoubleFunction<? super T>> {//*E*
 	}
 	public static <T> Stream<T> from(Iterable<T> iterable) {
 		return new Stream<>(() -> iterableToStream(iterable));
+	}
+	public static <T> Stream<T> iterate(T seed, UnaryOperator<T> function) {
+		return new Stream<>(() -> java.util.stream.Stream.iterate(seed, function));
+	}
+	public static <T> Stream<T> generate(Supplier<T> supplier) {
+		return new Stream<>(() -> java.util.stream.Stream.generate(supplier));
 	}
 	private static <T> java.util.stream.Stream<T> iterableToStream(Iterable<T> iterable) {
 		Spliterator<T> spliterator = iterable.spliterator();

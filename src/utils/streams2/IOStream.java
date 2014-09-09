@@ -16,9 +16,11 @@ import utils.streams.functions.IOBinaryOperator;
 import utils.streams.functions.IOConsumer;
 import utils.streams.functions.IOFunction;
 import utils.streams.functions.IOPredicate;
+import utils.streams.functions.IOSupplier;
 import utils.streams.functions.IOToDoubleFunction;
 import utils.streams.functions.IOToIntFunction;
 import utils.streams.functions.IOToLongFunction;
+import utils.streams.functions.IOUnaryOperator;
 import utils.streams.functions.Predicate;
 import utils.streams.functions.Supplier;
 import utils.streams.functions.ToDoubleFunction;
@@ -181,6 +183,12 @@ IOToDoubleFunction<? super T>> {//*E*
 				Collectors.groupingBy(keyMapper, Collectors.mapping(valueMapper, Collectors.toList())));
 		}
 		return collect(Collectors.groupingBy(keyMapper, Collectors.mapping(valueMapper, Collectors.toList())));
+	}
+	public static <T> IOStream<T> iterate(T seed, IOUnaryOperator<T> function) {
+		return new IOStream<>(() -> java.util.stream.Stream.iterate(seed, function.uncheck()));
+	}
+	public static <T> IOStream<T> generate(IOSupplier<T> supplier) {
+		return new IOStream<>(() -> java.util.stream.Stream.generate(supplier.uncheck()));
 	}
 	private <K> Function<? super T, ? extends K> castToClassifier(IOFunction<? super T, ? extends K> classifier) {
 		return classifier.uncheck(IOException.class);

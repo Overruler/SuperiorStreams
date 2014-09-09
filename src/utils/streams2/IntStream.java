@@ -7,6 +7,7 @@ import utils.streams.functions.IntBinaryOperator;
 import utils.streams.functions.IntConsumer;
 import utils.streams.functions.IntFunction;
 import utils.streams.functions.IntPredicate;
+import utils.streams.functions.IntSupplier;
 import utils.streams.functions.IntToDoubleFunction;
 import utils.streams.functions.IntToLongFunction;
 import utils.streams.functions.IntUnaryOperator;
@@ -131,6 +132,18 @@ ToDoubleFunction<Integer>> {//*E*
 	}
 	public static IntStream from(String string) {
 		return new IntStream(() -> string.codePoints());
+	}
+	public static IntStream iterate(int seed, IntUnaryOperator function) {
+		return new IntStream(() -> java.util.stream.IntStream.iterate(seed, function));
+	}
+	public static IntStream generate(IntSupplier supplier) {
+		return new IntStream(() -> java.util.stream.IntStream.generate(supplier));
+	}
+	public static IntStream range(int startInclusive, int endExclusive) {
+		return new IntStream(() -> java.util.stream.IntStream.range(startInclusive, endExclusive));
+	}
+	public static IntStream rangeClosed(int startInclusive, int endInclusive) {
+		return new IntStream(() -> java.util.stream.IntStream.rangeClosed(startInclusive, endInclusive));
 	}
 	private static <K> Function<IntFunction<? extends K>, IntFunction<? extends K>> castToClassifier() {
 		return c -> c;

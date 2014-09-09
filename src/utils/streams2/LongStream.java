@@ -7,6 +7,7 @@ import utils.streams.functions.LongBinaryOperator;
 import utils.streams.functions.LongConsumer;
 import utils.streams.functions.LongFunction;
 import utils.streams.functions.LongPredicate;
+import utils.streams.functions.LongSupplier;
 import utils.streams.functions.LongToDoubleFunction;
 import utils.streams.functions.LongToIntFunction;
 import utils.streams.functions.LongUnaryOperator;
@@ -127,6 +128,18 @@ ToDoubleFunction<Long>> {//*E*
 	}
 	public static LongStream of(long... values) {
 		return new LongStream(() -> java.util.stream.LongStream.of(values));
+	}
+	public static LongStream iterate(long seed, LongUnaryOperator function) {
+		return new LongStream(() -> java.util.stream.LongStream.iterate(seed, function));
+	}
+	public static LongStream generate(LongSupplier supplier) {
+		return new LongStream(() -> java.util.stream.LongStream.generate(supplier));
+	}
+	public static LongStream range(long startInclusive, long endExclusive) {
+		return new LongStream(() -> java.util.stream.LongStream.range(startInclusive, endExclusive));
+	}
+	public static LongStream rangeClosed(long startInclusive, long endInclusive) {
+		return new LongStream(() -> java.util.stream.LongStream.rangeClosed(startInclusive, endInclusive));
 	}
 	private static <K> Function<LongFunction<? extends K>, LongFunction<? extends K>> castToClassifier() {
 		return c -> c;

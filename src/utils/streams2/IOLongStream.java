@@ -8,6 +8,8 @@ import utils.streams.functions.IOLongBinaryOperator;
 import utils.streams.functions.IOLongConsumer;
 import utils.streams.functions.IOLongFunction;
 import utils.streams.functions.IOLongPredicate;
+import utils.streams.functions.IOLongSupplier;
+import utils.streams.functions.IOLongUnaryOperator;
 import utils.streams.functions.IOToDoubleFunction;
 import utils.streams.functions.IOToIntFunction;
 import utils.streams.functions.IOToLongFunction;
@@ -121,6 +123,12 @@ IOToDoubleFunction<Long>> {//*E*
 		Function<HashMap<K, L>, M> intoMap,
 		Function<long[], L> intoList) throws IOException {
 		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
+	}
+	public static IOLongStream iterate(long seed, IOLongUnaryOperator function) {
+		return new IOLongStream(() -> java.util.stream.LongStream.iterate(seed, function.uncheck()));
+	}
+	public static IOLongStream generate(IOLongSupplier supplier) {
+		return new IOLongStream(() -> java.util.stream.LongStream.generate(supplier.uncheck()));
 	}
 	private <K> Function<IOLongFunction<? extends K>, LongFunction<? extends K>> castToClassifier() {
 		return c -> c.uncheck(classOfE());

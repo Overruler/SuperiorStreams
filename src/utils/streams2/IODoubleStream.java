@@ -15,6 +15,8 @@ import utils.streams.functions.IODoubleBinaryOperator;
 import utils.streams.functions.IODoubleConsumer;
 import utils.streams.functions.IODoubleFunction;
 import utils.streams.functions.IODoublePredicate;
+import utils.streams.functions.IODoubleSupplier;
+import utils.streams.functions.IODoubleUnaryOperator;
 import utils.streams.functions.IOToDoubleFunction;
 import utils.streams.functions.IOToIntFunction;
 import utils.streams.functions.IOToLongFunction;
@@ -122,6 +124,12 @@ IOToDoubleFunction<Double>> {//*E*
 		Function<HashMap<K, L>, M> intoMap,
 		Function<double[], L> intoList) throws IOException {
 		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
+	}
+	public static IODoubleStream iterate(double seed, IODoubleUnaryOperator function) {
+		return new IODoubleStream(() -> java.util.stream.DoubleStream.iterate(seed, function.uncheck()));
+	}
+	public static IODoubleStream generate(IODoubleSupplier supplier) {
+		return new IODoubleStream(() -> java.util.stream.DoubleStream.generate(supplier.uncheck()));
 	}
 	private <K> Function<IODoubleFunction<? extends K>, DoubleFunction<? extends K>> castToClassifier() {
 		return c -> c.uncheck(classOfE());
