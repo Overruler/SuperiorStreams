@@ -11,6 +11,9 @@ public class HashMap<K, V> implements
 	public static class Entry<T, V> extends Pair<T, V> implements java.util.Map.Entry<T, V> {
 		private final java.util.Map.Entry<T, V> entry;
 
+		public static <T, V> Entry<T, V> of(java.util.Map.Entry<T, V> entry) {
+			return new Entry<>(entry);
+		}
 		public Entry(java.util.Map.Entry<T, V> entry) {
 			super(entry.getKey(), entry.getValue());
 			this.entry = entry;

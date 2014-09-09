@@ -1,10 +1,12 @@
 package utils.lists;
 
 public class Pair<L, R> {
-
 	public final L lhs;
 	public final R rhs;
 
+	public static <L, R> Pair<L, R> of(L lhs, R rhs) {
+		return new Pair<>(lhs, rhs);
+	}
 	public Pair(L lhs, R rhs) {
 		this.lhs = lhs;
 		this.rhs = rhs;
@@ -41,29 +43,29 @@ public class Pair<L, R> {
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) {
-	    return true;
-    }
+			return true;
+		}
 		if(obj == null) {
-	    return false;
-    }
+			return false;
+		}
 		if(getClass() != obj.getClass()) {
-	    return false;
-    }
+			return false;
+		}
 		Pair<?, ?> other = (Pair<?, ?>) obj;
 		if(lhs == null) {
 			if(other.lhs != null) {
-	      return false;
-      }
+				return false;
+			}
 		} else if(!lhs.equals(other.lhs)) {
-	    return false;
-    }
+			return false;
+		}
 		if(rhs == null) {
 			if(other.rhs != null) {
-	      return false;
-      }
+				return false;
+			}
 		} else if(!rhs.equals(other.rhs)) {
-	    return false;
-    }
+			return false;
+		}
 		return true;
 	}
 	@Override
