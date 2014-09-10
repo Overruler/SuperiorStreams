@@ -16,13 +16,14 @@
 package utils.lists2;
 
 import java.util.function.IntFunction;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExPredicate;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 public interface Collection<T, C extends Collection<T, C>> extends CollectionAPI<T, C>, Iterable<T> {
 	public @Override C add(T e);
+	public @Override C addAll(@SuppressWarnings("unchecked") T... es);
 	public @Override C remove(T o);
 	public @Override C clear();
 	public @Override <COLLECTION extends Collection<T, COLLECTION>> C addAll(COLLECTION c);

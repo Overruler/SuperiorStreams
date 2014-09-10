@@ -1,6 +1,5 @@
 package utils.lists2;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
@@ -110,6 +109,10 @@ public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 		wrapped.add(item);
 		return this;
 	}
+	public @Override HashSet<T> addAll(@SuppressWarnings("unchecked") T... values) {
+		wrapped.addAll(java.util.Arrays.asList(values));
+		return this;
+	}
 	public @Override HashSet<T> remove(T item) {
 		wrapped.remove(item);
 		return this;
@@ -121,7 +124,7 @@ public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 	public @Override <C extends Collection<T, C>> HashSet<T> addAll(C c) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
-		wrapped.addAll(Arrays.asList(array));
+		wrapped.addAll(java.util.Arrays.asList(array));
 		return this;
 	}
 	public @Override <C extends Collection<T, C>> HashSet<T> retainAll(C c) {

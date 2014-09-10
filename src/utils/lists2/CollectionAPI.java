@@ -20,6 +20,7 @@ import utils.streams.functions.ExUnaryOperator;
 
 public interface CollectionAPI<T, C extends CollectionAPI<T, C>> {
 	C add(T e);
+	C addAll(@SuppressWarnings("unchecked") T... es);
 	C remove(T o);
 	C clear();
 	<COLLECTION extends Collection<T, COLLECTION>> C addAll(COLLECTION c);

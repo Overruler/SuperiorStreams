@@ -116,6 +116,11 @@ public class Set<T> implements CollectionSetAPI<T, Set<T>> {
 		copy.add(item);
 		return next(copy);
 	}
+	public @Override Set<T> addAll(@SuppressWarnings("unchecked") T... values) {
+		java.util.HashSet<T> copy = copy();
+		copy.addAll(java.util.Arrays.asList(values));
+		return next(copy);
+	}
 	public @Override Set<T> remove(T item) {
 		java.util.HashSet<T> copy = copy();
 		copy.remove(item);

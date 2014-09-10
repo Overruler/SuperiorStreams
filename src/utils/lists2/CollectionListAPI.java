@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExObjIntConsumer;
@@ -29,6 +28,7 @@ import utils.streams.functions.ExToDoubleFunction;
 import utils.streams.functions.ExToIntFunction;
 import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 interface CollectionListAPI<T, LIST extends CollectionListAPI<T, LIST>> extends RandomAccess<T, LIST> {
 	public @Override String toString();
@@ -49,9 +49,10 @@ interface CollectionListAPI<T, LIST extends CollectionListAPI<T, LIST>> extends 
 	public @Override <E extends Exception> LIST each(ExConsumer<T, E> action) throws E;
 	public @Override <E extends Exception> LIST eachWithIndex(ExObjIntConsumer<T, E> action) throws E;
 	public @Override LIST add(T element);
-	public @Override <COLLECTION extends Collection<T, COLLECTION>> LIST addAll(COLLECTION collection);
+	public @Override LIST addAll(@SuppressWarnings("unchecked") T... values);
 	public @Override LIST clear();
 	public @Override LIST remove(T element);
+	public @Override <COLLECTION extends Collection<T, COLLECTION>> LIST addAll(COLLECTION collection);
 	public @Override <COLLECTION extends Collection<T, COLLECTION>> LIST removeAll(COLLECTION collection);
 	public @Override <COLLECTION extends Collection<T, COLLECTION>> LIST retainAll(COLLECTION collection);
 	public @Override <E extends Exception> LIST filter(ExPredicate<T, E> filter) throws E;
@@ -66,7 +67,6 @@ interface CollectionListAPI<T, LIST extends CollectionListAPI<T, LIST>> extends 
 	public @Override List<T> toList();
 	public @Override ArrayList<T> toArrayList();
 	public LIST add(int index, T element);
-	public LIST addAll(@SuppressWarnings("unchecked") T... values);
 	public LIST addAll(LIST source);
 	public LIST addAll(int index, @SuppressWarnings("unchecked") T... values);
 	public <COLLECTION extends Collection<T, COLLECTION>> LIST addAll(int index, COLLECTION collection);
