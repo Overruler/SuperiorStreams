@@ -137,11 +137,11 @@ final class ListOf5<T> extends List<T> {
 	@Override
 	public T get(int index) {
 		switch(index) {//*Q*
-			case 0: return element0;
-			case 1: return element1;
-			case 2: return element2;
-			case 3: return element3;
-			case 4: return element4;
+			case -5: case 0: return element0;
+			case -4: case 1: return element1;
+			case -3: case 2: return element2;
+			case -2: case 3: return element3;
+			case -1: case 4: return element4;
 			default: throw new IndexOutOfBoundsException("Index: " + index + ", Size: 5");
 		}//*E*
 	}

@@ -240,14 +240,12 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	}
 	@Override
 	public ArrayList<T> add(int index, T element) {
-		if(index > -1 && index < size) {
-			addAtIndex(index, element);
-		} else if(index == size || index == -1) {
+		int localSize = size;
+		index = adjustIndexToPositiveInts(index, localSize);
+		if(index == localSize) {
 			add(element);
-		} else if(index >= -1 - size && index < -1) {
-			addAtIndex(index + 1 + size, element);
 		} else {
-			throw outOfBounds(index);
+			addAtIndex(index, element);
 		}
 		return this;
 	}
@@ -284,9 +282,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	@Override
 	public ArrayList<T> addAll(int index, @SuppressWarnings("unchecked") T... values) {
 		int localSize = size;
-		if(index > localSize || index < -1 - localSize) {
-			throw outOfBounds(index);
-		}
+		index = adjustIndexToPositiveInts(index, localSize);
 		int length = values.length;
 		if(length == 0) {
 			return this;
@@ -297,9 +293,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	@Override
 	public <C extends Collection<T, C>> ArrayList<T> addAll(int index, C source) {
 		int localSize = size;
-		if(index > localSize || index < -1 - localSize) {
-			throw outOfBounds(index);
-		}
+		index = adjustIndexToPositiveInts(index, localSize);
 		if(source.isEmpty()) {
 			return this;
 		}
@@ -311,9 +305,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	@Override
 	public ArrayList<T> addAll(int index, ArrayList<T> source) {
 		int localSize = size;
-		if(index > localSize || index < -1 - localSize) {
-			throw outOfBounds(index);
-		}
+		index = adjustIndexToPositiveInts(index, localSize);
 		if(source.isEmpty()) {
 			return this;
 		}
@@ -338,7 +330,9 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	}
 	@Override
 	public ArrayList<T> remove(int index) {
-		int totalOffset = size - index - 1;
+		int newSize = size - 1;
+		index = adjustIndexToPositiveInts(index, newSize);
+		int totalOffset = newSize - index;
 		if(totalOffset > 0) {
 			System.arraycopy(items, index + 1, items, index, totalOffset);
 		}
@@ -357,13 +351,12 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	}
 	@Override
 	public T get(int index) {
-		if(index < size) {
-			return items[index];
-		}
-		throw outOfBounds(index);
+		index = adjustIndexToPositiveInts(index, size - 1);
+		return items[index];
 	}
 	@Override
 	public ArrayList<T> set(int index, T element) {
+		index = adjustIndexToPositiveInts(index, size - 1);
 		items[index] = element;
 		return this;
 	}
@@ -396,13 +389,14 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	}
 	@Override
 	public ListIterator<T> listIterator(int index) {
-		if(index < 0 || index > size()) {
-			throw new IndexOutOfBoundsException("Index: " + index);
-		}
+		index = adjustIndexToPositiveInts(index, size());
 		return new ArrayListListIterator<>(this, index);
 	}
 	@Override
 	public ArrayList<T> subList(int fromIndex, int toIndex) {
+		int localSize = size();
+		fromIndex = adjustIndexToPositiveInts(fromIndex, localSize);
+		toIndex = adjustIndexToPositiveInts(toIndex, localSize);
 		return new ArrayListSubList<>(this, fromIndex, toIndex);
 	}
 	@Override
@@ -507,9 +501,6 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		items = array;
 	}
 	private void shiftItemsAndArraycopyAndAdjustSize(int index, int oldSize, Object[] values, int length) {
-		if(index <= -1) {
-			index += 1 + oldSize;
-		}
 		int newSize = oldSize + length;
 		ensureCapacity(newSize);
 		shiftElementsAtIndex(index, length);
@@ -593,9 +584,6 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 			transferItemsToNewArrayWithCapacity(newCapacity);
 		}
 	}
-	private IndexOutOfBoundsException outOfBounds(int index) {
-		throw new IndexOutOfBoundsException("Index: " + index + " Size: " + size);
-	}
 	private void shiftElementsAtIndex(int index, int sourceSize) {
 		int numberToMove = size - index;
 		if(numberToMove > 0) {
@@ -663,5 +651,14 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 			}
 		}
 		return !ifFoundResult;
+	}
+	static int adjustIndexToPositiveInts(int index, int endInclusive) {
+		if(index < 0 && endInclusive >= 0) {
+			index = index + 1 + endInclusive;
+		}
+		if(index >= 0 && index <= endInclusive) {
+			return index;
+		}
+		throw new IndexOutOfBoundsException("Index: " + index + " Max: " + endInclusive);
 	}
 }

@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExObjIntConsumer;
@@ -34,6 +33,7 @@ import utils.streams.functions.ExToDoubleFunction;
 import utils.streams.functions.ExToIntFunction;
 import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 class ArrayListSubList<T> extends ArrayList<T> {
 	final ArrayList<T> original;
@@ -142,7 +142,7 @@ class ArrayListSubList<T> extends ArrayList<T> {
 	}
 	@Override
 	public ArrayListSubList<T> add(int index, T element) {
-		checkIfOutOfBounds(index);
+		index = adjustIndexToPositiveInts(index, size);
 		original.add(index + offset, element);
 		size++;
 		return this;
@@ -157,9 +157,7 @@ class ArrayListSubList<T> extends ArrayList<T> {
 	}
 	@Override
 	public <C extends Collection<T, C>> ArrayList<T> addAll(int index, C collection) {
-		if(index < 0 || index > size) {
-			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-		}
+		index = adjustIndexToPositiveInts(index, size);
 		int cSize = collection.size();
 		if(cSize == 0) {
 			return this;
@@ -170,9 +168,7 @@ class ArrayListSubList<T> extends ArrayList<T> {
 	}
 	@Override
 	public ArrayList<T> addAll(int index, ArrayList<T> source) {
-		if(index < 0 || index > size) {
-			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-		}
+		index = adjustIndexToPositiveInts(index, size);
 		int cSize = source.size();
 		if(cSize == 0) {
 			return this;
@@ -202,7 +198,7 @@ class ArrayListSubList<T> extends ArrayList<T> {
 	}
 	@Override
 	public ArrayListSubList<T> remove(int index) {
-		checkIfOutOfBounds(index);
+		index = adjustIndexToPositiveInts(index, size - 1);
 		original.remove(index + offset);
 		size--;
 		return this;
@@ -221,12 +217,12 @@ class ArrayListSubList<T> extends ArrayList<T> {
 	}
 	@Override
 	public T get(int index) {
-		checkIfOutOfBounds(index);
+		index = adjustIndexToPositiveInts(index, size - 1);
 		return original.get(index + offset);
 	}
 	@Override
 	public ArrayListSubList<T> set(int index, T element) {
-		checkIfOutOfBounds(index);
+		index = adjustIndexToPositiveInts(index, size - 1);
 		original.set(index + offset, element);
 		return this;
 	}
@@ -274,14 +270,14 @@ class ArrayListSubList<T> extends ArrayList<T> {
 		return listIterator(0);
 	}
 	@Override
-	public ListIterator<T> listIterator(final int index) {
-		if(index < 0 || index > size) {
-			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-		}
+	public ListIterator<T> listIterator(int index) {
+		index = adjustIndexToPositiveInts(index, size);
 		return new ArrayListSubListListIterator<>(this, index);
 	}
 	@Override
 	public ArrayList<T> subList(int fromIndex, int toIndex) {
+		fromIndex = adjustIndexToPositiveInts(fromIndex, size);
+		toIndex = adjustIndexToPositiveInts(toIndex, size);
 		return new ArrayListSubList<>(this, fromIndex, toIndex);
 	}
 	@Override
@@ -371,11 +367,6 @@ class ArrayListSubList<T> extends ArrayList<T> {
 			if(internalContains(collection, get(i), ifFoundResult)) {
 				remove(i--);
 			}
-		}
-	}
-	private void checkIfOutOfBounds(int index) {
-		if(index >= size || index < 0) {
-			throw new IndexOutOfBoundsException("Index: " + index + " Size: " + size);
 		}
 	}
 	private static <T, C extends Collection<T, C>> boolean internalContainsAll(C source, ArrayListSubList<T> parameter) {

@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 final class ImmutableListIterator<T> extends ImmutableIterator<T> implements ListIterator<T> {
 	public ImmutableListIterator(List<T> list, int index) {
 		super(list);
-		currentIndex = index;
+		currentIndex = ArrayList.adjustIndexToPositiveInts(index, list.size());
 	}
 	@Override
 	public boolean hasPrevious() {
@@ -35,8 +35,8 @@ final class ImmutableListIterator<T> extends ImmutableIterator<T> implements Lis
 			T previous = list.get(i);
 			currentIndex = i;
 			return previous;
-		} catch(IndexOutOfBoundsException ignored) {
-			throw new NoSuchElementException();
+		} catch(IndexOutOfBoundsException e) {
+			throw new NoSuchElementException(e.getMessage());
 		}
 	}
 	@Override

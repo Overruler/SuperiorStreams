@@ -122,11 +122,11 @@ class ListOfN<T> extends List<T> {
 	}
 	@Override
 	public boolean isEmpty() {
-		return isEmpty2(items);
+		return items.length == 0;
 	}
 	@Override
 	public boolean notEmpty() {
-		return notEmptyArrayIterate(items);
+		return items.length > 0;
 	}
 	@Override
 	public boolean contains(T o) {
@@ -172,7 +172,7 @@ class ListOfN<T> extends List<T> {
 	@Override
 	public <E extends Exception> ListOfN<T> each(ExConsumer<T, E> action) throws E {
 		Objects.requireNonNull(action);
-		if(notEmptyArrayIterate(items)) {
+		if(items.length > 0) {
 			for(T each1 : items) {
 				action.accept(each1);
 			}
@@ -198,10 +198,8 @@ class ListOfN<T> extends List<T> {
 	}
 	@Override
 	public List<T> add(int index, T element) {
-		if(index > size() || index < 0) {
-			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
-		}
 		int size = size();
+		index = ArrayList.adjustIndexToPositiveInts(index, size);
 		T[] array = newArray(size + 1);
 		System.arraycopy(items, 0, array, 0, index);
 		array[index] = element;
@@ -228,10 +226,8 @@ class ListOfN<T> extends List<T> {
 	}
 	@Override
 	public <C extends Collection<T, C>> List<T> addAll(int index, C collection) {
-		if(index > size() || index < 0) {
-			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
-		}
 		int size = size();
+		index = ArrayList.adjustIndexToPositiveInts(index, size);
 		int size2 = collection.size();
 		T[] array = newArray(size + size2);
 		System.arraycopy(items, 0, array, 0, index);
@@ -240,10 +236,8 @@ class ListOfN<T> extends List<T> {
 		return new ListOfN<>(array);
 	}
 	public List<T> addAll(int index, ListOfN<T> source) {
-		if(index > size() || index < 0) {
-			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
-		}
 		int size = size();
+		index = ArrayList.adjustIndexToPositiveInts(index, size);
 		int size2 = source.size();
 		T[] array = newArray(size + size2);
 		System.arraycopy(items, 0, array, 0, index);
@@ -276,6 +270,7 @@ class ListOfN<T> extends List<T> {
 	}
 	@Override
 	public T get(int index) {
+		index = ArrayList.adjustIndexToPositiveInts(index, size());
 		return items[index];
 	}
 	@Override
@@ -461,12 +456,6 @@ class ListOfN<T> extends List<T> {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) new Object[size];
 		return array;
-	}
-	private static boolean notEmptyArrayIterate(Object[] array) {
-		return array != null && array.length > 0;
-	}
-	private static boolean isEmpty2(Object[] array) {
-		return array == null || array.length == 0;
 	}
 	private static <T> ExPredicate<T, RuntimeException> equal2(T object) {
 		if(object == null) {

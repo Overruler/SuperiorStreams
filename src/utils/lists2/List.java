@@ -206,7 +206,7 @@ public class List<T> implements CollectionListAPI<T, List<T>> {
 		return new ImmutableListIterator<>(this, index);
 	}
 	public @Override List<T> subList(int fromIndex, int toIndex) {
-		return this;
+		return toArrayList().subList(fromIndex, toIndex).toList();
 	}
 	public @Override <U, E extends Exception> List<U> map(ExFunction<T, U, E> mapper) throws E {
 		return List.of();

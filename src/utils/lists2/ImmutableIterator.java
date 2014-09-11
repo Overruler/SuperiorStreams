@@ -39,8 +39,8 @@ class ImmutableIterator<T> implements Iterator<T> {
 			T result = this.list.get(this.currentIndex);
 			this.currentIndex++;
 			return result;
-		} catch(IndexOutOfBoundsException ignored) {
-			throw new NoSuchElementException();
+		} catch(IndexOutOfBoundsException e) {
+			throw new NoSuchElementException(e.getMessage());
 		}
 	}
 	@Override
