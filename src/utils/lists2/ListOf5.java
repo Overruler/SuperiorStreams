@@ -22,7 +22,6 @@ import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExObjIntConsumer;
@@ -31,6 +30,7 @@ import utils.streams.functions.ExToDoubleFunction;
 import utils.streams.functions.ExToIntFunction;
 import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 /**
  * This is a five element immutable ListOf5 which is created by calling
@@ -80,11 +80,11 @@ final class ListOf5<T> extends List<T> {
 			ListOf5<?> list = (ListOf5<?>) otherList;
 			//*Q*
 			return
-    			Objects.equals(element0, list.element0) &&
-    			Objects.equals(element1, list.element1) &&
-    			Objects.equals(element2, list.element2) &&
-    			Objects.equals(element3, list.element3) &&
-    			Objects.equals(element4, list.element4)
+				Objects.equals(element0, list.element0) &&
+				Objects.equals(element1, list.element1) &&
+				Objects.equals(element2, list.element2) &&
+				Objects.equals(element3, list.element3) &&
+				Objects.equals(element4, list.element4)
 			;
 			//*E*
 		}
@@ -98,11 +98,11 @@ final class ListOf5<T> extends List<T> {
 			}
 			//*Q*
 			return
-    			Objects.equals(element0, list.get(0)) &&
-    			Objects.equals(element1, list.get(1)) &&
-    			Objects.equals(element2, list.get(2)) &&
-    			Objects.equals(element3, list.get(3)) &&
-    			Objects.equals(element4, list.get(4))
+				Objects.equals(element0, list.get(0)) &&
+				Objects.equals(element1, list.get(1)) &&
+				Objects.equals(element2, list.get(2)) &&
+				Objects.equals(element3, list.get(3)) &&
+				Objects.equals(element4, list.get(4))
 			;
 			//*E*
 		}
@@ -111,12 +111,12 @@ final class ListOf5<T> extends List<T> {
 			Iterator<?> iterator = list.iterator();
 			//*Q*
 			return
-    			iterator.hasNext() && Objects.equals(element0, iterator.next()) &&
-    			iterator.hasNext() && Objects.equals(element1, iterator.next()) &&
-    			iterator.hasNext() && Objects.equals(element2, iterator.next()) &&
-    			iterator.hasNext() && Objects.equals(element3, iterator.next()) &&
-    			iterator.hasNext() && Objects.equals(element4, iterator.next()) &&
-    			!iterator.hasNext();
+				iterator.hasNext() && Objects.equals(element0, iterator.next()) &&
+				iterator.hasNext() && Objects.equals(element1, iterator.next()) &&
+				iterator.hasNext() && Objects.equals(element2, iterator.next()) &&
+				iterator.hasNext() && Objects.equals(element3, iterator.next()) &&
+				iterator.hasNext() && Objects.equals(element4, iterator.next()) &&
+				!iterator.hasNext();
 			//*E*
 		}
 		return false;
@@ -320,14 +320,12 @@ final class ListOf5<T> extends List<T> {
 	@Override
 	public <E extends Exception> int[] mapToInt(ExToIntFunction<? super T, E> intFunction) throws E {
 		return new int[] { intFunction.applyAsInt(element0), intFunction.applyAsInt(element1),
-			intFunction.applyAsInt(element2), intFunction.applyAsInt(element3), intFunction.applyAsInt(element4),
- };
+			intFunction.applyAsInt(element2), intFunction.applyAsInt(element3), intFunction.applyAsInt(element4), };
 	}
 	@Override
 	public <E extends Exception> long[] mapToLong(ExToLongFunction<? super T, E> longFunction) throws E {
 		return new long[] { longFunction.applyAsLong(element0), longFunction.applyAsLong(element1),
-			longFunction.applyAsLong(element2), longFunction.applyAsLong(element3), longFunction.applyAsLong(element4),
- };
+			longFunction.applyAsLong(element2), longFunction.applyAsLong(element3), longFunction.applyAsLong(element4), };
 	}
 	@Override
 	public <E extends Exception> List<T> filter(ExPredicate<T, E> filter) throws E {

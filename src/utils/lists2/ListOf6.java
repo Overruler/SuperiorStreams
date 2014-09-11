@@ -22,7 +22,6 @@ import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExObjIntConsumer;
@@ -31,6 +30,7 @@ import utils.streams.functions.ExToDoubleFunction;
 import utils.streams.functions.ExToIntFunction;
 import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 /**
  * This is a six element immutable ListOf6 which is created by calling
@@ -84,12 +84,12 @@ final class ListOf6<T> extends List<T> {
 			ListOf6<?> list = (ListOf6<?>) otherList;
 			//*Q*
 			return
-    			Objects.equals(element0, list.element0) &&
-    			Objects.equals(element1, list.element1) &&
-    			Objects.equals(element2, list.element2) &&
-    			Objects.equals(element3, list.element3) &&
-    			Objects.equals(element4, list.element4) &&
-    			Objects.equals(element5, list.element5)
+				Objects.equals(element0, list.element0) &&
+				Objects.equals(element1, list.element1) &&
+				Objects.equals(element2, list.element2) &&
+				Objects.equals(element3, list.element3) &&
+				Objects.equals(element4, list.element4) &&
+				Objects.equals(element5, list.element5)
 			;
 			//*E*
 		}
@@ -103,12 +103,12 @@ final class ListOf6<T> extends List<T> {
 			}
 			//*Q*
 			return
-    			Objects.equals(element0, list.get(0)) &&
-    			Objects.equals(element1, list.get(1)) &&
-    			Objects.equals(element2, list.get(2)) &&
-    			Objects.equals(element3, list.get(3)) &&
-    			Objects.equals(element4, list.get(4)) &&
-    			Objects.equals(element5, list.get(5))
+				Objects.equals(element0, list.get(0)) &&
+				Objects.equals(element1, list.get(1)) &&
+				Objects.equals(element2, list.get(2)) &&
+				Objects.equals(element3, list.get(3)) &&
+				Objects.equals(element4, list.get(4)) &&
+				Objects.equals(element5, list.get(5))
 			;
 			//*E*
 		}
@@ -117,13 +117,13 @@ final class ListOf6<T> extends List<T> {
 			Iterator<?> iterator = list.iterator();
 			//*Q*
 			return
-    			iterator.hasNext() && Objects.equals(element0, iterator.next()) &&
-    			iterator.hasNext() && Objects.equals(element1, iterator.next()) &&
-    			iterator.hasNext() && Objects.equals(element2, iterator.next()) &&
-    			iterator.hasNext() && Objects.equals(element3, iterator.next()) &&
-    			iterator.hasNext() && Objects.equals(element4, iterator.next()) &&
-    			iterator.hasNext() && Objects.equals(element5, iterator.next()) &&
-    			!iterator.hasNext();
+				iterator.hasNext() && Objects.equals(element0, iterator.next()) &&
+				iterator.hasNext() && Objects.equals(element1, iterator.next()) &&
+				iterator.hasNext() && Objects.equals(element2, iterator.next()) &&
+				iterator.hasNext() && Objects.equals(element3, iterator.next()) &&
+				iterator.hasNext() && Objects.equals(element4, iterator.next()) &&
+				iterator.hasNext() && Objects.equals(element5, iterator.next()) &&
+				!iterator.hasNext();
 			//*E*
 		}
 		return false;

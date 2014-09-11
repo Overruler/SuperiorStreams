@@ -22,7 +22,6 @@ import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExObjIntConsumer;
@@ -31,6 +30,7 @@ import utils.streams.functions.ExToDoubleFunction;
 import utils.streams.functions.ExToIntFunction;
 import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 /**
  * This is a two element immutable ListOf2 which is created by calling
@@ -68,8 +68,8 @@ final class ListOf2<T> extends List<T> {
 			ListOf2<?> list = (ListOf2<?>) otherList;
 			//*Q*
 			return
-    			Objects.equals(element0, list.element0) &&
-    			Objects.equals(element1, list.element1)
+				Objects.equals(element0, list.element0) &&
+				Objects.equals(element1, list.element1)
 			;
 			//*E*
 		}
@@ -83,8 +83,8 @@ final class ListOf2<T> extends List<T> {
 			}
 			//*Q*
 			return
-    			Objects.equals(element0, list.get(0)) &&
-    			Objects.equals(element1, list.get(1))
+				Objects.equals(element0, list.get(0)) &&
+				Objects.equals(element1, list.get(1))
 			;
 			//*E*
 		}
@@ -93,9 +93,9 @@ final class ListOf2<T> extends List<T> {
 			Iterator<?> iterator = list.iterator();
 			//*Q*
 			return
-    			iterator.hasNext() && Objects.equals(element0, iterator.next()) &&
-    			iterator.hasNext() && Objects.equals(element1, iterator.next()) &&
-    			!iterator.hasNext();
+				iterator.hasNext() && Objects.equals(element0, iterator.next()) &&
+				iterator.hasNext() && Objects.equals(element1, iterator.next()) &&
+				!iterator.hasNext();
 			//*E*
 		}
 		return false;
@@ -140,8 +140,7 @@ final class ListOf2<T> extends List<T> {
 	}
 	@Override
 	public boolean contains(T element) {
-		return Objects.equals(element, element0) ||
- Objects.equals(element, element1);
+		return Objects.equals(element, element0) || Objects.equals(element, element1);
 	}
 	@Override
 	public <C extends Collection<T, C>> boolean containsAll(C collection) {
@@ -267,13 +266,11 @@ final class ListOf2<T> extends List<T> {
 	}
 	@Override
 	public <E extends Exception> int[] mapToInt(ExToIntFunction<? super T, E> intFunction) throws E {
-		return new int[] { intFunction.applyAsInt(element0), intFunction.applyAsInt(element1),
- };
+		return new int[] { intFunction.applyAsInt(element0), intFunction.applyAsInt(element1), };
 	}
 	@Override
 	public <E extends Exception> long[] mapToLong(ExToLongFunction<? super T, E> longFunction) throws E {
-		return new long[] { longFunction.applyAsLong(element0), longFunction.applyAsLong(element1),
- };
+		return new long[] { longFunction.applyAsLong(element0), longFunction.applyAsLong(element1), };
 	}
 	@Override
 	public <E extends Exception> List<T> filter(ExPredicate<T, E> filter) throws E {

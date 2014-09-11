@@ -22,7 +22,6 @@ import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.IntFunction;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExObjIntConsumer;
@@ -31,6 +30,7 @@ import utils.streams.functions.ExToDoubleFunction;
 import utils.streams.functions.ExToIntFunction;
 import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams2.Stream;
 
 /**
  * This is a one element immutable ListOf1 which is created by calling
@@ -78,8 +78,8 @@ final class ListOf1<T> extends List<T> {
 			Iterator<?> iterator = list.iterator();
 			//*Q*
 			return
-    			iterator.hasNext() && Objects.equals(element0, iterator.next()) &&
-    			!iterator.hasNext();
+				iterator.hasNext() && Objects.equals(element0, iterator.next()) &&
+				!iterator.hasNext();
 			//*E*
 		}
 		return false;
