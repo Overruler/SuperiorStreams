@@ -469,7 +469,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	public @Override java.util.ArrayList<T> toJavaList() {
 		return new java.util.ArrayList<>(java.util.Arrays.asList(java.util.Arrays.copyOfRange(items, 0, size)));
 	}
-	public ArrayList<T> sort() {
+	public @Override ArrayList<T> sort() {
 		Arrays.sort(items, 0, size);
 		return this;
 	}

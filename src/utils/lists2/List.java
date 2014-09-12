@@ -193,6 +193,9 @@ public class List<T> implements CollectionListAPI<T, List<T>> {
 	public @Override List<T> sort(Comparator<T> comparator) {
 		return this;
 	}
+	public @Override List<T> sort() {
+		return toArrayList().sort().toList();
+	}
 	public @Override int indexOf(T item) {
 		return -1;
 	}

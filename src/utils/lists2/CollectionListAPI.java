@@ -74,6 +74,7 @@ interface CollectionListAPI<T, LIST extends CollectionListAPI<T, LIST>> extends 
 	public LIST remove(int index);
 	public LIST set(int index, T element);
 	public LIST sort(Comparator<T> comparator);
+	public LIST sort();
 	public LIST subList(int fromIndex, int toIndex);
 	public <U, E extends Exception> Object map(ExFunction<T, U, E> mapper) throws E;
 	public <E extends Exception> double[] mapToDouble(ExToDoubleFunction<? super T, E> doubleFunction) throws E;
