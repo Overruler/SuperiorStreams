@@ -311,6 +311,15 @@ public class HashMap<K, V> implements ReadWriteMap<K, V, Entry<K, V>, HashMap<K,
 	}
 	public @Override <E extends Exception> HashMap<K, V> merge(K key, V value, ExBiFunction<V, V, V, E> remapper)
 		throws E {
+		if(value == null) {
+			V newValue = remapper.apply(wrapped.get(key), value);
+			if(newValue == null) {
+				wrapped.remove(key);
+			} else {
+				wrapped.put(key, newValue);
+			}
+			return this;
+		}
 		Class<E> classOfE = classForE();
 		try {
 			wrapped.merge(key, value, remapper.uncheck(classOfE));

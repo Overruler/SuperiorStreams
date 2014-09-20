@@ -168,12 +168,13 @@ public class Map<K, V> implements ReadWriteMap<K, V, Pair<K, V>, Map<K, V>> {
 	}
 	public @Override <E extends Exception> Map<K, V> computeIfAbsent(K key, ExFunction<K, V, E> mapper) throws E {
 		Class<E> classOfE = classForE();
+		Map<K, V> next = next();
 		try {
-			next().wrapped.computeIfAbsent(key, mapper.uncheck(classOfE));
+			next.wrapped.computeIfAbsent(key, mapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
 		}
-		return next();
+		return next;
 	}
 	public @Override <E extends Exception> Map<K, V> computeIfPresent(K key, ExBiFunction<K, V, V, E> remapper)
 		throws E {
@@ -198,6 +199,20 @@ public class Map<K, V> implements ReadWriteMap<K, V, Pair<K, V>, Map<K, V>> {
 	}
 	public @Override <E extends Exception> Map<K, V> merge(K key, V value, ExBiFunction<V, V, V, E> remapper) throws E {
 		Class<E> classOfE = classForE();
+		if(value == null) {
+			V oldValue = wrapped.get(key);
+			V newValue = remapper.apply(oldValue, value);
+			if(newValue == oldValue) {
+				return this;
+			}
+			Map<K, V> next = next();
+			if(newValue == null) {
+				next.wrapped.remove(key);
+			} else {
+				next.wrapped.put(key, newValue);
+			}
+			return next;
+		}
 		Map<K, V> next = next();
 		try {
 			next.wrapped.merge(key, value, remapper.uncheck(classOfE));
