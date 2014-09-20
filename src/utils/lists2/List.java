@@ -20,24 +20,13 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Spliterator;
-import java.util.function.IntFunction;
-import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
-import utils.streams.functions.ExObjIntConsumer;
 import utils.streams.functions.ExPredicate;
-import utils.streams.functions.ExToDoubleFunction;
-import utils.streams.functions.ExToIntFunction;
-import utils.streams.functions.ExToLongFunction;
-import utils.streams.functions.ExUnaryOperator;
 import utils.streams2.Stream;
 
-/**
- * This is an immutable zero element {@link java.util.List} replacement which is created by calling the List.of() method.
- * @param <T> type of the elements.
- */
-public class List<T> implements CollectionListAPI<T, List<T>> {
+public interface List<T> extends CollectionListAPI<T, List<T>> {
 	//*Q*
-	public static <T> List<T> of(                                                                             ) { return new List    <>(                                                         ); }
+	public static <T> List<T> of(                                                                             ) { return new ListOf0 <>(                                                         ); }
 	public static <T> List<T> of(T one                                                                        ) { return new ListOf1 <>(one                                                      ); }
 	public static <T> List<T> of(T one, T two                                                                 ) { return new ListOf2 <>(one, two                                                 ); }
 	public static <T> List<T> of(T one, T two, T three                                                        ) { return new ListOf3 <>(one, two, three                                          ); }
@@ -66,7 +55,7 @@ public class List<T> implements CollectionListAPI<T, List<T>> {
 		}
 	}
 	//*E*
-	public static <T, C extends Collection<T, C>> List<T> from(C collection) {
+	public static <T> List<T> from(ReadOnly<T> collection) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) collection.toArray();
 		return of(array);
@@ -79,173 +68,107 @@ public class List<T> implements CollectionListAPI<T, List<T>> {
 	public static <T> List<T> fromIterable(Iterable<T> iterable) {
 		return ArrayList.fromIterable(iterable).toList();
 	}
-	public @Override String toString() {
-		return "[]";
-	}
-	public @Override int hashCode() {
-		return 1;
-	}
-	public @Override boolean equals(Object otherList) {
-		if(otherList == this) {
-			return true;
-		}
-		if(otherList instanceof List) {
-			return otherList.getClass() == List.class;
-		}
-		if(otherList instanceof Collection) {
-			return ((Collection<?, ?>) otherList).isEmpty();
-		}
-		return false;
-	}
-	public @Override int size() {
-		return 0;
-	}
-	public @Override <E extends Exception> List<T> each(ExConsumer<T, E> procedure) throws E {
-		return this;
-	}
-	public @Override T get(int index) {
-		throw new IndexOutOfBoundsException("Index: " + index + ", Size: 0");
-	}
-	public @Override List<T> add(T newItem) {
-		return List.of(newItem);
-	}
-	public @Override Iterator<T> iterator() {
+	default @Override Iterator<T> iterator() {
 		return new ImmutableIterator<>(this);
 	}
-	public @Override Spliterator<T> spliterator() {
+	default @Override Spliterator<T> spliterator() {
 		return toArrayList().spliterator();
 	}
-	public @Override boolean isEmpty() {
+	default @Override boolean isEmpty() {
+		return false;
+	}
+	default @Override boolean notEmpty() {
 		return true;
 	}
-	public @Override boolean notEmpty() {
-		return false;
+	default @Override boolean containsAll(ReadOnly<T> collection) {
+		return toArrayList().containsAll(collection);
 	}
-	public @Override boolean contains(T element) {
-		return false;
+	default @Override T[] toArray(T[] array) {
+		return toArrayList().toArray(array);
 	}
-	public @Override <C extends Collection<T, C>> boolean containsAll(C collection) {
-		return false;
-	}
-	public @Override Object[] toArray() {
-		return new Object[0];
-	}
-	public @Override T[] toArray(IntFunction<T[]> generator) {
-		return generator.apply(0);
-	}
-	public @Override T[] toArray(T[] array) {
-		if(array.length > 0) {
-			array[0] = null;
-		}
-		return array;
-	}
-	public @Override Stream<T> stream() {
-		return toArrayList().stream();
-	}
-	public @Override Stream<T> parallelStream() {
-		return toArrayList().parallelStream();
-	}
-	public @Override <E extends Exception> List<T> eachWithIndex(ExObjIntConsumer<T, E> action) throws E {
-		return this;
-	}
-	public @Override List<T> add(int index, T element) {
-		switch(index) {//*Q*
-			case -1: case 0: return List.of(element);
-			default: throw new IndexOutOfBoundsException("Index: " + index + " Size: 0");
-		}//*E*
-	}
-	public @Override List<T> addAll(@SuppressWarnings("unchecked") T... values) {
-		return toArrayList().addAll(values).toList();
-	}
-	public @Override <C extends Collection<T, C>> List<T> addAll(C collection) {
+	default @Override List<T> addAll(ReadOnly<T> collection) {
 		return toArrayList().addAll(collection).toList();
 	}
-	public @Override List<T> addAll(List<T> source) {
-		return toArrayList().addAll(source).toList();
-	}
-	public @Override List<T> addAll(int index, @SuppressWarnings("unchecked") T... values) {
-		return toArrayList().addAll(index, values).toList();
-	}
-	public @Override <C extends Collection<T, C>> List<T> addAll(int index, C collection) {
+	default @Override List<T> addAll(int index, ReadOnly<T> collection) {
 		return toArrayList().addAll(index, collection).toList();
 	}
-	public @Override List<T> addAll(int index, List<T> source) {
-		return toArrayList().addAll(index, source).toList();
+	default @Override int indexOf(T item) {
+		return toArrayList().indexOf(item);
 	}
-	public @Override List<T> clear() {
-		return List.of();
+	default @Override int lastIndexOf(T item) {
+		return toArrayList().lastIndexOf(item);
 	}
-	public @Override List<T> remove(T element) {
-		return toArrayList().remove(element).toList();
-	}
-	public @Override List<T> remove(int index) {
-		throw new IndexOutOfBoundsException("Index: " + index + " Size: 0");
-	}
-	public @Override <C extends Collection<T, C>> List<T> removeAll(C collection) {
-		return toArrayList().removeAll(collection).toList();
-	}
-	public @Override <C extends Collection<T, C>> List<T> retainAll(C collection) {
-		return toArrayList().retainAll(collection).toList();
-	}
-	public @Override List<T> set(int index, T element) {
-		throw new IndexOutOfBoundsException("Index: " + index + " Size: 0");
-	}
-	public @Override List<T> sort(Comparator<T> comparator) {
-		return this;
-	}
-	public @Override List<T> sort() {
-		return toArrayList().sort().toList();
-	}
-	public @Override int indexOf(T item) {
-		return -1;
-	}
-	public @Override int lastIndexOf(T item) {
-		return -1;
-	}
-	public @Override ListIterator<T> listIterator() {
+	default @Override ListIterator<T> listIterator() {
 		return new ImmutableListIterator<>(this, 0);
 	}
-	public @Override ListIterator<T> listIterator(int index) {
+	default @Override ListIterator<T> listIterator(int index) {
 		return new ImmutableListIterator<>(this, index);
 	}
-	public @Override List<T> subList(int fromIndex, int toIndex) {
-		return toArrayList().subList(fromIndex, toIndex).toList();
+	default @Override Stream<T> parallelStream() {
+		return stream().parallel();
 	}
-	public @Override <U, E extends Exception> List<U> map(ExFunction<T, U, E> mapper) throws E {
+	default @Override List<T> clear() {
 		return List.of();
 	}
-	public @Override <E extends Exception> double[] mapToDouble(ExToDoubleFunction<? super T, E> doubleFunction)
-		throws E {
-		return new double[0];
-	}
-	public @Override <E extends Exception> int[] mapToInt(ExToIntFunction<? super T, E> intFunction) throws E {
-		return new int[0];
-	}
-	public @Override <E extends Exception> long[] mapToLong(ExToLongFunction<? super T, E> longFunction) throws E {
-		return new long[0];
-	}
-	public @Override <E extends Exception> List<T> filter(ExPredicate<T, E> filter) throws E {
+	default @Override List<T> remove(T element) {
+		if(contains(element)) {
+			return toArrayList().remove(element).toList();
+		}
 		return this;
 	}
-	public @Override <E extends Exception> List<T> removeIf(ExPredicate<T, E> filter) throws E {
+	default @Override List<T> remove(int index) {
+		return toArrayList().remove(index).toList();
+	}
+	default @Override List<T> removeAll(ReadOnly<T> collection) {
+		return toArrayList().removeAll(collection).toList();
+	}
+	default @Override List<T> retainAll(ReadOnly<T> collection) {
+		return toArrayList().retainAll(collection).toList();
+	}
+	default @Override List<T> set(int index, T element) {
+		return toArrayList().set(index, element).toList();
+	}
+	default @Override List<T> sort(Comparator<T> comparator) {
+		return toArrayList().sort(comparator).toList();
+	}
+	default @Override List<T> subList(int fromIndex, int toIndex) {
+		return toArrayList().subList(fromIndex, toIndex).toList();
+	}
+	default @Override <E extends Exception> List<T> filter(ExPredicate<T, E> filter) throws E {
+		return toArrayList().filter(filter).toList();
+	}
+	default @Override <E extends Exception> List<T> removeIf(ExPredicate<T, E> filter) throws E {
+		return toArrayList().removeIf(filter).toList();
+	}
+	default @Override java.util.ArrayList<T> toJavaUtilCollection() {
+		return ArrayList.from(this).toJavaUtilCollection();
+	}
+	default @Override List<T> addAll(@SuppressWarnings("unchecked") T... values) {
+		return ArrayList.from(this).addAll(values).toList();
+	}
+	default @Override java.util.ArrayList<T> toJavaList() {
+		return toJavaUtilCollection();
+	}
+	default @Override List<T> toList() {
 		return this;
 	}
-	public @Override <E extends Exception> List<T> replaceAll(ExUnaryOperator<T, E> mapper) throws E {
-		return this;
+	default @Override ArrayList<T> toArrayList() {
+		return ArrayList.from(this);
 	}
-	public @Override List<T> toList() {
-		return this;
+	default @Override List<T> addAll(int index, @SuppressWarnings("unchecked") T... values) {
+		return ArrayList.from(this).addAll(index, values).toList();
 	}
-	public @Override ArrayList<T> toArrayList() {
-		return new ArrayList<>(this);
+	default @Override List<T> sort() {
+		return ArrayList.from(this).sort().toList();
 	}
-	public @Override Set<T> toSet() {
+	default @Override List<T> reverse() {
+		return ArrayList.from(this).reverse().toList();
+	}
+	default @Override Set<T> toSet() {
 		return Set.from(this);
 	}
-	public @Override HashSet<T> toHashSet() {
-		return new HashSet<>(this);
+	default @Override HashSet<T> toHashSet() {
+		return HashSet.from(this);
 	}
-	public @Override java.util.ArrayList<T> toJavaList() {
-		return toArrayList().toJavaList();
-	}
+	public @Override <V, E extends Exception> List<V> map(ExFunction<T, V, E> function) throws E;
 }

@@ -2,20 +2,21 @@ package utils.lists2;
 
 import java.util.Iterator;
 import java.util.Spliterator;
-import java.util.function.IntFunction;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExPredicate;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams.functions.IntFunction;
 import utils.streams2.Stream;
 
-public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
+interface IHashSet<T, SELF extends IHashSet<T, SELF>> extends CollectionSetAPI<T, SELF> {}
+public class HashSet<T> implements IHashSet<T, HashSet<T>> {
 	final java.util.Set<T> wrapped;
 
 	public static @SafeVarargs <T> HashSet<T> of(T... elements) {
 		return new HashSet<>(java.util.Arrays.asList(elements));
 	}
-	public static <T, C extends Collection<T, C>> HashSet<T> from(C set) {
+	public static <T> HashSet<T> from(ReadOnly<T> set) {
 		return new HashSet<>(set);
 	}
 	public static <T> HashSet<T> from(java.util.Collection<T> set) {
@@ -36,7 +37,7 @@ public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 	public HashSet(int initialCapacity) {
 		this(new java.util.HashSet<>(initialCapacity));
 	}
-	public <C extends Collection<T, C>> HashSet(C m) {
+	public HashSet(ReadOnly<T> m) {
 		this(createInternalSetFromCollection(m));
 	}
 	private HashSet(java.util.Set<T> wrapped) {
@@ -102,7 +103,7 @@ public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 	public @Override boolean contains(T o) {
 		return wrapped.contains(o);
 	}
-	public @Override <C extends Collection<T, C>> boolean containsAll(C c) {
+	public @Override boolean containsAll(ReadOnly<T> c) {
 		return wrapped.containsAll(new java.util.HashSet<>(java.util.Arrays.asList(c.stream().toArray())));
 	}
 	public @Override HashSet<T> add(T item) {
@@ -121,26 +122,26 @@ public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 		wrapped.clear();
 		return this;
 	}
-	public @Override <C extends Collection<T, C>> HashSet<T> addAll(C c) {
+	public @Override HashSet<T> addAll(ReadOnly<T> c) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
 		wrapped.addAll(java.util.Arrays.asList(array));
 		return this;
 	}
-	public @Override <C extends Collection<T, C>> HashSet<T> retainAll(C c) {
+	public @Override HashSet<T> retainAll(ReadOnly<T> c) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
 		wrapped.retainAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
 		return this;
 	}
-	public @Override <C extends Collection<T, C>> HashSet<T> removeAll(C c) {
+	public @Override HashSet<T> removeAll(ReadOnly<T> c) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
 		wrapped.removeAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
 		return this;
 	}
 	public @Override <U, E extends Exception> HashSet<U> map(ExFunction<T, U, E> mapper) throws E {
-		return new HashSet<>(new ArrayList<>(wrapped).map(mapper));
+		return new HashSet<>(ArrayList.from(wrapped).map(mapper));
 	}
 	public @Override <E extends Exception> HashSet<T> filter(ExPredicate<T, E> filter) throws E {
 		for(Iterator<T> iterator = wrapped.iterator(); iterator.hasNext();) {
@@ -167,31 +168,31 @@ public class HashSet<T> implements CollectionSetAPI<T, HashSet<T>> {
 	public @Override java.util.HashSet<T> toJavaSet() {
 		return new java.util.HashSet<>(wrapped);
 	}
+	public @Override java.util.HashSet<T> toJavaUtilCollection() {
+		return new java.util.HashSet<>(wrapped);
+	}
 	public @Override Set<T> toSet() {
 		return Set.from(this);
 	}
 	public @Override HashSet<T> toHashSet() {
-		return new HashSet<>(this);
+		return from(this);
 	}
 	public @Override List<T> toList() {
 		return List.from(this);
 	}
 	public @Override ArrayList<T> toArrayList() {
-		return new ArrayList<>(this);
+		return ArrayList.from(this);
 	}
-	private static <T, C extends Collection<T, C>> java.util.HashSet<T> createInternalSetFromCollection(C m) {
-		if(m instanceof Set) {
-			@SuppressWarnings("unchecked")
-			Set<T> set = (Set<T>) m;
+	private static <T> java.util.HashSet<T> createInternalSetFromCollection(ReadOnly<T> m) {
+		if(m instanceof CSet) {
+			CSet<T> set = (CSet<T>) m;
 			return new java.util.HashSet<>(set.wrapped);
 		}
 		if(m instanceof HashSet) {
-			@SuppressWarnings("unchecked")
 			HashSet<T> hashSet = (HashSet<T>) m;
 			return new java.util.HashSet<>(hashSet.wrapped);
 		}
 		if(m.getClass() == ArrayList.class) {
-			@SuppressWarnings("unchecked")
 			ArrayList<T> list = (ArrayList<T>) m;
 			int localSize = list.size;
 			java.util.HashSet<T> hashSet = new java.util.HashSet<>(localSize);

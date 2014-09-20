@@ -18,12 +18,10 @@ package utils.lists2;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Spliterator;
-import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
@@ -33,19 +31,20 @@ import utils.streams.functions.ExToDoubleFunction;
 import utils.streams.functions.ExToIntFunction;
 import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams.functions.IntFunction;
+import utils.streams.functions.Predicate;
 import utils.streams2.Stream;
 
 /**
  * An ImmutableArrayList (here ListOfN) wraps a Java array but it cannot be modified after creation.
  */
-class ListOfN<T> extends List<T> {
+class ListOfN<T> implements List<T> {
 	private final T[] items;
 
 	ListOfN(T[] newElements) {
 		items = newElements;
 	}
-	@Override
-	public String toString() {
+	public @Override String toString() {
 		StringBuilder buf = new StringBuilder();
 		buf.append('[');
 		T[] localItems = items;
@@ -59,8 +58,7 @@ class ListOfN<T> extends List<T> {
 		buf.append(']');
 		return buf.toString();
 	}
-	@Override
-	public int hashCode() {
+	public @Override int hashCode() {
 		int hashCode = 1;
 		int localSize = size();
 		for(int i = 0; i < localSize; i++) {
@@ -69,8 +67,7 @@ class ListOfN<T> extends List<T> {
 		}
 		return hashCode;
 	}
-	@Override
-	public boolean equals(Object otherList) {
+	public @Override boolean equals(Object otherList) {
 		if(otherList == this) {
 			return true;
 		}
@@ -108,47 +105,43 @@ class ListOfN<T> extends List<T> {
 		}
 		return false;
 	}
-	@Override
-	public Iterator<T> iterator() {
+	public @Override Stream<T> stream() {
+		return new Stream<>(() -> StreamSupport.stream(spliterator(), false));
+	}
+	public @Override Stream<T> parallelStream() {
+		return new Stream<>(() -> StreamSupport.stream(spliterator(), true));
+	}
+	public @Override Iterator<T> iterator() {
 		return Arrays.asList(items).iterator();
 	}
-	@Override
-	public Spliterator<T> spliterator() {
+	public @Override Spliterator<T> spliterator() {
 		return Arrays.spliterator(items);
 	}
-	@Override
-	public int size() {
+	public @Override int size() {
 		return items.length;
 	}
-	@Override
-	public boolean isEmpty() {
+	public @Override boolean isEmpty() {
 		return items.length == 0;
 	}
-	@Override
-	public boolean notEmpty() {
+	public @Override boolean notEmpty() {
 		return items.length > 0;
 	}
-	@Override
-	public boolean contains(T o) {
+	public @Override boolean contains(T o) {
 		return anySatisfy(equal2(o));
 	}
-	@Override
-	public <C extends Collection<T, C>> boolean containsAll(C collection) {
+	public @Override boolean containsAll(ReadOnly<T> collection) {
 		return allSatisfyIterate(collection, inPredicates(items));
 	}
-	@Override
-	public Object[] toArray() {
+	public @Override Object[] toArray() {
 		return items.clone();
 	}
-	@Override
-	public T[] toArray(IntFunction<T[]> generator) {
+	public @Override T[] toArray(IntFunction<T[]> generator) {
 		int size = size();
 		T[] a = generator.apply(size);
 		System.arraycopy(items, 0, a, 0, size);
 		return a;
 	}
-	@Override
-	public T[] toArray(T[] a) {
+	public @Override T[] toArray(T[] a) {
 		int size = size();
 		if(a.length < size) {
 			@SuppressWarnings("unchecked")
@@ -161,16 +154,7 @@ class ListOfN<T> extends List<T> {
 		}
 		return a;
 	}
-	@Override
-	public Stream<T> stream() {
-		return new Stream<>(() -> StreamSupport.stream(spliterator(), false));
-	}
-	@Override
-	public Stream<T> parallelStream() {
-		return new Stream<>(() -> StreamSupport.stream(spliterator(), true));
-	}
-	@Override
-	public <E extends Exception> ListOfN<T> each(ExConsumer<T, E> action) throws E {
+	public @Override <E extends Exception> ListOfN<T> each(ExConsumer<T, E> action) throws E {
 		Objects.requireNonNull(action);
 		if(items.length > 0) {
 			for(T each1 : items) {
@@ -179,8 +163,7 @@ class ListOfN<T> extends List<T> {
 		}
 		return this;
 	}
-	@Override
-	public <E extends Exception> ListOfN<T> eachWithIndex(ExObjIntConsumer<T, E> action) throws E {
+	public @Override <E extends Exception> ListOfN<T> eachWithIndex(ExObjIntConsumer<T, E> action) throws E {
 		Objects.requireNonNull(action);
 		int size = items.length;
 		for(int i = 0; i < size; i++) {
@@ -188,16 +171,14 @@ class ListOfN<T> extends List<T> {
 		}
 		return this;
 	}
-	@Override
-	public List<T> add(T element) {
+	public @Override List<T> add(T element) {
 		int size = size();
 		T[] array = newArray(size + 1);
 		System.arraycopy(items, 0, array, 0, size);
 		array[size] = element;
 		return new ListOfN<>(array);
 	}
-	@Override
-	public List<T> add(int index, T element) {
+	public @Override List<T> add(int index, T element) {
 		int size = size();
 		index = ArrayList.adjustIndexToPositiveInts(index, size);
 		T[] array = newArray(size + 1);
@@ -206,8 +187,7 @@ class ListOfN<T> extends List<T> {
 		System.arraycopy(items, index, array, index + 1, size - index);
 		return new ListOfN<>(array);
 	}
-	@Override
-	public <C extends Collection<T, C>> List<T> addAll(C collection) {
+	public @Override List<T> addAll(ReadOnly<T> collection) {
 		int size = size();
 		int size2 = collection.size();
 		T[] array = newArray(size + size2);
@@ -224,8 +204,7 @@ class ListOfN<T> extends List<T> {
 		System.arraycopy(source.items, 0, array, size, size2);
 		return new ListOfN<>(array);
 	}
-	@Override
-	public <C extends Collection<T, C>> List<T> addAll(int index, C collection) {
+	public @Override List<T> addAll(int index, ReadOnly<T> collection) {
 		int size = size();
 		index = ArrayList.adjustIndexToPositiveInts(index, size);
 		int size2 = collection.size();
@@ -245,64 +224,23 @@ class ListOfN<T> extends List<T> {
 		System.arraycopy(items, index, array, index + size2, size - index - size2);
 		return new ListOfN<>(array);
 	}
-	@Override
-	public List<T> clear() {
-		return List.of();
-	}
-	@Override
-	public List<T> remove(T element) {
-		if(this.contains(element)) {
-			return toArrayList().remove(element).toList();
-		}
-		return this;
-	}
-	@Override
-	public List<T> remove(int index) {
-		return toArrayList().remove(index).toList();
-	}
-	@Override
-	public <C extends Collection<T, C>> List<T> removeAll(C collection) {
-		return toArrayList().removeAll(collection).toList();
-	}
-	@Override
-	public <C extends Collection<T, C>> List<T> retainAll(C collection) {
-		return toArrayList().retainAll(collection).toList();
-	}
-	@Override
-	public T get(int index) {
+	public @Override T get(int index) {
 		index = ArrayList.adjustIndexToPositiveInts(index, size());
 		return items[index];
 	}
-	@Override
-	public List<T> set(int index, T element) {
-		return toArrayList().set(index, element).toList();
-	}
-	@Override
-	public List<T> sort(Comparator<T> comparator) {
-		return toArrayList().sort(comparator).toList();
-	}
-	@Override
-	public int indexOf(Object item) {
+	public @Override int indexOf(Object item) {
 		return indexOfArrayIterate(items, item);
 	}
-	@Override
-	public int lastIndexOf(Object item) {
+	public @Override int lastIndexOf(Object item) {
 		return Arrays.asList(items).lastIndexOf(item);
 	}
-	@Override
-	public ListIterator<T> listIterator() {
+	public @Override ListIterator<T> listIterator() {
 		return new ImmutableListIterator<>(this, 0);
 	}
-	@Override
-	public ListIterator<T> listIterator(int index) {
+	public @Override ListIterator<T> listIterator(int index) {
 		return new ImmutableListIterator<>(this, index);
 	}
-	@Override
-	public List<T> subList(int fromIndex, int toIndex) {
-		return toArrayList().subList(fromIndex, toIndex).toList();
-	}
-	@Override
-	public <U, E extends Exception> List<U> map(ExFunction<T, U, E> mapper) throws E {
+	public @Override <U, E extends Exception> List<U> map(ExFunction<T, U, E> mapper) throws E {
 		T[] localItems = items;
 		U[] target = newArray(localItems.length);
 		for(int i = 0; i < localItems.length; i++) {
@@ -310,8 +248,8 @@ class ListOfN<T> extends List<T> {
 		}
 		return List.of(target);
 	}
-	@Override
-	public <E extends Exception> double[] mapToDouble(ExToDoubleFunction<? super T, E> doubleFunction) throws E {
+	public @Override <E extends Exception> double[] mapToDouble(ExToDoubleFunction<? super T, E> doubleFunction)
+		throws E {
 		T[] localItems = items;
 		double[] target = new double[localItems.length];
 		for(int i = 0; i < localItems.length; i++) {
@@ -319,8 +257,7 @@ class ListOfN<T> extends List<T> {
 		}
 		return target;
 	}
-	@Override
-	public <E extends Exception> int[] mapToInt(ExToIntFunction<? super T, E> intFunction) throws E {
+	public @Override <E extends Exception> int[] mapToInt(ExToIntFunction<? super T, E> intFunction) throws E {
 		T[] localItems = items;
 		int[] target = new int[localItems.length];
 		for(int i = 0; i < localItems.length; i++) {
@@ -328,8 +265,7 @@ class ListOfN<T> extends List<T> {
 		}
 		return target;
 	}
-	@Override
-	public <E extends Exception> long[] mapToLong(ExToLongFunction<? super T, E> longFunction) throws E {
+	public @Override <E extends Exception> long[] mapToLong(ExToLongFunction<? super T, E> longFunction) throws E {
 		T[] localItems = items;
 		long[] target = new long[localItems.length];
 		for(int i = 0; i < localItems.length; i++) {
@@ -337,16 +273,7 @@ class ListOfN<T> extends List<T> {
 		}
 		return target;
 	}
-	@Override
-	public <E extends Exception> List<T> filter(ExPredicate<T, E> filter) throws E {
-		return toArrayList().filter(filter).toList();
-	}
-	@Override
-	public <E extends Exception> List<T> removeIf(ExPredicate<T, E> filter) throws E {
-		return toArrayList().removeIf(filter).toList();
-	}
-	@Override
-	public <E extends Exception> List<T> replaceAll(ExUnaryOperator<T, E> mapper) throws E {
+	public @Override <E extends Exception> List<T> replaceAll(ExUnaryOperator<T, E> mapper) throws E {
 		T[] target = items.clone();
 		for(int i = 0; i < target.length; i++) {
 			target[i] = mapper.apply(target[i]);
@@ -355,14 +282,14 @@ class ListOfN<T> extends List<T> {
 	}
 	@SafeVarargs
 	private static <T> ExPredicate<T, RuntimeException> inPredicates(T... array) {
-		java.util.Collection<T> iterable = Arrays.asList(array);
+		java.util.Collection<?> iterable = Arrays.asList(array);
 		return anObject -> containsIterate(iterable, anObject);
 	}
 	/**
 	 * Returns true if the iterable contains the value.  In the case of Collections and RichIterables, the method contains
 	 * is called.  All other iterables will force a complete iteration to happen, which can be unnecessarily costly.
 	 */
-	private static <T> boolean containsIterate(java.util.Collection<T> iterable, T value) {
+	private static <T> boolean containsIterate(java.util.Collection<?> iterable, T value) {
 		return iterable.contains(value);
 	}
 	/**
@@ -473,5 +400,35 @@ class ListOfN<T> extends List<T> {
 			}
 		}
 		return false;
+	}
+	public @Override java.util.ArrayList<T> toJavaUtilCollection() {
+		return ArrayList.from(this).toJavaUtilCollection();
+	}
+	public @Override List<T> addAll(@SuppressWarnings("unchecked") T... values) {
+		return ArrayList.from(this).addAll(values).toList();
+	}
+	public @Override java.util.ArrayList<T> toJavaList() {
+		return toJavaUtilCollection();
+	}
+	public @Override List<T> toList() {
+		return this;
+	}
+	public @Override ArrayList<T> toArrayList() {
+		return ArrayList.from(this);
+	}
+	public @Override List<T> addAll(int index, @SuppressWarnings("unchecked") T... values) {
+		return ArrayList.from(this).addAll(index, values).toList();
+	}
+	public @Override List<T> sort() {
+		return ArrayList.from(this).sort().toList();
+	}
+	public @Override List<T> reverse() {
+		return ArrayList.from(this).reverse().toList();
+	}
+	public @Override Set<T> toSet() {
+		return Set.from(this);
+	}
+	public @Override HashSet<T> toHashSet() {
+		return HashSet.from(this);
 	}
 }

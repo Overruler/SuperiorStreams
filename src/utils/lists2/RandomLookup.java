@@ -15,10 +15,8 @@
  */
 package utils.lists2;
 
-import utils.streams.functions.ExConsumer;
 
 public interface RandomLookup<T, R extends RandomLookup<T, R>> extends Collection<T, R> {
-	public @Override <E extends Exception> R each(ExConsumer<T, E> procedure) throws E;
 	java.util.HashSet<T> toJavaSet();
 	Set<T> toSet();
 	HashSet<T> toHashSet();

@@ -1,13 +1,16 @@
 package utils.lists2;
 
+import java.util.Iterator;
+import java.util.Objects;
 import utils.lists.Pair;
 import utils.streams.functions.ExBiConsumer;
 import utils.streams.functions.ExBiFunction;
 import utils.streams.functions.ExFunction;
 import utils.streams2.WrapperException;
 
-public class HashMap<K, V> implements
-	CollectionMapAPI<K, V, HashMap<K, V>, HashSet<K>, HashSet<HashMap.Entry<K, V>>, ArrayList<V>, HashMap.Entry<K, V>> {
+public class HashMap<K, V>
+	implements
+	CollectionMapAPI<K, V, HashMap<K, V>, HashSet<K>, HashSet<HashMap.Entry<K, V>>, ReadOnly<V>, HashMap.Entry<K, V>> {
 	public static class Entry<T, V> extends Pair<T, V> implements java.util.Map.Entry<T, V> {
 		private final java.util.Map.Entry<T, V> entry;
 
@@ -88,6 +91,12 @@ public class HashMap<K, V> implements
 	public @Override boolean equals(Object o) {
 		return wrapped.equals(o);
 	}
+	public @Override boolean contains(HashMap.Entry<K, V> o) {
+		return o != null && Objects.equals(get(o.lhs), o.rhs);
+	}
+	public @Override Iterator<HashMap.Entry<K, V>> iterator() {
+		return entrySet().iterator();
+	}
 	public @Override int size() {
 		return wrapped.size();
 	}
@@ -97,128 +106,111 @@ public class HashMap<K, V> implements
 	public @Override boolean notEmpty() {
 		return wrapped.isEmpty() == false;
 	}
-	@Override
-	public boolean containsKey(K key) {
+	public @Override boolean containsKey(K key) {
 		return wrapped.containsKey(key);
 	}
-	@Override
-	public boolean containsValue(K value) {
+	public @Override boolean containsValue(K value) {
 		return wrapped.containsValue(value);
 	}
-	@Override
-	public V get(K key) {
+	public @Override V get(K key) {
 		return wrapped.get(key);
 	}
-	@Override
-	public HashMap<K, V> put(K key, V value) {
+	public @Override HashMap<K, V> put(K key, V value) {
 		wrapped.put(key, value);
 		return this;
 	}
-	@Override
-	public HashMap<K, V> putAll(Map<K, V> m) {
+	public @Override HashMap<K, V> putAll(Map<K, V> m) {
 		wrapped.putAll(m.wrapped);
 		return this;
 	}
-	@Override
-	public HashMap<K, V> putAll(HashMap<K, V> m) {
+	public @Override HashMap<K, V> putAll(HashMap<K, V> m) {
 		wrapped.putAll(m.wrapped);
 		return this;
 	}
-	@Override
-	public HashSet<K> keySet() {
+	public @Override HashSet<K> keySet() {
 		return HashSet.wrap(wrapped.keySet());
 	}
-	@Override
-	public ArrayList<V> values() {
-		return wrapMutableCollection(wrapped.values());
+	public @Override ReadOnly<V> values() {
+		return List.from(wrapped.values());
 	}
-	@Override
-	public HashSet<Entry<K, V>> entrySet() {
-		return new HashSetEntriesHashSet<>(wrapped.entrySet());
+	public @Override HashSet<Entry<K, V>> entrySet() {
+		return new HashMapEntrySetHashSet<>(this, wrapped.entrySet());
 	}
-	@Override
-	public V getOrDefault(K key, V defaultValue) {
+	public @Override V getOrDefault(K key, V defaultValue) {
 		return wrapped.getOrDefault(key, defaultValue);
 	}
-	@Override
-	public <E extends Exception> HashMap<K, V> each(ExBiConsumer<K, V, E> action) throws E {
+	public @Override <E extends Exception> HashMap<K, V> each(ExBiConsumer<K, V, E> action) throws E {
 		for(java.util.Map.Entry<K, V> entry : wrapped.entrySet()) {
 			action.accept(entry.getKey(), entry.getValue());
 		}
 		return this;
 	}
-	@Override
-	public <E extends Exception> HashMap<K, V> replaceAll(ExBiFunction<K, V, V, E> function) throws E {
+	public @Override <E extends Exception> HashMap<K, V> replaceAll(ExBiFunction<K, V, V, E> mapper) throws E {
 		Class<E> classOfE = classForE();
 		try {
-			wrapped.replaceAll(function.uncheck(classOfE));
+			wrapped.replaceAll(mapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
 		}
 		return this;
 	}
-	@Override
-	public HashMap<K, V> putIfAbsent(K key, V value) {
+	public @Override HashMap<K, V> putIfAbsent(K key, V value) {
 		wrapped.putIfAbsent(key, value);
 		return this;
 	}
-	@Override
-	public HashMap<K, V> remove(K key) {
+	public @Override HashMap<K, V> remove(K key) {
 		wrapped.remove(key);
 		return this;
 	}
-	@Override
-	public HashMap<K, V> remove(K key, V value) {
+	public @Override HashMap<K, V> remove(K key, V value) {
 		wrapped.remove(key, value);
 		return this;
 	}
-	@Override
-	public HashMap<K, V> replace(K key, V oldValue, V newValue) {
+	public @Override HashMap<K, V> replace(K key, V oldValue, V newValue) {
 		wrapped.replace(key, oldValue, newValue);
 		return this;
 	}
-	@Override
-	public HashMap<K, V> replace(K key, V value) {
+	public @Override HashMap<K, V> replace(K key, V value) {
 		wrapped.replace(key, value);
 		return this;
 	}
-	@Override
-	public <E extends Exception> HashMap<K, V> computeIfAbsent(K key, ExFunction<K, V, E> mappingFunction) throws E {
+	public @Override HashMap<K, V> clear() {
+		wrapped.clear();
+		return this;
+	}
+	public @Override <E extends Exception> HashMap<K, V> computeIfAbsent(K key, ExFunction<K, V, E> mapper) throws E {
 		Class<E> classOfE = classForE();
 		try {
-			wrapped.computeIfAbsent(key, mappingFunction.uncheck(classOfE));
+			wrapped.computeIfAbsent(key, mapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
 		}
 		return this;
 	}
-	@Override
-	public <E extends Exception> HashMap<K, V> computeIfPresent(K key, ExBiFunction<K, V, V, E> remappingFunction)
+	public @Override <E extends Exception> HashMap<K, V> computeIfPresent(K key, ExBiFunction<K, V, V, E> remapper)
 		throws E {
 		Class<E> classOfE = classForE();
 		try {
-			wrapped.computeIfPresent(key, remappingFunction.uncheck(classOfE));
+			wrapped.computeIfPresent(key, remapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
 		}
 		return this;
 	}
-	@Override
-	public <E extends Exception> HashMap<K, V> compute(K key, ExBiFunction<K, V, V, E> remappingFunction) throws E {
+	public @Override <E extends Exception> HashMap<K, V> compute(K key, ExBiFunction<K, V, V, E> remapper) throws E {
 		Class<E> classOfE = classForE();
 		try {
-			wrapped.compute(key, remappingFunction.uncheck(classOfE));
+			wrapped.compute(key, remapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
 		}
 		return this;
 	}
-	@Override
-	public <E extends Exception> HashMap<K, V> merge(K key, V value, ExBiFunction<V, V, V, E> remappingFunction)
+	public @Override <E extends Exception> HashMap<K, V> merge(K key, V value, ExBiFunction<V, V, V, E> remapper)
 		throws E {
 		Class<E> classOfE = classForE();
 		try {
-			wrapped.merge(key, value, remappingFunction.uncheck(classOfE));
+			wrapped.merge(key, value, remapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
 		}
@@ -236,8 +228,5 @@ public class HashMap<K, V> implements
 	@SuppressWarnings("unchecked")
 	private static <E extends Exception> Class<E> classForE() {
 		return (Class<E>) Exception.class;
-	}
-	private ArrayList<V> wrapMutableCollection(java.util.Collection<V> values) {
-		return new HashMapValuesCollection<>(values);
 	}
 }

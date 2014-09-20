@@ -15,18 +15,20 @@
  */
 package utils.lists2;
 
+import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExPredicate;
 import utils.streams.functions.ExUnaryOperator;
 
-public interface CollectionAPI<T, C extends CollectionAPI<T, C>> {
+interface CollectionAPI<T, C extends CollectionAPI<T, C>> extends ReadOnly<T> {
 	C add(T e);
 	C addAll(@SuppressWarnings("unchecked") T... es);
 	C remove(T o);
 	C clear();
-	<COLLECTION extends Collection<T, COLLECTION>> C addAll(COLLECTION c);
-	<COLLECTION extends Collection<T, COLLECTION>> C retainAll(COLLECTION c);
-	<COLLECTION extends Collection<T, COLLECTION>> C removeAll(COLLECTION c);
+	C addAll(ReadOnly<T> c);
+	C retainAll(ReadOnly<T> c);
+	C removeAll(ReadOnly<T> c);
 	<E extends Exception> C filter(ExPredicate<T, E> filter) throws E;
 	<E extends Exception> C removeIf(ExPredicate<T, E> filter) throws E;
 	<E extends Exception> C replaceAll(ExUnaryOperator<T, E> mapper) throws E;
+	<E extends Exception> C each(ExConsumer<T, E> action) throws E;
 }

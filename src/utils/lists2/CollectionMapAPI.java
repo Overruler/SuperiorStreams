@@ -10,15 +10,13 @@ interface CollectionMapAPI<K, V,
 	MAP     extends CollectionMapAPI<K, V, MAP, KEY_SET, ALL_SET, VALUES, PAIR>,
 	KEY_SET extends CollectionSetAPI<K, KEY_SET>,
 	ALL_SET extends CollectionSetAPI<PAIR, ALL_SET>,
-	VALUES  extends CollectionListAPI<V, VALUES>,
-	PAIR    extends Pair<K, V>>
+	VALUES  extends ReadOnly<V>,
+	PAIR    extends Pair<K, V>
+> extends ReadOnly<PAIR>
 {//*E*
 	public @Override String toString();
 	public @Override int hashCode();
 	public @Override boolean equals(Object o);
-	int size();
-	boolean isEmpty();
-	boolean notEmpty();
 	boolean containsKey(K key);
 	boolean containsValue(K value);
 	V get(K key);
@@ -36,6 +34,7 @@ interface CollectionMapAPI<K, V,
 	MAP remove(K key, V value);
 	MAP replace(K key, V oldValue, V newValue);
 	MAP replace(K key, V value);
+	MAP clear();
 	<E extends Exception> MAP computeIfAbsent(K key, ExFunction<K, V, E> mappingFunction) throws E;
 	<E extends Exception> MAP computeIfPresent(K key, ExBiFunction<K, V, V, E> remappingFunction) throws E;
 	<E extends Exception> MAP compute(K key, ExBiFunction<K, V, V, E> remappingFunction) throws E;

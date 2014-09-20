@@ -1,20 +1,22 @@
 package utils.lists2;
 
-import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Spliterator;
-import java.util.function.IntFunction;
 import utils.lists2.HashMap.Entry;
-import utils.streams2.Stream;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExPredicate;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams.functions.IntFunction;
+import utils.streams2.Stream;
 
-public class HashSetEntriesHashSet<T, V> extends HashSet<HashMap.Entry<T, V>> {
+class HashMapEntrySetHashSet<T, V> extends HashSet<HashMap.Entry<T, V>> {
 	private final java.util.Set<java.util.Map.Entry<T, V>> entrySet;
+	private final HashMap<T, V> origin;
 
-	public HashSetEntriesHashSet(java.util.Set<java.util.Map.Entry<T, V>> entrySet) {
+	HashMapEntrySetHashSet(HashMap<T, V> origin, java.util.Set<java.util.Map.Entry<T, V>> entrySet) {
+		this.origin = origin;
 		this.entrySet = entrySet;
 	}
 	public @Override String toString() {
@@ -27,7 +29,7 @@ public class HashSetEntriesHashSet<T, V> extends HashSet<HashMap.Entry<T, V>> {
 		return wrapped().equals(o);
 	}
 	public @Override boolean notEmpty() {
-		return !entrySet.isEmpty();
+		return origin.notEmpty();
 	}
 	public @Override Stream<HashMap.Entry<T, V>> stream() {
 		return wrapped().stream();
@@ -37,12 +39,12 @@ public class HashSetEntriesHashSet<T, V> extends HashSet<HashMap.Entry<T, V>> {
 	}
 	public @Override Iterator<HashMap.Entry<T, V>> iterator() {
 		Iterator<java.util.Map.Entry<T, V>> iterator = entrySet.iterator();
-		return new HashSetEntriesHashSetIterator<>(iterator);
+		return new HashMapEntrySetHashSetIterator<>(iterator);
 	}
 	public @Override Spliterator<HashMap.Entry<T, V>> spliterator() {
-		return new HashSetEntriesHashSetSpliterator<>(entrySet.spliterator());
+		return new HashMapEntrySetHashSetSpliterator<>(entrySet.spliterator());
 	}
-	public @Override <E extends Exception> HashSet<HashMap.Entry<T, V>> each(ExConsumer<HashMap.Entry<T, V>, E> action)
+	public @Override <E extends Exception> HashMapEntrySetHashSet<T, V> each(ExConsumer<HashMap.Entry<T, V>, E> action)
 		throws E {
 		for(Iterator<java.util.Map.Entry<T, V>> iterator = entrySet.iterator(); iterator.hasNext();) {
 			action.accept(new HashMap.Entry<>(iterator.next()));
@@ -58,52 +60,68 @@ public class HashSetEntriesHashSet<T, V> extends HashSet<HashMap.Entry<T, V>> {
 	public @Override HashMap.Entry<T, V>[] toArray(HashMap.Entry<T, V>[] a) {
 		return wrapped().toArray(a);
 	}
+	public @Override List<HashMap.Entry<T, V>> toList() {
+		return List.from(wrapped());
+	}
 	public @Override int size() {
-		return entrySet.size();
+		return origin.size();
 	}
 	public @Override boolean isEmpty() {
-		return entrySet.isEmpty();
+		return origin.isEmpty();
 	}
 	public @Override boolean contains(HashMap.Entry<T, V> o) {
-		return entrySet.contains(o);
+		return o != null && Objects.equals(origin.get(o.lhs), o.rhs);
 	}
-	public @Override <C extends Collection<HashMap.Entry<T, V>, C>> boolean containsAll(C c) {
-		return entrySet.containsAll(Arrays.asList(c.stream().toArray()));
+	public @Override boolean containsAll(ReadOnly<HashMap.Entry<T, V>> c) {
+		for(HashMap.Entry<T, V> entry : c) {
+			if(contains(entry) == false) {
+				return false;
+			}
+		}
+		return true;
 	}
-	public @Override HashSet<HashMap.Entry<T, V>> add(HashMap.Entry<T, V> item) {
-		entrySet.add(item);
+	public @Override HashMapEntrySetHashSet<T, V> add(HashMap.Entry<T, V> item) {
+		T key = item.lhs;
+		V value = item.rhs;
+		V old = origin.get(key);
+		if(!Objects.equals(old, value)) {
+			if(old != null) {
+				throw new IllegalArgumentException(String.format(
+					"Duplicate values for key: %s, old: %s, new: %s",
+					key,
+					old,
+					value));
+			}
+			origin.put(key, value);
+		}
 		return this;
 	}
-	public @Override HashSet<HashMap.Entry<T, V>> remove(HashMap.Entry<T, V> item) {
+	public @Override HashMapEntrySetHashSet<T, V> remove(HashMap.Entry<T, V> item) {
 		entrySet.remove(item);
 		return this;
 	}
-	public @Override HashSet<HashMap.Entry<T, V>> clear() {
-		entrySet.clear();
+	public @Override HashMapEntrySetHashSet<T, V> clear() {
+		origin.clear();
 		return this;
 	}
-	public @Override <C extends Collection<HashMap.Entry<T, V>, C>> HashSet<HashMap.Entry<T, V>> addAll(C c) {
-		@SuppressWarnings("unchecked")
-		HashMap.Entry<T, V>[] array = (HashMap.Entry<T, V>[]) c.stream().toArray();
-		entrySet.addAll(Arrays.asList(array));
+	public @Override HashMapEntrySetHashSet<T, V> addAll(ReadOnly<HashMap.Entry<T, V>> c) {
+		for(HashMap.Entry<T, V> item : c) {
+			add(item);
+		}
 		return this;
 	}
-	public @Override <C extends Collection<HashMap.Entry<T, V>, C>> HashSet<HashMap.Entry<T, V>> retainAll(C c) {
-		@SuppressWarnings("unchecked")
-		HashMap.Entry<T, V>[] array = (HashMap.Entry<T, V>[]) c.stream().toArray();
-		entrySet.retainAll(Arrays.asList(array));
+	public @Override HashMapEntrySetHashSet<T, V> retainAll(ReadOnly<HashMap.Entry<T, V>> c) {
+		entrySet.retainAll(c.toJavaUtilCollection());
 		return this;
 	}
-	public @Override <C extends Collection<HashMap.Entry<T, V>, C>> HashSet<HashMap.Entry<T, V>> removeAll(C c) {
-		@SuppressWarnings("unchecked")
-		HashMap.Entry<T, V>[] array = (HashMap.Entry<T, V>[]) c.stream().toArray();
-		entrySet.removeAll(Arrays.asList(array));
+	public @Override HashMapEntrySetHashSet<T, V> removeAll(ReadOnly<HashMap.Entry<T, V>> c) {
+		entrySet.removeAll(c.toJavaUtilCollection());
 		return this;
 	}
 	public @Override <U, E extends Exception> HashSet<U> map(ExFunction<HashMap.Entry<T, V>, U, E> mapper) throws E {
-		return new HashSet<>(new ArrayList<>(wrapped()).map(mapper));
+		return HashSet.from(ArrayList.from(wrapped()).map(mapper));
 	}
-	public @Override <E extends Exception> HashSet<HashMap.Entry<T, V>> filter(
+	public @Override <E extends Exception> HashMapEntrySetHashSet<T, V> filter(
 		ExPredicate<HashMap.Entry<T, V>, E> filter) throws E {
 		for(Iterator<java.util.Map.Entry<T, V>> iterator = entrySet.iterator(); iterator.hasNext();) {
 			if(!filter.test(new HashMap.Entry<>(iterator.next()))) {
@@ -112,7 +130,7 @@ public class HashSetEntriesHashSet<T, V> extends HashSet<HashMap.Entry<T, V>> {
 		}
 		return this;
 	}
-	public @Override <E extends Exception> HashSet<HashMap.Entry<T, V>> removeIf(
+	public @Override <E extends Exception> HashMapEntrySetHashSet<T, V> removeIf(
 		ExPredicate<HashMap.Entry<T, V>, E> filter) throws E {
 		for(Iterator<java.util.Map.Entry<T, V>> iterator = entrySet.iterator(); iterator.hasNext();) {
 			if(filter.test(new HashMap.Entry<>(iterator.next()))) {
@@ -121,16 +139,35 @@ public class HashSetEntriesHashSet<T, V> extends HashSet<HashMap.Entry<T, V>> {
 		}
 		return this;
 	}
-	public @Override <E extends Exception> HashSet<HashMap.Entry<T, V>> replaceAll(
+	public @Override <E extends Exception> HashMapEntrySetHashSet<T, V> replaceAll(
 		ExUnaryOperator<HashMap.Entry<T, V>, E> mapper) throws E {
-		HashSet<HashMap.Entry<T, V>> set = new HashSet<>(new ArrayList<>(wrapped()).replaceAll(mapper));
-		entrySet.clear();
-		entrySet.addAll(set.wrapped);
+		ArrayList<Entry<T, V>> list = ArrayList.from(wrapped()).replaceAll(mapper);
+		origin.clear();
+		addAll(list);
 		return this;
 	}
+	public @Override HashMapEntrySetHashSet<T, V> addAll(@SuppressWarnings("unchecked") HashMap.Entry<T, V>... es) {
+		addAll(ArrayList.of(es));
+		return this;
+	}
+	public @Override java.util.HashSet<HashMap.Entry<T, V>> toJavaUtilCollection() {
+		return wrapped().toJavaSet();
+	}
+	public @Override java.util.HashSet<HashMap.Entry<T, V>> toJavaSet() {
+		return wrapped().toJavaSet();
+	}
+	public @Override Set<HashMap.Entry<T, V>> toSet() {
+		return wrapped().toSet();
+	}
+	public @Override HashSet<HashMap.Entry<T, V>> toHashSet() {
+		return wrapped();
+	}
+	public @Override ArrayList<HashMap.Entry<T, V>> toArrayList() {
+		return wrapped().toArrayList();
+	}
 	private HashSet<HashMap.Entry<T, V>> wrapped() {
-		HashSet<Entry<T, V>> hashSet = new HashSet<>();
-		for(Iterator<Entry<T, V>> iterator = iterator(); iterator.hasNext();) {
+		HashSet<HashMap.Entry<T, V>> hashSet = new HashSet<>();
+		for(Iterator<HashMap.Entry<T, V>> iterator = iterator(); iterator.hasNext();) {
 			hashSet.add(iterator.next());
 		}
 		return hashSet;

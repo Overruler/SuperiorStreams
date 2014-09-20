@@ -1,12 +1,15 @@
 package utils.lists2;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Objects;
 import utils.lists.Pair;
 import utils.streams.functions.ExBiConsumer;
 import utils.streams.functions.ExBiFunction;
 import utils.streams.functions.ExFunction;
 import utils.streams2.WrapperException;
 
-public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<Pair<K, V>>, List<V>, Pair<K, V>> {
+public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<Pair<K, V>>, ReadOnly<V>, Pair<K, V>> {
 	final java.util.HashMap<K, V> wrapped;
 
 	static <K, V> Map<K, V> fromHashMap(HashMap<K, V> source) {
@@ -60,6 +63,12 @@ public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<
 	public @Override boolean equals(Object o) {
 		return wrapped.equals(o);
 	}
+	public @Override boolean contains(Pair<K, V> o) {
+		return o != null && Objects.equals(get(o.lhs), o.rhs);
+	}
+	public @Override Iterator<Pair<K, V>> iterator() {
+		return entrySet().iterator();
+	}
 	public @Override int size() {
 		return wrapped.size();
 	}
@@ -69,138 +78,125 @@ public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<
 	public @Override boolean notEmpty() {
 		return wrapped.isEmpty() == false;
 	}
-	@Override
-	public boolean containsKey(K key) {
+	public @Override boolean containsKey(K key) {
 		return wrapped.containsKey(key);
 	}
-	@Override
-	public boolean containsValue(K value) {
+	public @Override boolean containsValue(K value) {
 		return wrapped.containsValue(value);
 	}
-	@Override
-	public V get(K key) {
+	public @Override V get(K key) {
 		return wrapped.get(key);
 	}
-	@Override
-	public Map<K, V> put(K key, V value) {
+	public @Override Map<K, V> put(K key, V value) {
 		Map<K, V> next = next();
 		next.wrapped.put(key, value);
 		return next;
 	}
-	@Override
-	public Map<K, V> putAll(Map<K, V> m) {
+	public @Override Map<K, V> putAll(Map<K, V> m) {
 		Map<K, V> next = next();
 		next.wrapped.putAll(m.wrapped);
 		return next;
 	}
-	@Override
-	public Map<K, V> putAll(HashMap<K, V> m) {
+	public @Override Map<K, V> putAll(HashMap<K, V> m) {
 		Map<K, V> next = next();
 		next.wrapped.putAll(m.wrapped);
 		return next;
 	}
-	@Override
-	public Set<K> keySet() {
+	public @Override Set<K> keySet() {
 		return Set.from(wrapped.keySet());
 	}
-	@Override
-	public List<V> values() {
-		return new MapValuesCollection<>(wrapped.values());
+	public @Override List<V> values() {
+		return List.from(wrapped.values());
 	}
-	@Override
-	public Set<Pair<K, V>> entrySet() {
-		return Set.from(wrapped.entrySet()).map(entry -> new Pair<>(entry.getKey(), entry.getValue()));
+	public @Override Set<Pair<K, V>> entrySet() {
+		Set<Entry<K, V>> from = Set.from(wrapped.entrySet());
+		ExFunction<Entry<K, V>, Pair<K, V>, RuntimeException> mapper =
+			entry -> new Pair<>(entry.getKey(), entry.getValue());
+		Set<Pair<K, V>> map = from.map(mapper);
+		return map;
 	}
-	@Override
-	public V getOrDefault(K key, V defaultValue) {
+	public @Override V getOrDefault(K key, V defaultValue) {
 		return wrapped.getOrDefault(key, defaultValue);
 	}
-	@Override
-	public <E extends Exception> Map<K, V> each(ExBiConsumer<K, V, E> action) throws E {
+	public @Override <E extends Exception> Map<K, V> each(ExBiConsumer<K, V, E> action) throws E {
 		for(java.util.Map.Entry<K, V> entry : wrapped.entrySet()) {
 			action.accept(entry.getKey(), entry.getValue());
 		}
 		return this;
 	}
-	@Override
-	public <E extends Exception> Map<K, V> replaceAll(ExBiFunction<K, V, V, E> function) throws E {
+	public @Override <E extends Exception> Map<K, V> replaceAll(ExBiFunction<K, V, V, E> mapper) throws E {
 		Class<E> classOfE = classForE();
 		Map<K, V> next = next();
 		try {
-			next.wrapped.replaceAll(function.uncheck(classOfE));
+			next.wrapped.replaceAll(mapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
 		}
 		return next;
 	}
-	@Override
-	public Map<K, V> putIfAbsent(K key, V value) {
+	public @Override Map<K, V> putIfAbsent(K key, V value) {
 		Map<K, V> next = next();
 		next.wrapped.putIfAbsent(key, value);
 		return next;
 	}
-	@Override
-	public Map<K, V> remove(K key) {
+	public @Override Map<K, V> remove(K key) {
 		Map<K, V> next = next();
 		next.wrapped.remove(key);
 		return next;
 	}
-	@Override
-	public Map<K, V> remove(K key, V value) {
+	public @Override Map<K, V> remove(K key, V value) {
 		Map<K, V> next = next();
 		next.wrapped.remove(key, value);
 		return next;
 	}
-	@Override
-	public Map<K, V> replace(K key, V oldValue, V newValue) {
+	public @Override Map<K, V> replace(K key, V oldValue, V newValue) {
 		Map<K, V> next = next();
 		next.wrapped.replace(key, oldValue, newValue);
 		return next;
 	}
-	@Override
-	public Map<K, V> replace(K key, V value) {
+	public @Override Map<K, V> replace(K key, V value) {
 		Map<K, V> next = next();
 		next.wrapped.replace(key, value);
 		return next;
 	}
-	@Override
-	public <E extends Exception> Map<K, V> computeIfAbsent(K key, ExFunction<K, V, E> mappingFunction) throws E {
+	public @Override Map<K, V> clear() {
+		return of();
+	}
+	public @Override <E extends Exception> Map<K, V> computeIfAbsent(K key, ExFunction<K, V, E> mapper) throws E {
 		Class<E> classOfE = classForE();
 		try {
-			next().wrapped.computeIfAbsent(key, mappingFunction.uncheck(classOfE));
+			next().wrapped.computeIfAbsent(key, mapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
 		}
 		return next();
 	}
-	@Override
-	public <E extends Exception> Map<K, V> computeIfPresent(K key, ExBiFunction<K, V, V, E> remappingFunction) throws E {
+	public @Override <E extends Exception> Map<K, V> computeIfPresent(K key, ExBiFunction<K, V, V, E> remapper)
+		throws E {
 		Class<E> classOfE = classForE();
 		Map<K, V> next = next();
 		try {
-			next.wrapped.computeIfPresent(key, remappingFunction.uncheck(classOfE));
+			next.wrapped.computeIfPresent(key, remapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
 		}
 		return next;
 	}
-	@Override
-	public <E extends Exception> Map<K, V> compute(K key, ExBiFunction<K, V, V, E> remappingFunction) throws E {
+	public @Override <E extends Exception> Map<K, V> compute(K key, ExBiFunction<K, V, V, E> remapper) throws E {
 		Class<E> classOfE = classForE();
 		Map<K, V> next = next();
 		try {
-			next.wrapped.compute(key, remappingFunction.uncheck(classOfE));
+			next.wrapped.compute(key, remapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
 		}
 		return next;
 	}
-	@Override
-	public <E extends Exception> Map<K, V> merge(K key, V value, ExBiFunction<V, V, V, E> remappingFunction) throws E {
+	public @Override <E extends Exception> Map<K, V> merge(K key, V value, ExBiFunction<V, V, V, E> remapper) throws E {
 		Class<E> classOfE = classForE();
 		Map<K, V> next = next();
 		try {
-			next.wrapped.merge(key, value, remappingFunction.uncheck(classOfE));
+			next.wrapped.merge(key, value, remapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
 		}

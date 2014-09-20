@@ -32,7 +32,7 @@ final class ArrayListSubListListIterator<T> implements ListIterator<T> {
 	}
 	@Override
 	public boolean hasNext() {
-		return nextIndex() < arrayListSubList.size;
+		return nextIndex() < arrayListSubList.subsize;
 	}
 	@Override
 	public T next() {
@@ -63,7 +63,7 @@ final class ArrayListSubListListIterator<T> implements ListIterator<T> {
 	@Override
 	public void remove() {
 		listIterator.remove();
-		arrayListSubList.size--;
+		arrayListSubList.subsize--;
 	}
 	@Override
 	public void set(T o) {
@@ -72,6 +72,6 @@ final class ArrayListSubListListIterator<T> implements ListIterator<T> {
 	@Override
 	public void add(T o) {
 		listIterator.add(o);
-		arrayListSubList.size++;
+		arrayListSubList.subsize++;
 	}
 }

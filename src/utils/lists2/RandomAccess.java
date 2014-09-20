@@ -16,11 +16,9 @@
 package utils.lists2;
 
 import java.util.ListIterator;
-import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExObjIntConsumer;
 
 public interface RandomAccess<T, R extends RandomAccess<T, R>> extends Collection<T, R> {
-	public @Override <E extends Exception> R each(ExConsumer<T, E> action) throws E;
 	public <E extends Exception> R eachWithIndex(ExObjIntConsumer<T, E> action) throws E;
 	public T get(int index);
 	public int indexOf(T item);

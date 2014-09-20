@@ -24,7 +24,6 @@ import java.util.ListIterator;
 import java.util.Objects;
 import java.util.RandomAccess;
 import java.util.Spliterator;
-import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
@@ -34,8 +33,10 @@ import utils.streams.functions.ExToDoubleFunction;
 import utils.streams.functions.ExToIntFunction;
 import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
+import utils.streams.functions.IntFunction;
 import utils.streams2.Stream;
 
+interface IArrayList<T, SELF extends IArrayList<T, SELF>> extends CollectionListAPI<T, SELF> {}
 /**
  * FastList (here ArrayList) is an attempt to provide the same functionality as ArrayList without the support for concurrent
  * modification exceptions.  It also attempts to correct the problem with subclassing ArrayList
@@ -52,7 +53,7 @@ import utils.streams2.Stream;
  * memory efficient as well.  The first call to add will lazily create an array of size 1.
  * @param <T> type of elements.
  */
-public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
+public class ArrayList<T> implements IArrayList<T, ArrayList<T>> {
 	private static final Object[] DEFAULT_SIZED_EMPTY_ARRAY = {};
 	private static final Object[] ZERO_SIZED_ARRAY = {};
 	private static final int MAXIMUM_ARRAY_SIZE = Integer.MAX_VALUE - 8;
@@ -70,7 +71,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	public static @SafeVarargs <T> ArrayList<T> of(T... elements) {
 		return new ArrayList<>(elements.length, elements);
 	}
-	public static <T, C extends Collection<T, C>> ArrayList<T> from(C collection) {
+	public static <T, C extends CollectionAPI<T, C>> ArrayList<T> from(C collection) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) collection.toArray();
 		return of(array);
@@ -93,7 +94,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		T[] array = initialCapacity == 0 ? (T[]) ZERO_SIZED_ARRAY : (T[]) new Object[initialCapacity];
 		items = array;
 	}
-	public <C extends Collection<T, C>> ArrayList(Collection<T, C> source) {
+	public ArrayList(Collection<T, ?> source) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) source.toArray();
 		items = array;
@@ -111,8 +112,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 			add(item);
 		}
 	}
-	@Override
-	public int hashCode() {
+	public @Override int hashCode() {
 		int hashCode = 1;
 		for(int i = 0, n = size; i < n; i++) {
 			T item = items[i];
@@ -120,8 +120,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		}
 		return hashCode;
 	}
-	@Override
-	public boolean equals(Object otherList) {
+	public @Override boolean equals(Object otherList) {
 		if(otherList == this) {
 			return true;
 		}
@@ -137,8 +136,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		}
 		return regularListEquals(list);
 	}
-	@Override
-	public String toString() {
+	public @Override String toString() {
 		StringBuilder buf = new StringBuilder();
 		buf.append('[');
 		T[] localItems = items;
@@ -152,46 +150,38 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		buf.append(']');
 		return buf.toString();
 	}
-	@Override
-	public Iterator<T> iterator() {
+	public @Override Iterator<T> iterator() {
 		return new ArrayListIterator<>(this);
 	}
-	@Override
-	public Spliterator<T> spliterator() {
+	public @Override Spliterator<T> spliterator() {
 		return Arrays.spliterator(items, 0, size);
 	}
-	@Override
-	public <E extends Exception> ArrayList<T> each(ExConsumer<T, E> procedure) throws E {
+	public @Override <E extends Exception> ArrayList<T> each(ExConsumer<T, E> procedure) throws E {
 		for(int i = 0, n = size; i < n; i++) {
 			procedure.accept(items[i]);
 		}
 		return this;
 	}
-	@Override
-	public <E extends Exception> ArrayList<T> eachWithIndex(ExObjIntConsumer<T, E> objectIntProcedure) throws E {
+	public @Override <E extends Exception> ArrayList<T> eachWithIndex(ExObjIntConsumer<T, E> objectIntProcedure)
+		throws E {
 		for(int i = 0, n = size; i < n; i++) {
 			objectIntProcedure.accept(items[i], i);
 		}
 		return this;
 	}
-	@Override
-	public int size() {
+	public @Override int size() {
 		return size;
 	}
-	@Override
-	public boolean isEmpty() {
+	public @Override boolean isEmpty() {
 		return size() == 0;
 	}
-	@Override
-	public boolean notEmpty() {
+	public @Override boolean notEmpty() {
 		return size() > 0;
 	}
-	@Override
-	public boolean contains(T object) {
+	public @Override boolean contains(T object) {
 		return indexOf(object) > -1;
 	}
-	@Override
-	public <C extends Collection<T, C>> boolean containsAll(C source) {
+	public @Override boolean containsAll(ReadOnly<T> source) {
 		for(Iterator<T> iterator = source.iterator(); iterator.hasNext();) {
 			if(!contains(iterator.next())) {
 				return false;
@@ -199,18 +189,15 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		}
 		return true;
 	}
-	@Override
-	public Object[] toArray() {
+	public @Override Object[] toArray() {
 		return copyItemsWithNewCapacity(size);
 	}
-	@Override
-	public T[] toArray(IntFunction<T[]> generator) {
+	public @Override T[] toArray(IntFunction<T[]> generator) {
 		T[] array = generator.apply(size());
 		System.arraycopy(items, 0, array, 0, size);
 		return array;
 	}
-	@Override
-	public T[] toArray(T[] array) {
+	public @Override T[] toArray(T[] array) {
 		if(array.length < size) {
 			@SuppressWarnings("unchecked")
 			T[] created = (T[]) Array.newInstance(array.getClass().getComponentType(), size);
@@ -222,24 +209,20 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		}
 		return array;
 	}
-	@Override
-	public Stream<T> stream() {
+	public @Override Stream<T> stream() {
 		return new Stream<>(() -> StreamSupport.stream(spliterator(), false));
 	}
-	@Override
-	public Stream<T> parallelStream() {
+	public @Override Stream<T> parallelStream() {
 		return new Stream<>(() -> StreamSupport.stream(spliterator(), true));
 	}
-	@Override
-	public ArrayList<T> add(T newItem) {
+	public @Override ArrayList<T> add(T newItem) {
 		if(items.length == size) {
 			ensureCapacityForAdd();
 		}
 		items[size++] = newItem;
 		return this;
 	}
-	@Override
-	public ArrayList<T> add(int index, T element) {
+	public @Override ArrayList<T> add(int index, T element) {
 		int localSize = size;
 		index = adjustIndexToPositiveInts(index, localSize);
 		if(index == localSize) {
@@ -249,8 +232,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		}
 		return this;
 	}
-	@Override
-	public ArrayList<T> addAll(@SuppressWarnings("unchecked") T... values) {
+	public @Override ArrayList<T> addAll(@SuppressWarnings("unchecked") T... values) {
 		int length = values.length;
 		if(length == 0) {
 			return this;
@@ -258,8 +240,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		arraycopyAndAdjustSize(values, length);
 		return this;
 	}
-	@Override
-	public <C extends Collection<T, C>> ArrayList<T> addAll(C source) {
+	public @Override ArrayList<T> addAll(ReadOnly<T> source) {
 		if(source.isEmpty()) {
 			return this;
 		}
@@ -269,18 +250,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		}
 		return this;
 	}
-	@Override
-	public ArrayList<T> addAll(ArrayList<T> source) {
-		if(source.isEmpty()) {
-			return this;
-		}
-		T[] values = source.items;
-		int length = source.size();
-		arraycopyAndAdjustSize(values, length);
-		return this;
-	}
-	@Override
-	public ArrayList<T> addAll(int index, @SuppressWarnings("unchecked") T... values) {
+	public @Override ArrayList<T> addAll(int index, @SuppressWarnings("unchecked") T... values) {
 		int localSize = size;
 		index = adjustIndexToPositiveInts(index, localSize);
 		int length = values.length;
@@ -290,8 +260,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		shiftItemsAndArraycopyAndAdjustSize(index, localSize, values, length);
 		return this;
 	}
-	@Override
-	public <C extends Collection<T, C>> ArrayList<T> addAll(int index, C source) {
+	public @Override ArrayList<T> addAll(int index, ReadOnly<T> source) {
 		int localSize = size;
 		index = adjustIndexToPositiveInts(index, localSize);
 		if(source.isEmpty()) {
@@ -302,34 +271,19 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		shiftItemsAndArraycopyAndAdjustSize(index, localSize, values, length);
 		return this;
 	}
-	@Override
-	public ArrayList<T> addAll(int index, ArrayList<T> source) {
-		int localSize = size;
-		index = adjustIndexToPositiveInts(index, localSize);
-		if(source.isEmpty()) {
-			return this;
-		}
-		Object[] values = source.items;
-		int length = source.size();
-		shiftItemsAndArraycopyAndAdjustSize(index, localSize, values, length);
-		return this;
-	}
-	@Override
-	public ArrayList<T> clear() {
+	public @Override ArrayList<T> clear() {
 		Arrays.fill(items, null);
 		size = 0;
 		return this;
 	}
-	@Override
-	public ArrayList<T> remove(T object) {
+	public @Override ArrayList<T> remove(T object) {
 		int index = indexOf(object);
 		if(index >= 0) {
 			remove(index);
 		}
 		return this;
 	}
-	@Override
-	public ArrayList<T> remove(int index) {
+	public @Override ArrayList<T> remove(int index) {
 		int newSize = size - 1;
 		index = adjustIndexToPositiveInts(index, newSize);
 		int totalOffset = newSize - index;
@@ -339,34 +293,28 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		items[--size] = null;
 		return this;
 	}
-	@Override
-	public <C extends Collection<T, C>> ArrayList<T> removeAll(C collection) {
+	public @Override ArrayList<T> removeAll(ReadOnly<T> collection) {
 		removeIfNotFoundInCollection(collection, false);
 		return this;
 	}
-	@Override
-	public <C extends Collection<T, C>> ArrayList<T> retainAll(C collection) {
+	public @Override ArrayList<T> retainAll(ReadOnly<T> collection) {
 		removeIfNotFoundInCollection(collection, true);
 		return this;
 	}
-	@Override
-	public T get(int index) {
+	public @Override T get(int index) {
 		index = adjustIndexToPositiveInts(index, size - 1);
 		return items[index];
 	}
-	@Override
-	public ArrayList<T> set(int index, T element) {
+	public @Override ArrayList<T> set(int index, T element) {
 		index = adjustIndexToPositiveInts(index, size - 1);
 		items[index] = element;
 		return this;
 	}
-	@Override
-	public ArrayList<T> sort(Comparator<T> comparator) {
+	public @Override ArrayList<T> sort(Comparator<T> comparator) {
 		Arrays.sort(items, 0, size, comparator);
 		return this;
 	}
-	@Override
-	public int indexOf(T object) {
+	public @Override int indexOf(T object) {
 		for(int i = 0, n = size; i < n; i++) {
 			if(Objects.equals(items[i], object)) {
 				return i;
@@ -374,8 +322,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		}
 		return -1;
 	}
-	@Override
-	public int lastIndexOf(T object) {
+	public @Override int lastIndexOf(T object) {
 		for(int i = size - 1; i >= 0; i--) {
 			if(Objects.equals(items[i], object)) {
 				return i;
@@ -383,52 +330,45 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		}
 		return -1;
 	}
-	@Override
-	public ListIterator<T> listIterator() {
+	public @Override ListIterator<T> listIterator() {
 		return listIterator(0);
 	}
-	@Override
-	public ListIterator<T> listIterator(int index) {
+	public @Override ListIterator<T> listIterator(int index) {
 		index = adjustIndexToPositiveInts(index, size());
 		return new ArrayListListIterator<>(this, index);
 	}
-	@Override
-	public ArrayList<T> subList(int fromIndex, int toIndex) {
+	public @Override ArrayList<T> subList(int fromIndex, int toIndex) {
 		int localSize = size();
 		fromIndex = adjustIndexToPositiveInts(fromIndex, localSize);
 		toIndex = adjustIndexToPositiveInts(toIndex, localSize);
 		return new ArrayListSubList<>(this, fromIndex, toIndex);
 	}
-	@Override
-	public <V, E extends Exception> ArrayList<V> map(ExFunction<T, V, E> function) throws E {
+	public @Override <V, E extends Exception> ArrayList<V> map(ExFunction<T, V, E> function) throws E {
 		return collect(function, ArrayList.<V> newList(size()));
 	}
-	@Override
-	public <E extends Exception> double[] mapToDouble(ExToDoubleFunction<? super T, E> doubleFunction) throws E {
+	public @Override <E extends Exception> double[] mapToDouble(ExToDoubleFunction<? super T, E> doubleFunction)
+		throws E {
 		double[] array = new double[size];
 		for(int i = 0, n = size; i < n; i++) {
 			array[i] = doubleFunction.applyAsDouble(items[i]);
 		}
 		return array;
 	}
-	@Override
-	public <E extends Exception> int[] mapToInt(ExToIntFunction<? super T, E> intFunction) throws E {
+	public @Override <E extends Exception> int[] mapToInt(ExToIntFunction<? super T, E> intFunction) throws E {
 		int[] array = new int[size];
 		for(int i = 0, n = size; i < n; i++) {
 			array[i] = intFunction.applyAsInt(items[i]);
 		}
 		return array;
 	}
-	@Override
-	public <E extends Exception> long[] mapToLong(ExToLongFunction<? super T, E> longFunction) throws E {
+	public @Override <E extends Exception> long[] mapToLong(ExToLongFunction<? super T, E> longFunction) throws E {
 		long[] array = new long[size];
 		for(int i = 0, n = size; i < n; i++) {
 			array[i] = longFunction.applyAsLong(items[i]);
 		}
 		return array;
 	}
-	@Override
-	public <E extends Exception> ArrayList<T> filter(ExPredicate<T, E> predicate) throws E {
+	public @Override <E extends Exception> ArrayList<T> filter(ExPredicate<T, E> predicate) throws E {
 		int currentFilledIndex = 0;
 		for(int i = 0, n = size; i < n; i++) {
 			T item = items[i];
@@ -443,15 +383,13 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		wipeAndResetTheEnd(currentFilledIndex);
 		return this;
 	}
-	@Override
-	public <E extends Exception> ArrayList<T> replaceAll(ExUnaryOperator<T, E> function) throws E {
+	public @Override <E extends Exception> ArrayList<T> replaceAll(ExUnaryOperator<T, E> function) throws E {
 		for(int i = 0, n = size; i < n; i++) {
 			items[i] = function.apply(items[i]);
 		}
 		return this;
 	}
-	@Override
-	public <E extends Exception> ArrayList<T> removeIf(ExPredicate<T, E> predicate) throws E {
+	public @Override <E extends Exception> ArrayList<T> removeIf(ExPredicate<T, E> predicate) throws E {
 		int currentFilledIndex = 0;
 		for(int i = 0, n = size; i < n; i++) {
 			T item = items[i];
@@ -469,11 +407,14 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 	public @Override java.util.ArrayList<T> toJavaList() {
 		return new java.util.ArrayList<>(java.util.Arrays.asList(java.util.Arrays.copyOfRange(items, 0, size)));
 	}
+	public @Override java.util.ArrayList<T> toJavaUtilCollection() {
+		return new java.util.ArrayList<>(java.util.Arrays.asList(java.util.Arrays.copyOfRange(items, 0, size)));
+	}
 	public @Override ArrayList<T> sort() {
 		Arrays.sort(items, 0, size);
 		return this;
 	}
-	public ArrayList<T> reverse() {
+	public @Override ArrayList<T> reverse() {
 		int mid = size / 2;
 		int j = size - 1;
 		for(int i = 0; i < mid; i++, j--) {
@@ -488,13 +429,13 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 		return List.from(this);
 	}
 	public @Override ArrayList<T> toArrayList() {
-		return new ArrayList<>(this);
+		return from(this);
 	}
 	public @Override Set<T> toSet() {
 		return Set.from(this);
 	}
 	public @Override HashSet<T> toHashSet() {
-		return new HashSet<>(this);
+		return HashSet.from(this);
 	}
 	private ArrayList(int size, T[] array) {
 		this.size = size;
@@ -590,8 +531,7 @@ public class ArrayList<T> implements CollectionListAPI<T, ArrayList<T>> {
 			System.arraycopy(items, index, items, index + sourceSize, numberToMove);
 		}
 	}
-	private <C extends Collection<T, C>> void
-		removeIfNotFoundInCollection(Collection<T, C> collection, boolean notFound) {
+	private <C extends CollectionAPI<T, C>> void removeIfNotFoundInCollection(ReadOnly<T> collection, boolean notFound) {
 		int currentFilledIndex = 0;
 		for(int i = 0, n = size; i < n; i++) {
 			T item = items[i];

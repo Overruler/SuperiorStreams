@@ -15,32 +15,28 @@
  */
 package utils.lists2;
 
-import java.util.function.IntFunction;
-import utils.streams.functions.ExConsumer;
-import utils.streams.functions.ExPredicate;
-import utils.streams.functions.ExUnaryOperator;
-import utils.streams2.Stream;
 
-public interface Collection<T, C extends Collection<T, C>> extends CollectionAPI<T, C>, Iterable<T> {
-	public @Override C add(T e);
-	public @Override C addAll(@SuppressWarnings("unchecked") T... es);
-	public @Override C remove(T o);
-	public @Override C clear();
-	public @Override <COLLECTION extends Collection<T, COLLECTION>> C addAll(COLLECTION c);
-	public @Override <COLLECTION extends Collection<T, COLLECTION>> C retainAll(COLLECTION c);
-	public @Override <COLLECTION extends Collection<T, COLLECTION>> C removeAll(COLLECTION c);
-	public @Override <E extends Exception> C filter(ExPredicate<T, E> filter) throws E;
-	public @Override <E extends Exception> C removeIf(ExPredicate<T, E> filter) throws E;
-	public @Override <E extends Exception> C replaceAll(ExUnaryOperator<T, E> mapper) throws E;
-	<E extends Exception> C each(ExConsumer<T, E> action) throws E;
-	int size();
-	boolean isEmpty();
-	boolean notEmpty();
-	boolean contains(T o);
-	<COLLECTION extends Collection<T, COLLECTION>> boolean containsAll(COLLECTION c);
-	Object[] toArray();
-	T[] toArray(IntFunction<T[]> generator);
-	T[] toArray(T[] a);
-	Stream<T> stream();
-	Stream<T> parallelStream();
+public interface Collection<T, C extends Collection<T, C>> extends CollectionAPI<T, C> {
+	//	public @Override int size();
+	//	public @Override boolean isEmpty();
+	//	public @Override boolean notEmpty();
+	//	public @Override boolean contains(T o);
+	//	public @Override boolean containsAll(ReadOnly<T> c);
+	//	public @Override Object[] toArray();
+	//	public @Override T[] toArray(IntFunction<T[]> generator);
+	//	public @Override T[] toArray(T[] a);
+	//	public @Override Stream<T> stream();
+	//	public @Override Stream<T> parallelStream();
+	//	public @Override java.util.Collection<T> toJavaUtilCollection();
+	//	public @Override SELF add(T e);
+	//	public @Override SELF addAll(@SuppressWarnings("unchecked") T... es);
+	//	public @Override SELF remove(T o);
+	//	public @Override SELF clear();
+	//	public @Override SELF addAll(ReadOnly<T> c);
+	//	public @Override SELF retainAll(ReadOnly<T> c);
+	//	public @Override SELF removeAll(ReadOnly<T> c);
+	//	public @Override <E extends Exception> SELF filter(ExPredicate<T, E> filter) throws E;
+	//	public @Override <E extends Exception> SELF removeIf(ExPredicate<T, E> filter) throws E;
+	//	public @Override <E extends Exception> SELF replaceAll(ExUnaryOperator<T, E> mapper) throws E;
+	//	public @Override <E extends Exception> SELF each(ExConsumer<T, E> action) throws E;
 }

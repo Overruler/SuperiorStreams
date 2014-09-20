@@ -298,11 +298,11 @@ public class Files {
 		return new HashMap<>(java.nio.file.Files.readAttributes(path, attributes, options));
 	}
 	public static HashSet<PosixFilePermission> getPosixFilePermissions(Path path) throws IOException {
-		return new HashSet<>(java.nio.file.Files.getPosixFilePermissions(path));
+		return HashSet.from(java.nio.file.Files.getPosixFilePermissions(path));
 	}
 	public static HashSet<PosixFilePermission> getPosixFilePermissions(Path path, LinkOption... options)
 		throws IOException {
-		return new HashSet<>(java.nio.file.Files.getPosixFilePermissions(path, options));
+		return HashSet.from(java.nio.file.Files.getPosixFilePermissions(path, options));
 	}
 	public static Path setPosixFilePermissions(Path path, Set<PosixFilePermission> perms) throws IOException {
 		return java.nio.file.Files.setPosixFilePermissions(path, perms.toJavaSet());

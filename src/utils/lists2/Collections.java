@@ -153,16 +153,16 @@ public class Collections {//*Q*
 	public static <T, A extends RandomAccess<T, A>> int binarySearch(RandomAccess<T, A> list, T key, Comparator<T> c) {
 		return java.util.Collections.binarySearch(list.toJavaList(), key, c);
 	}
-	public static <T extends Comparable<T>, C extends Collection<T, C>> T min(C coll) {
+	public static <T extends Comparable<T>> T min(ReadOnly<T> coll) {
 		return coll.stream().min(Comparator.naturalOrder()).orElseThrow(NoSuchElementException::new);
 	}
-	public static <T, C extends Collection<T, C>> T min(C coll, Comparator<T> comp) {
+	public static <T> T min(ReadOnly<T> coll, Comparator<T> comp) {
 		return coll.stream().min(comp).orElseThrow(NoSuchElementException::new);
 	}
-	public static <T extends Comparable<T>, C extends Collection<T, C>> T max(C coll) {
+	public static <T extends Comparable<T>> T max(ReadOnly<T> coll) {
 		return coll.stream().max(Comparator.naturalOrder()).orElseThrow(NoSuchElementException::new);
 	}
-	public static <T, C extends Collection<T, C>> T max(C coll, Comparator<T> comp) {
+	public static <T> T max(ReadOnly<T> coll, Comparator<T> comp) {
 		return coll.stream().max(comp).orElseThrow(NoSuchElementException::new);
 	}
 	public static <T> List<T> replaceAll(List<T> list, T oldVal, T newVal) {
@@ -205,7 +205,7 @@ public class Collections {//*Q*
 		Arrays.fill(array, o);
 		return ArrayList.of(array);
 	}
-	public static <T, C extends Collection<T, C>> int frequency(C c, T o) {
+	public static <T> int frequency(ReadOnly<T> c, T o) {
 		int result = 0;
 		if(o == null) {
 			for(T t : c) {
@@ -222,9 +222,7 @@ public class Collections {//*Q*
 		}
 		return result;
 	}
-	public static <T, C extends Collection<T, C>, L extends RandomLookup<T, L>> boolean disjoint(
-		RandomLookup<T, L> c1,
-		C c2) {
+	public static <T, L extends RandomLookup<T, L>> boolean disjoint(RandomLookup<T, L> c1, ReadOnly<T> c2) {
 		for(T t : c2) {
 			if(c1.contains(t)) {
 				return false;
@@ -232,9 +230,7 @@ public class Collections {//*Q*
 		}
 		return true;
 	}
-	public static <T, C extends Collection<T, C>, A extends RandomAccess<T, A>> boolean disjoint(
-		RandomAccess<T, A> c1,
-		C c2) {
+	public static <T, A extends RandomAccess<T, A>> boolean disjoint(RandomAccess<T, A> c1, ReadOnly<T> c2) {
 		for(T t : c2) {
 			if(c1.contains(t)) {
 				return false;
