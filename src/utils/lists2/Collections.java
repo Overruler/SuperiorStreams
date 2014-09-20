@@ -78,22 +78,22 @@ public class Collections {//*Q*
 		return list.reverse();
 	}
 	public static <T> ArrayList<T> shuffle(ArrayList<T> list) {
-		java.util.ArrayList<T> javaList = list.toJavaList();
+		java.util.ArrayList<T> javaList = list.toJavaUtilCollection();
 		java.util.Collections.shuffle(javaList);
 		return new ArrayList<>(javaList);
 	}
 	public static <T> List<T> shuffle(List<T> list) {
-		java.util.ArrayList<T> javaList = list.toJavaList();
+		java.util.ArrayList<T> javaList = list.toJavaUtilCollection();
 		java.util.Collections.shuffle(javaList);
 		return List.from(javaList);
 	}
 	public static <T> ArrayList<T> shuffle(ArrayList<T> list, Random rnd) {
-		java.util.ArrayList<T> javaList = list.toJavaList();
+		java.util.ArrayList<T> javaList = list.toJavaUtilCollection();
 		java.util.Collections.shuffle(javaList, rnd);
 		return new ArrayList<>(javaList);
 	}
 	public static <T> List<T> shuffle(List<T> list, Random rnd) {
-		java.util.ArrayList<T> javaList = list.toJavaList();
+		java.util.ArrayList<T> javaList = list.toJavaUtilCollection();
 		java.util.Collections.shuffle(javaList, rnd);
 		return List.from(javaList);
 	}
@@ -136,33 +136,31 @@ public class Collections {//*Q*
 		return dest;
 	}
 	public static <T> List<T> rotate(List<T> list, int distance) {
-		java.util.ArrayList<T> list2 = list.toJavaList();
+		java.util.ArrayList<T> list2 = list.toJavaUtilCollection();
 		java.util.Collections.rotate(list2, distance);
 		return List.from(list2);
 	}
 	public static <T> ArrayList<T> rotate(ArrayList<T> list, int distance) {
-		java.util.ArrayList<T> list2 = list.toJavaList();
+		java.util.ArrayList<T> list2 = list.toJavaUtilCollection();
 		java.util.Collections.rotate(list2, distance);
 		return list.clear().addAll(ArrayList.from(list2));
 	}
-	public static <T extends Comparable<T>, A extends RandomAccess<T, A>> int binarySearch(
-		RandomAccess<T, A> list,
-		T key) {
-		return java.util.Collections.binarySearch(list.toJavaList(), key);
+	public static <T extends Comparable<T>> int binarySearch(ReadOnlyList<T> list, T key) {
+		return java.util.Collections.binarySearch(list.toJavaUtilCollection(), key);
 	}
-	public static <T, A extends RandomAccess<T, A>> int binarySearch(RandomAccess<T, A> list, T key, Comparator<T> c) {
-		return java.util.Collections.binarySearch(list.toJavaList(), key, c);
+	public static <T> int binarySearch(ReadOnlyList<T> list, T key, Comparator<T> c) {
+		return java.util.Collections.binarySearch(list.toJavaUtilCollection(), key, c);
 	}
-	public static <T extends Comparable<T>> T min(ReadOnly<T> coll) {
+	public static <T extends Comparable<T>> T min(Iterable<T> coll) {
 		return coll.stream().min(Comparator.naturalOrder()).orElseThrow(NoSuchElementException::new);
 	}
-	public static <T> T min(ReadOnly<T> coll, Comparator<T> comp) {
+	public static <T> T min(Iterable<T> coll, Comparator<T> comp) {
 		return coll.stream().min(comp).orElseThrow(NoSuchElementException::new);
 	}
-	public static <T extends Comparable<T>> T max(ReadOnly<T> coll) {
+	public static <T extends Comparable<T>> T max(Iterable<T> coll) {
 		return coll.stream().max(Comparator.naturalOrder()).orElseThrow(NoSuchElementException::new);
 	}
-	public static <T> T max(ReadOnly<T> coll, Comparator<T> comp) {
+	public static <T> T max(Iterable<T> coll, Comparator<T> comp) {
 		return coll.stream().max(comp).orElseThrow(NoSuchElementException::new);
 	}
 	public static <T> List<T> replaceAll(List<T> list, T oldVal, T newVal) {
@@ -171,15 +169,11 @@ public class Collections {//*Q*
 	public static <T> ArrayList<T> replaceAll(ArrayList<T> list, T oldVal, T newVal) {
 		return list.replaceAll(old -> Objects.equals(old, oldVal) ? newVal : oldVal);
 	}
-	public static <T, A extends RandomAccess<T, A>> int indexOfSubList(
-		RandomAccess<T, A> source,
-		RandomAccess<T, A> target) {
-		return java.util.Collections.indexOfSubList(source.toJavaList(), target.toJavaList());
+	public static <T> int indexOfSubList(ReadOnlyList<T> source, ReadOnlyList<T> target) {
+		return java.util.Collections.indexOfSubList(source.toJavaUtilCollection(), target.toJavaUtilCollection());
 	}
-	public static <T, A extends RandomAccess<T, A>> int lastIndexOfSubList(
-		RandomAccess<T, A> source,
-		RandomAccess<T, A> target) {
-		return java.util.Collections.indexOfSubList(source.toJavaList(), target.toJavaList());
+	public static <T> int lastIndexOfSubList(ReadOnlyList<T> source, ReadOnlyList<T> target) {
+		return java.util.Collections.indexOfSubList(source.toJavaUtilCollection(), target.toJavaUtilCollection());
 	}
 	public static <T> Set<T> emptySet() {
 		return Set.of();
@@ -205,7 +199,7 @@ public class Collections {//*Q*
 		Arrays.fill(array, o);
 		return ArrayList.of(array);
 	}
-	public static <T> int frequency(ReadOnly<T> c, T o) {
+	public static <T> int frequency(Iterable<T> c, T o) {
 		int result = 0;
 		if(o == null) {
 			for(T t : c) {
@@ -222,17 +216,23 @@ public class Collections {//*Q*
 		}
 		return result;
 	}
-	public static <T, L extends RandomLookup<T, L>> boolean disjoint(RandomLookup<T, L> c1, ReadOnly<T> c2) {
-		for(T t : c2) {
-			if(c1.contains(t)) {
-				return false;
-			}
+	public static <T> boolean disjoint(Iterable<T> betterLookup, Iterable<T> bigger) {
+		if(betterLookup.isEmpty() || bigger.isEmpty()) {
+			return true;
 		}
-		return true;
-	}
-	public static <T, A extends RandomAccess<T, A>> boolean disjoint(RandomAccess<T, A> c1, ReadOnly<T> c2) {
-		for(T t : c2) {
-			if(c1.contains(t)) {
+		if(betterLookup instanceof ReadOnlyList &&
+		(bigger instanceof ReadOnlyList == false || bigger.size() < betterLookup.size())) {
+			// Example: If c1 contains 3 elements and c2 contains 5000000 elements
+			// and assuming contains() requires floor(N/200) page faults then checking
+			// for all c1 elements in c2 would require 75000 page faults
+			// (3 * floor(5000000/200) + floor(3/200)) vs. checking all c2 elements in
+			// c1 requiring 25000 page faults (5000000 * floor(3/200) + floor(5000000/200)).
+			Iterable<T> morePageFaults = betterLookup;
+			betterLookup = bigger;
+			bigger = morePageFaults;
+		}
+		for(T t : bigger) {
+			if(betterLookup.contains(t)) {
 				return false;
 			}
 		}

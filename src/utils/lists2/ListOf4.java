@@ -93,8 +93,8 @@ final class ListOf4<T> implements List<T> {
 			;
 			//*E*
 		}
-		if(otherList instanceof Collection) {
-			Collection<?, ?> list = (Collection<?, ?>) otherList;
+		if(otherList instanceof java.lang.Iterable) {
+			java.lang.Iterable<?> list = (java.lang.Iterable<?>) otherList;
 			Iterator<?> iterator = list.iterator();
 			//*Q*
 			return

@@ -2,26 +2,117 @@ package utils.lists2;
 
 import java.util.Iterator;
 import java.util.Objects;
-import utils.lists.Pair;
+import utils.lists2.HashMap.Entry;
 import utils.streams.functions.ExBiConsumer;
 import utils.streams.functions.ExBiFunction;
 import utils.streams.functions.ExFunction;
+import utils.streams.functions.ExUnaryOperator;
 import utils.streams2.WrapperException;
 
-public class HashMap<K, V>
-	implements
-	CollectionMapAPI<K, V, HashMap<K, V>, HashSet<K>, HashSet<HashMap.Entry<K, V>>, ReadOnly<V>, HashMap.Entry<K, V>> {
-	public static class Entry<T, V> extends Pair<T, V> implements java.util.Map.Entry<T, V> {
-		private final java.util.Map.Entry<T, V> entry;
+public class HashMap<K, V> implements ReadWriteMap<K, V, Entry<K, V>, HashMap<K, V>> {
+	public static class EntrySet<K, V> implements Collection<Entry<K, V>, EntrySet<K, V>> {
+		private final java.util.Set<java.util.Map.Entry<K, V>> wrapped;
+		private final HashMap<K, V> original;
 
-		public static <T, V> Entry<T, V> of(java.util.Map.Entry<T, V> entry) {
-			return new Entry<>(entry);
+		EntrySet(java.util.Set<java.util.Map.Entry<K, V>> wrapped, HashMap<K, V> original) {
+			this.wrapped = wrapped;
+			this.original = original;
 		}
-		public Entry(java.util.Map.Entry<T, V> entry) {
+		public @Override int size() {
+			return wrapped.size();
+		}
+		public @Override Iterator<Entry<K, V>> iterator() {
+			return new Iterator<HashMap.Entry<K, V>>() {
+				Iterator<java.util.Map.Entry<K, V>> iter = wrapped.iterator();
+
+				public @Override boolean hasNext() {
+					return iter.hasNext();
+				}
+				public @Override Entry<K, V> next() {
+					return new Entry<>(iter.next());
+				}
+				public @Override void remove() {
+					iter.remove();
+				}
+			};
+		}
+		public @Override EntrySet<K, V> add(Entry<K, V> item) {
+			wrapped.add(item);
+			return this;
+		}
+		public @Override EntrySet<K, V> remove(Entry<K, V> item) {
+			wrapped.remove(item);
+			return this;
+		}
+		public @Override <E extends Exception> EntrySet<K, V> replaceAll(ExUnaryOperator<Entry<K, V>, E> mapper)
+			throws E {
+			for(Entry<K, V> oldEntry : original.stream().toList()) {
+				Entry<K, V> entry = mapper.apply(oldEntry);
+				if(entry == null) {
+					original.remove(oldEntry.lhs);
+				} else if(Objects.equals(oldEntry, entry) == false) {
+					if(Objects.equals(oldEntry.lhs, entry.lhs) == false) {
+						original.remove(oldEntry.lhs, oldEntry.rhs);
+					}
+					original.put(entry.lhs, entry.rhs);
+				}
+			}
+			return this;
+		}
+		public @Override EntrySet<K, V> identity() {
+			return this;
+		}
+	}
+	public static class Values<T> implements Collection<T, Values<T>> {
+		private final java.util.Collection<T> wrapped;
+		private final HashMap<?, T> original;
+
+		Values(java.util.Collection<T> wrapped, HashMap<?, T> original) {
+			this.wrapped = wrapped;
+			this.original = original;
+		}
+		public @Override int size() {
+			return wrapped.size();
+		}
+		public @Override boolean contains(T o) {
+			return wrapped.contains(o);
+		}
+		public @Override Iterator<T> iterator() {
+			return wrapped.iterator();
+		}
+		public @Override Values<T> add(T item) {
+			wrapped.add(item);
+			return this;
+		}
+		public @Override Values<T> remove(T item) {
+			wrapped.remove(item);
+			return this;
+		}
+		public @Override <E extends Exception> Values<T> replaceAll(ExUnaryOperator<T, E> mapper) throws E {
+			for(java.util.Map.Entry<?, T> entry : original.wrapped.entrySet()) {
+				entry.setValue(mapper.apply(entry.getValue()));
+			}
+			return this;
+		}
+		public @Override Values<T> identity() {
+			return this;
+		}
+	}
+	public static class Entry<K, V> extends Pair<K, V> implements java.util.Map.Entry<K, V> {
+		private final java.util.Map.Entry<K, V> entry;
+
+		Entry(java.util.Map.Entry<K, V> entry) {
 			super(entry.getKey(), entry.getValue());
 			this.entry = entry;
 		}
-		public @Override T getKey() {
+		private Entry(java.util.Map.Entry<K, V> entry, K key) {
+			super(key, entry.getValue());
+			this.entry = entry;
+		}
+		public Entry<K, V> keepingValue(K newKey) {
+			return new Entry<>(entry, newKey);
+		}
+		public @Override K getKey() {
 			return lhs;
 		}
 		public @Override V getValue() {
@@ -30,14 +121,20 @@ public class HashMap<K, V>
 		public @Override V setValue(V value) {
 			return entry.setValue(value);
 		}
-		public @Override int hashCode() {
-			return entry.hashCode();
+		public final @Override int hashCode() {
+			return Objects.hashCode(entry.getKey()) ^ Objects.hashCode(entry.getValue());
 		}
-		public @Override boolean equals(Object obj) {
-			return entry.equals(obj);
-		}
-		public @Override String toString() {
-			return entry.toString();
+		public final @Override boolean equals(Object o) {
+			if(o == this) {
+				return true;
+			}
+			if(o instanceof java.util.Map.Entry) {
+				java.util.Map.Entry<?, ?> e = (java.util.Map.Entry<?, ?>) o;
+				if(Objects.equals(entry.getKey(), e.getKey()) && Objects.equals(entry.getValue(), e.getValue())) {
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 
@@ -91,10 +188,10 @@ public class HashMap<K, V>
 	public @Override boolean equals(Object o) {
 		return wrapped.equals(o);
 	}
-	public @Override boolean contains(HashMap.Entry<K, V> o) {
+	public @Override boolean contains(Entry<K, V> o) {
 		return o != null && Objects.equals(get(o.lhs), o.rhs);
 	}
-	public @Override Iterator<HashMap.Entry<K, V>> iterator() {
+	public @Override Iterator<Entry<K, V>> iterator() {
 		return entrySet().iterator();
 	}
 	public @Override int size() {
@@ -119,22 +216,28 @@ public class HashMap<K, V>
 		wrapped.put(key, value);
 		return this;
 	}
-	public @Override HashMap<K, V> putAll(Map<K, V> m) {
-		wrapped.putAll(m.wrapped);
-		return this;
-	}
-	public @Override HashMap<K, V> putAll(HashMap<K, V> m) {
-		wrapped.putAll(m.wrapped);
+	public @Override HashMap<K, V> putAll(ReadOnlyMap<K, V> m) {
+		if(m instanceof HashMap) {
+			HashMap<K, V> map = (HashMap<K, V>) m;
+			wrapped.putAll(map.wrapped);
+		} else if(m instanceof Map) {
+			Map<K, V> map = (Map<K, V>) m;
+			wrapped.putAll(map.wrapped);
+		} else {
+			for(K key : m.keySet()) {
+				wrapped.put(key, m.get(key));
+			}
+		}
 		return this;
 	}
 	public @Override HashSet<K> keySet() {
 		return HashSet.wrap(wrapped.keySet());
 	}
-	public @Override ReadOnly<V> values() {
-		return List.from(wrapped.values());
+	public @Override Values<V> values() {
+		return new Values<>(wrapped.values(), this);
 	}
-	public @Override HashSet<Entry<K, V>> entrySet() {
-		return new HashMapEntrySetHashSet<>(this, wrapped.entrySet());
+	public @Override EntrySet<K, V> entrySet() {
+		return new EntrySet<>(wrapped.entrySet(), this);
 	}
 	public @Override V getOrDefault(K key, V defaultValue) {
 		return wrapped.getOrDefault(key, defaultValue);
@@ -216,14 +319,14 @@ public class HashMap<K, V>
 		}
 		return this;
 	}
-	public @Override java.util.HashMap<K, V> toJavaMap() {
-		return new java.util.HashMap<>(wrapped);
-	}
 	public @Override Map<K, V> toMap() {
 		return Map.fromHashMap(this);
 	}
 	public @Override HashMap<K, V> toHashMap() {
 		return new HashMap<>(this);
+	}
+	public @Override <U, E extends Exception> ArrayList<U> map(ExFunction<HashMap.Entry<K, V>, U, E> mapper) throws E {
+		return toArrayList().map(mapper);
 	}
 	@SuppressWarnings("unchecked")
 	private static <E extends Exception> Class<E> classForE() {

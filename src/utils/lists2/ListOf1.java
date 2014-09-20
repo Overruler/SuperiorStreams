@@ -66,8 +66,8 @@ final class ListOf1<T> implements List<T> {
 			}
 			return Objects.equals(element0, list.get(0));
 		}
-		if(otherList instanceof Collection) {
-			Collection<?, ?> list = (Collection<?, ?>) otherList;
+		if(otherList instanceof java.lang.Iterable) {
+			java.lang.Iterable<?> list = (java.lang.Iterable<?>) otherList;
 			Iterator<?> iterator = list.iterator();
 			//*Q*
 			return

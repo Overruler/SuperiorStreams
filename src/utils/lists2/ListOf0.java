@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import utils.lists2.Collections;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExObjIntConsumer;
@@ -34,8 +35,8 @@ class ListOf0<T> implements List<T> {
 		if(otherList instanceof List) {
 			return otherList.getClass() == ListOf0.class;
 		}
-		if(otherList instanceof Collection) {
-			return ((Collection<?, ?>) otherList).isEmpty();
+		if(otherList instanceof java.lang.Iterable) {
+			return ((java.lang.Iterable<?>) otherList).iterator().hasNext();
 		}
 		return false;
 	}
@@ -66,7 +67,7 @@ class ListOf0<T> implements List<T> {
 	public @Override boolean contains(T element) {
 		return false;
 	}
-	public @Override boolean containsAll(ReadOnly<T> collection) {
+	public @Override boolean containsAll(Iterable<T> collection) {
 		return false;
 	}
 	public @Override Object[] toArray() {
@@ -99,13 +100,13 @@ class ListOf0<T> implements List<T> {
 	public @Override List<T> addAll(@SuppressWarnings("unchecked") T... values) {
 		return toArrayList().addAll(values).toList();
 	}
-	public @Override List<T> addAll(ReadOnly<T> collection) {
+	public @Override List<T> addAll(Iterable<T> collection) {
 		return toArrayList().addAll(collection).toList();
 	}
 	public @Override List<T> addAll(int index, @SuppressWarnings("unchecked") T... values) {
 		return toArrayList().addAll(index, values).toList();
 	}
-	public @Override List<T> addAll(int index, ReadOnly<T> collection) {
+	public @Override List<T> addAll(int index, Iterable<T> collection) {
 		return toArrayList().addAll(index, collection).toList();
 	}
 	public @Override List<T> clear() {
@@ -117,10 +118,10 @@ class ListOf0<T> implements List<T> {
 	public @Override List<T> remove(int index) {
 		throw new IndexOutOfBoundsException("Index: " + index + " Size: 0");
 	}
-	public @Override List<T> removeAll(ReadOnly<T> collection) {
+	public @Override List<T> removeAll(Iterable<T> collection) {
 		return toArrayList().removeAll(collection).toList();
 	}
-	public @Override List<T> retainAll(ReadOnly<T> collection) {
+	public @Override List<T> retainAll(Iterable<T> collection) {
 		return toArrayList().retainAll(collection).toList();
 	}
 	public @Override List<T> set(int index, T element) {
@@ -177,18 +178,15 @@ class ListOf0<T> implements List<T> {
 		return this;
 	}
 	public @Override ArrayList<T> toArrayList() {
-		return ArrayList.from(this);
+		return ArrayList.of();
 	}
 	public @Override Set<T> toSet() {
-		return Set.from(this);
+		return Set.of();
 	}
 	public @Override HashSet<T> toHashSet() {
-		return HashSet.from(this);
-	}
-	public @Override java.util.ArrayList<T> toJavaList() {
-		return toJavaUtilCollection();
+		return HashSet.of();
 	}
 	public @Override java.util.ArrayList<T> toJavaUtilCollection() {
-		return toArrayList().toJavaUtilCollection();
+		return new java.util.ArrayList<>();
 	}
 }

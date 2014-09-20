@@ -20,6 +20,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.stream.StreamSupport;
@@ -39,7 +40,7 @@ import utils.streams2.Stream;
  * An ImmutableArrayList (here ListOfN) wraps a Java array but it cannot be modified after creation.
  */
 class ListOfN<T> implements List<T> {
-	private final T[] items;
+	final T[] items;
 
 	ListOfN(T[] newElements) {
 		items = newElements;
@@ -76,34 +77,52 @@ class ListOfN<T> implements List<T> {
 		}
 		if(otherList instanceof ArrayList) {
 			ArrayList<?> list = (ArrayList<?>) otherList;
-			if(size() != list.size()) {
+			if(items.length != list.size) {
 				return false;
 			}
-			for(int i = 0; i < size(); i++) {
-				T one = items[i];
-				Object two = list.get(i);
-				if(!Objects.equals(one, two)) {
-					return false;
-				}
-			}
-			return true;
+			return ArrayList.arraysEqual(items, list.items, items.length);
 		}
-		if(otherList instanceof Collection) {
-			Collection<?, ?> list = (Collection<?, ?>) otherList;
-			Iterator<?> iterator = list.iterator();
-			for(int i = 0; i < size(); i++) {
-				T one = items[i];
-				if(!iterator.hasNext()) {
-					return false;
-				}
-				Object two = iterator.next();
-				if(!Objects.equals(one, two)) {
-					return false;
-				}
-			}
-			return !iterator.hasNext();
+		if(otherList instanceof ReadOnlyList) {
+			return randomAccessListEquals((ReadOnlyList<?>) otherList);
+		}
+		if(otherList instanceof java.lang.Iterable) {
+			return regularListEquals((java.lang.Iterable<?>) otherList);
 		}
 		return false;
+	}
+	private boolean regularListEquals(java.lang.Iterable<?> otherList) {
+		T[] items1 = items;
+		int size2 = items1.length;
+		if(otherList instanceof Iterable && size2 != ((Iterable<?>) otherList).size()) {
+			return false;
+		}
+		if(otherList instanceof java.util.Collection && size2 != ((java.util.Collection<?>) otherList).size()) {
+			return false;
+		}
+		Iterator<?> iterator = otherList.iterator();
+		for(int i = 0; i < size2; i++) {
+			T one = items1[i];
+			if(!iterator.hasNext()) {
+				return false;
+			}
+			Object two = iterator.next();
+			if(!Objects.equals(one, two)) {
+				return false;
+			}
+		}
+		return !iterator.hasNext();
+	}
+	private boolean randomAccessListEquals(ReadOnlyList<?> otherList) {
+		T[] items2 = items;
+		if(items2.length != otherList.size()) {
+			return false;
+		}
+		for(int i = 0, n = items2.length; i < n; i++) {
+			if(!Objects.equals(items2[i], otherList.get(i))) {
+				return false;
+			}
+		}
+		return true;
 	}
 	public @Override Stream<T> stream() {
 		return new Stream<>(() -> StreamSupport.stream(spliterator(), false));
@@ -129,7 +148,7 @@ class ListOfN<T> implements List<T> {
 	public @Override boolean contains(T o) {
 		return anySatisfy(equal2(o));
 	}
-	public @Override boolean containsAll(ReadOnly<T> collection) {
+	public @Override boolean containsAll(Iterable<T> collection) {
 		return allSatisfyIterate(collection, inPredicates(items));
 	}
 	public @Override Object[] toArray() {
@@ -187,7 +206,7 @@ class ListOfN<T> implements List<T> {
 		System.arraycopy(items, index, array, index + 1, size - index);
 		return new ListOfN<>(array);
 	}
-	public @Override List<T> addAll(ReadOnly<T> collection) {
+	public @Override List<T> addAll(Iterable<T> collection) {
 		int size = size();
 		int size2 = collection.size();
 		T[] array = newArray(size + size2);
@@ -204,7 +223,7 @@ class ListOfN<T> implements List<T> {
 		System.arraycopy(source.items, 0, array, size, size2);
 		return new ListOfN<>(array);
 	}
-	public @Override List<T> addAll(int index, ReadOnly<T> collection) {
+	public @Override List<T> addAll(int index, Iterable<T> collection) {
 		int size = size();
 		index = ArrayList.adjustIndexToPositiveInts(index, size);
 		int size2 = collection.size();
@@ -297,7 +316,9 @@ class ListOfN<T> implements List<T> {
 	 * Returns true if the iterable is empty.
 	 */
 	private static <T, E extends Exception> boolean
-		allSatisfyIterate(Iterable<T> iterable, ExPredicate<T, E> predicate) throws E {
+ allSatisfyIterate(
+		java.lang.Iterable<T> iterable,
+		ExPredicate<T, E> predicate) throws E {
 		if(iterable instanceof ArrayList) {
 			return allSatisfyArrayListIterate((ArrayList<T>) iterable, predicate);
 		}
@@ -307,15 +328,15 @@ class ListOfN<T> implements List<T> {
 		return allSatisfyIterableIterate(iterable, predicate);
 	}
 	/**
-	 * @see Iterate#allSatisfy(Iterable, Predicate)
+	 * @see Iterate#allSatisfy(java.lang.Iterable, Predicate)
 	 */
 	private static <T, E extends Exception> boolean allSatisfyIterableIterate(
-		Iterable<T> iterable,
+		java.lang.Iterable<T> iterable,
 		ExPredicate<? super T, E> predicate) throws E {
 		return allSatisfyIteratorIterate(iterable.iterator(), predicate);
 	}
 	/**
-	 * @see Iterate#allSatisfy(Iterable, Predicate)
+	 * @see Iterate#allSatisfy(java.lang.Iterable, Predicate)
 	 */
 	private static <T, E extends Exception> boolean allSatisfyIteratorIterate(
 		Iterator<T> iterator,
@@ -338,7 +359,7 @@ class ListOfN<T> implements List<T> {
 		return true;
 	}
 	/**
-	 * @see Iterate#allSatisfy(Iterable, Predicate)
+	 * @see Iterate#allSatisfy(java.lang.Iterable, Predicate)
 	 */
 	private static <T, E extends Exception> boolean allSatisfyArrayListIterate(
 		ArrayList<T> list,
@@ -401,14 +422,8 @@ class ListOfN<T> implements List<T> {
 		}
 		return false;
 	}
-	public @Override java.util.ArrayList<T> toJavaUtilCollection() {
-		return ArrayList.from(this).toJavaUtilCollection();
-	}
 	public @Override List<T> addAll(@SuppressWarnings("unchecked") T... values) {
 		return ArrayList.from(this).addAll(values).toList();
-	}
-	public @Override java.util.ArrayList<T> toJavaList() {
-		return toJavaUtilCollection();
 	}
 	public @Override List<T> toList() {
 		return this;
@@ -430,5 +445,63 @@ class ListOfN<T> implements List<T> {
 	}
 	public @Override HashSet<T> toHashSet() {
 		return HashSet.from(this);
+	}
+
+	static class ImmutableIterator<T> implements Iterator<T> {
+		/**
+		 * Index of element to be returned by subsequent call to next.
+		 */
+		protected int currentIndex;
+		protected final List<T> list;
+
+		public ImmutableIterator(List<T> list) {
+			this.list = list;
+		}
+		public @Override boolean hasNext() {
+			return this.currentIndex != this.list.size();
+		}
+		public @Override T next() {
+			try {
+				T result = this.list.get(this.currentIndex);
+				this.currentIndex++;
+				return result;
+			} catch(IndexOutOfBoundsException e) {
+				throw new NoSuchElementException(e.getMessage());
+			}
+		}
+		public @Override void remove() {
+			// remove doesn't change original immutable list
+		}
+	}
+	static final class ImmutableListIterator<T> extends ImmutableIterator<T> implements ListIterator<T> {
+		public ImmutableListIterator(List<T> list, int index) {
+			super(list);
+			currentIndex = ArrayList.adjustIndexToPositiveInts(index, list.size());
+		}
+		public @Override boolean hasPrevious() {
+			return currentIndex != 0;
+		}
+		public @Override T previous() {
+			try {
+				int i = currentIndex - 1;
+				T previous = list.get(i);
+				currentIndex = i;
+				return previous;
+			} catch(IndexOutOfBoundsException e) {
+				throw new NoSuchElementException(e.getMessage());
+			}
+		}
+		public @Override int nextIndex() {
+			return currentIndex;
+		}
+		public @Override int previousIndex() {
+			return currentIndex - 1;
+		}
+		public @Override void set(T o) {
+			// set doesn't change original immutable list
+		}
+		public @Override void add(T o) {
+			// add doesn't change original immutable list
+		}
 	}
 }

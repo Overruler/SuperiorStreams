@@ -1,15 +1,13 @@
 package utils.lists2;
 
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Objects;
-import utils.lists.Pair;
 import utils.streams.functions.ExBiConsumer;
 import utils.streams.functions.ExBiFunction;
 import utils.streams.functions.ExFunction;
 import utils.streams2.WrapperException;
 
-public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<Pair<K, V>>, ReadOnly<V>, Pair<K, V>> {
+public class Map<K, V> implements ReadWriteMap<K, V, Pair<K, V>, Map<K, V>> {
 	final java.util.HashMap<K, V> wrapped;
 
 	static <K, V> Map<K, V> fromHashMap(HashMap<K, V> source) {
@@ -92,14 +90,20 @@ public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<
 		next.wrapped.put(key, value);
 		return next;
 	}
-	public @Override Map<K, V> putAll(Map<K, V> m) {
+	public @Override Map<K, V> putAll(ReadOnlyMap<K, V> m) {
 		Map<K, V> next = next();
-		next.wrapped.putAll(m.wrapped);
-		return next;
-	}
-	public @Override Map<K, V> putAll(HashMap<K, V> m) {
-		Map<K, V> next = next();
-		next.wrapped.putAll(m.wrapped);
+		if(m instanceof HashMap) {
+			HashMap<K, V> map = (HashMap<K, V>) m;
+			next.wrapped.putAll(map.wrapped);
+		} else if(m instanceof Map) {
+			Map<K, V> map = (Map<K, V>) m;
+			next.wrapped.putAll(map.wrapped);
+		} else {
+			for(K key : m.keySet()) {
+				V value = m.get(key);
+				next.wrapped.put(key, value);
+			}
+		}
 		return next;
 	}
 	public @Override Set<K> keySet() {
@@ -109,8 +113,8 @@ public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<
 		return List.from(wrapped.values());
 	}
 	public @Override Set<Pair<K, V>> entrySet() {
-		Set<Entry<K, V>> from = Set.from(wrapped.entrySet());
-		ExFunction<Entry<K, V>, Pair<K, V>, RuntimeException> mapper =
+		Set<java.util.Map.Entry<K, V>> from = Set.from(wrapped.entrySet());
+		ExFunction<java.util.Map.Entry<K, V>, Pair<K, V>, RuntimeException> mapper =
 			entry -> new Pair<>(entry.getKey(), entry.getValue());
 		Set<Pair<K, V>> map = from.map(mapper);
 		return map;
@@ -202,14 +206,14 @@ public class Map<K, V> implements CollectionMapAPI<K, V, Map<K, V>, Set<K>, Set<
 		}
 		return next;
 	}
-	public @Override java.util.HashMap<K, V> toJavaMap() {
-		return new java.util.HashMap<>(wrapped);
-	}
 	public @Override Map<K, V> toMap() {
 		return new Map<>(this);
 	}
 	public @Override HashMap<K, V> toHashMap() {
 		return new HashMap<>(this);
+	}
+	public @Override <U, E extends Exception> ArrayList<U> map(ExFunction<Pair<K, V>, U, E> mapper) throws E {
+		return toArrayList().map(mapper);
 	}
 	@SuppressWarnings("unchecked")
 	private static <E extends Exception> Class<E> classForE() {

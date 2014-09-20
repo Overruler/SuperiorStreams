@@ -24,7 +24,7 @@ import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExPredicate;
 import utils.streams2.Stream;
 
-public interface List<T> extends CollectionListAPI<T, List<T>> {
+public interface List<T> extends ReadWriteList<T, List<T>> {
 	//*Q*
 	public static <T> List<T> of(                                                                             ) { return new ListOf0 <>(                                                         ); }
 	public static <T> List<T> of(T one                                                                        ) { return new ListOf1 <>(one                                                      ); }
@@ -55,7 +55,7 @@ public interface List<T> extends CollectionListAPI<T, List<T>> {
 		}
 	}
 	//*E*
-	public static <T> List<T> from(ReadOnly<T> collection) {
+	public static <T> List<T> from(Iterable<T> collection) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) collection.toArray();
 		return of(array);
@@ -65,11 +65,11 @@ public interface List<T> extends CollectionListAPI<T, List<T>> {
 		T[] array = (T[]) collection.toArray();
 		return of(array);
 	}
-	public static <T> List<T> fromIterable(Iterable<T> iterable) {
+	public static <T> List<T> fromIterable(java.lang.Iterable<T> iterable) {
 		return ArrayList.fromIterable(iterable).toList();
 	}
 	default @Override Iterator<T> iterator() {
-		return new ImmutableIterator<>(this);
+		return new ListOfN.ImmutableIterator<>(this);
 	}
 	default @Override Spliterator<T> spliterator() {
 		return toArrayList().spliterator();
@@ -80,16 +80,16 @@ public interface List<T> extends CollectionListAPI<T, List<T>> {
 	default @Override boolean notEmpty() {
 		return true;
 	}
-	default @Override boolean containsAll(ReadOnly<T> collection) {
+	default @Override boolean containsAll(Iterable<T> collection) {
 		return toArrayList().containsAll(collection);
 	}
 	default @Override T[] toArray(T[] array) {
 		return toArrayList().toArray(array);
 	}
-	default @Override List<T> addAll(ReadOnly<T> collection) {
+	default @Override List<T> addAll(Iterable<T> collection) {
 		return toArrayList().addAll(collection).toList();
 	}
-	default @Override List<T> addAll(int index, ReadOnly<T> collection) {
+	default @Override List<T> addAll(int index, Iterable<T> collection) {
 		return toArrayList().addAll(index, collection).toList();
 	}
 	default @Override int indexOf(T item) {
@@ -99,10 +99,10 @@ public interface List<T> extends CollectionListAPI<T, List<T>> {
 		return toArrayList().lastIndexOf(item);
 	}
 	default @Override ListIterator<T> listIterator() {
-		return new ImmutableListIterator<>(this, 0);
+		return listIterator(0);
 	}
 	default @Override ListIterator<T> listIterator(int index) {
-		return new ImmutableListIterator<>(this, index);
+		return new ListOfN.ImmutableListIterator<>(this, index);
 	}
 	default @Override Stream<T> parallelStream() {
 		return stream().parallel();
@@ -119,10 +119,10 @@ public interface List<T> extends CollectionListAPI<T, List<T>> {
 	default @Override List<T> remove(int index) {
 		return toArrayList().remove(index).toList();
 	}
-	default @Override List<T> removeAll(ReadOnly<T> collection) {
+	default @Override List<T> removeAll(Iterable<T> collection) {
 		return toArrayList().removeAll(collection).toList();
 	}
-	default @Override List<T> retainAll(ReadOnly<T> collection) {
+	default @Override List<T> retainAll(Iterable<T> collection) {
 		return toArrayList().retainAll(collection).toList();
 	}
 	default @Override List<T> set(int index, T element) {
@@ -146,9 +146,6 @@ public interface List<T> extends CollectionListAPI<T, List<T>> {
 	default @Override List<T> addAll(@SuppressWarnings("unchecked") T... values) {
 		return ArrayList.from(this).addAll(values).toList();
 	}
-	default @Override java.util.ArrayList<T> toJavaList() {
-		return toJavaUtilCollection();
-	}
 	default @Override List<T> toList() {
 		return this;
 	}
@@ -169,6 +166,9 @@ public interface List<T> extends CollectionListAPI<T, List<T>> {
 	}
 	default @Override HashSet<T> toHashSet() {
 		return HashSet.from(this);
+	}
+	default @Override List<T> identity() {
+		return this;
 	}
 	public @Override <V, E extends Exception> List<V> map(ExFunction<T, V, E> function) throws E;
 }

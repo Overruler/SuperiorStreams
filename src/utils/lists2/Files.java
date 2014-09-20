@@ -263,17 +263,21 @@ public class Files {
 	public static Path write(Path path, byte[] bytes, OpenOption... options) throws IOException {
 		return java.nio.file.Files.write(path, bytes, options);
 	}
-	public static Path write(Path path, Iterable<? extends CharSequence> lines, Charset cs) throws IOException {
+	public static Path write(Path path, java.lang.Iterable<? extends CharSequence> lines, Charset cs)
+		throws IOException {
 		return java.nio.file.Files.write(path, lines, cs);
 	}
-	public static Path write(Path path, Iterable<? extends CharSequence> lines, Charset cs, OpenOption... options)
-		throws IOException {
+	public static Path write(
+		Path path,
+		java.lang.Iterable<? extends CharSequence> lines,
+		Charset cs,
+		OpenOption... options) throws IOException {
 		return java.nio.file.Files.write(path, lines, cs, options);
 	}
-	public static Path write(Path path, Iterable<? extends CharSequence> lines) throws IOException {
+	public static Path write(Path path, java.lang.Iterable<? extends CharSequence> lines) throws IOException {
 		return java.nio.file.Files.write(path, lines);
 	}
-	public static Path write(Path path, Iterable<? extends CharSequence> lines, OpenOption... options)
+	public static Path write(Path path, java.lang.Iterable<? extends CharSequence> lines, OpenOption... options)
 		throws IOException {
 		return java.nio.file.Files.write(path, lines, options);
 	}
@@ -305,11 +309,11 @@ public class Files {
 		return HashSet.from(java.nio.file.Files.getPosixFilePermissions(path, options));
 	}
 	public static Path setPosixFilePermissions(Path path, Set<PosixFilePermission> perms) throws IOException {
-		return java.nio.file.Files.setPosixFilePermissions(path, perms.toJavaSet());
+		return java.nio.file.Files.setPosixFilePermissions(path, perms.toJavaUtilCollection());
 	}
 	public static Path walkFileTree(Path start, Set<FileVisitOption> options, int maxDepth, FileVisitor<Path> visitor)
 		throws IOException {
-		return java.nio.file.Files.walkFileTree(start, options.toJavaSet(), maxDepth, visitor);
+		return java.nio.file.Files.walkFileTree(start, options.toJavaUtilCollection(), maxDepth, visitor);
 	}
 	public static ArrayList<String> readAllLines(Path path) throws IOException {
 		return new ArrayList<>(java.nio.file.Files.readAllLines(path));

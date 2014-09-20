@@ -5,24 +5,34 @@ import java.util.Spliterator;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExPredicate;
+import utils.streams.functions.ExToDoubleFunction;
+import utils.streams.functions.ExToIntFunction;
+import utils.streams.functions.ExToLongFunction;
 import utils.streams.functions.ExUnaryOperator;
 import utils.streams.functions.IntFunction;
 import utils.streams2.Stream;
 
-interface IHashSet<T, SELF extends IHashSet<T, SELF>> extends CollectionSetAPI<T, SELF> {}
-public class HashSet<T> implements IHashSet<T, HashSet<T>> {
+public class HashSet<T> implements Collection<T, HashSet<T>> {
 	final java.util.Set<T> wrapped;
 
+	public static <T> HashSet<T> of() {
+		return new HashSet<>();
+	}
+	public static <T> HashSet<T> of(T item) {
+		java.util.HashSet<T> set = new java.util.HashSet<>();
+		set.add(item);
+		return wrap(set);
+	}
 	public static @SafeVarargs <T> HashSet<T> of(T... elements) {
 		return new HashSet<>(java.util.Arrays.asList(elements));
 	}
-	public static <T> HashSet<T> from(ReadOnly<T> set) {
+	public static <T> HashSet<T> from(Iterable<T> set) {
 		return new HashSet<>(set);
 	}
 	public static <T> HashSet<T> from(java.util.Collection<T> set) {
 		return new HashSet<>(set);
 	}
-	public static <T> HashSet<T> fromIterable(Iterable<T> set) {
+	public static <T> HashSet<T> fromIterable(java.lang.Iterable<T> set) {
 		return new HashSet<>(set);
 	}
 	static <T> HashSet<T> wrap(java.util.Set<T> wrapped) {
@@ -37,7 +47,7 @@ public class HashSet<T> implements IHashSet<T, HashSet<T>> {
 	public HashSet(int initialCapacity) {
 		this(new java.util.HashSet<>(initialCapacity));
 	}
-	public HashSet(ReadOnly<T> m) {
+	public HashSet(Iterable<T> m) {
 		this(createInternalSetFromCollection(m));
 	}
 	private HashSet(java.util.Set<T> wrapped) {
@@ -49,7 +59,7 @@ public class HashSet<T> implements IHashSet<T, HashSet<T>> {
 			wrapped.add(item);
 		}
 	}
-	private HashSet(Iterable<T> iterable) {
+	private HashSet(java.lang.Iterable<T> iterable) {
 		this();
 		for(T item : iterable) {
 			wrapped.add(item);
@@ -103,7 +113,7 @@ public class HashSet<T> implements IHashSet<T, HashSet<T>> {
 	public @Override boolean contains(T o) {
 		return wrapped.contains(o);
 	}
-	public @Override boolean containsAll(ReadOnly<T> c) {
+	public @Override boolean containsAll(Iterable<T> c) {
 		return wrapped.containsAll(new java.util.HashSet<>(java.util.Arrays.asList(c.stream().toArray())));
 	}
 	public @Override HashSet<T> add(T item) {
@@ -122,19 +132,19 @@ public class HashSet<T> implements IHashSet<T, HashSet<T>> {
 		wrapped.clear();
 		return this;
 	}
-	public @Override HashSet<T> addAll(ReadOnly<T> c) {
+	public @Override HashSet<T> addAll(Iterable<T> c) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
 		wrapped.addAll(java.util.Arrays.asList(array));
 		return this;
 	}
-	public @Override HashSet<T> retainAll(ReadOnly<T> c) {
+	public @Override HashSet<T> retainAll(Iterable<T> c) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
 		wrapped.retainAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
 		return this;
 	}
-	public @Override HashSet<T> removeAll(ReadOnly<T> c) {
+	public @Override HashSet<T> removeAll(Iterable<T> c) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
 		wrapped.removeAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
@@ -142,6 +152,16 @@ public class HashSet<T> implements IHashSet<T, HashSet<T>> {
 	}
 	public @Override <U, E extends Exception> HashSet<U> map(ExFunction<T, U, E> mapper) throws E {
 		return new HashSet<>(ArrayList.from(wrapped).map(mapper));
+	}
+	public @Override <E extends Exception> double[] mapToDouble(ExToDoubleFunction<? super T, E> doubleFunction)
+		throws E {
+		return new ArrayList<>(wrapped).mapToDouble(doubleFunction);
+	}
+	public @Override <E extends Exception> int[] mapToInt(ExToIntFunction<? super T, E> intFunction) throws E {
+		return new ArrayList<>(wrapped).mapToInt(intFunction);
+	}
+	public @Override <E extends Exception> long[] mapToLong(ExToLongFunction<? super T, E> longFunction) throws E {
+		return new ArrayList<>(wrapped).mapToLong(longFunction);
 	}
 	public @Override <E extends Exception> HashSet<T> filter(ExPredicate<T, E> filter) throws E {
 		for(Iterator<T> iterator = wrapped.iterator(); iterator.hasNext();) {
@@ -165,9 +185,6 @@ public class HashSet<T> implements IHashSet<T, HashSet<T>> {
 		wrapped.addAll(set.wrapped);
 		return this;
 	}
-	public @Override java.util.HashSet<T> toJavaSet() {
-		return new java.util.HashSet<>(wrapped);
-	}
 	public @Override java.util.HashSet<T> toJavaUtilCollection() {
 		return new java.util.HashSet<>(wrapped);
 	}
@@ -183,7 +200,10 @@ public class HashSet<T> implements IHashSet<T, HashSet<T>> {
 	public @Override ArrayList<T> toArrayList() {
 		return ArrayList.from(this);
 	}
-	private static <T> java.util.HashSet<T> createInternalSetFromCollection(ReadOnly<T> m) {
+	public @Override HashSet<T> identity() {
+		return this;
+	}
+	private static <T> java.util.HashSet<T> createInternalSetFromCollection(Iterable<T> m) {
 		if(m instanceof CSet) {
 			CSet<T> set = (CSet<T>) m;
 			return new java.util.HashSet<>(set.wrapped);
