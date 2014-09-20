@@ -1,4 +1,4 @@
-package utils.lists2;
+package utils.lists;
 
 import utils.streams.functions.ExBiConsumer;
 import utils.streams.functions.ExBiFunction;

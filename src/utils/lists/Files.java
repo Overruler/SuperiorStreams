@@ -1,4 +1,4 @@
-package utils.lists2;
+package utils.lists;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

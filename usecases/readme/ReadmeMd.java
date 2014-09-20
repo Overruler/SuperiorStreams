@@ -6,12 +6,12 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.jar.JarFile;
-import utils.lists2.ArrayList;
-import utils.lists2.Files;
-import utils.lists2.HashMap;
-import utils.lists2.HashSet;
-import utils.lists2.List;
-import utils.lists2.Set;
+import utils.lists.ArrayList;
+import utils.lists.Files;
+import utils.lists.HashMap;
+import utils.lists.HashSet;
+import utils.lists.List;
+import utils.lists.Set;
 import utils.streams.functions.Function;
 import utils.streams.functions.IOFunction;
 import utils.streams.functions.Predicate;
@@ -222,7 +222,7 @@ Your choice of:
 - [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 - [Eclipse Public License (EPL) v1.0](http://wiki.eclipse.org/EPL)
 
-Several collections classes in the utils.lists2 package are based on classes from [gs-collections](https://github.com/goldmansachs/gs-collections) by Goldman Sachs and are licensed under the Apache License, Version 2.0.
+Several collections classes in the utils.lists package are based on classes from [gs-collections](https://github.com/goldmansachs/gs-collections) by Goldman Sachs and are licensed under the Apache License, Version 2.0.
 
 The image pagoda.jpg, by the author plusgood, is licensed under the Creative Commons Attribution 2.0 Generic license. Downloaded from the [Wikimedia Commons](http://en.wikipedia.org/wiki/File:Silverpagoda.jpg).
 */

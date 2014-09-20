@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package utils.lists2;
+package utils.lists;
 
 import java.util.AbstractList;
 import java.util.ListIterator;

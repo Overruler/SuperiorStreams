@@ -1,4 +1,4 @@
-package utils.lists2;
+package utils.lists;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;

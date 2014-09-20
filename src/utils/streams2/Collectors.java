@@ -9,12 +9,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collector;
 import static java.util.stream.Collector.Characteristics.*;
+import utils.lists.ArrayList;
+import utils.lists.Collection;
+import utils.lists.HashMap;
+import utils.lists.HashSet;
+import utils.lists.Map;
 import utils.lists.Pair;
-import utils.lists2.ArrayList;
-import utils.lists2.Collection;
-import utils.lists2.HashMap;
-import utils.lists2.HashSet;
-import utils.lists2.Map;
 import utils.streams.functions.BiConsumer;
 import utils.streams.functions.BinaryOperator;
 import utils.streams.functions.Function;
@@ -26,22 +26,15 @@ import utils.streams.functions.ToLongFunction;
 
 public final class Collectors {
 	private Collectors() {}
-	public static <T, C extends Collection<T, C>> Collector<T, C, C> toCollection(Supplier<C> collectionFactory) {
-		BiConsumer<C, T> accumulator = Collection<T, C>::add;
-		BinaryOperator<C> combiner = (r1, r2) -> r1.addAll(r2);
-		return Collector.of(collectionFactory, accumulator, combiner, IDENTITY_FINISH);
+	public static <T, C extends Collection<T, C>> Collector<T, C, C>
+		toCollection(Supplier<C> collectionFactory) {
+		return Collector.of(collectionFactory, C::add, C::addAll, IDENTITY_FINISH);
 	}
 	public static <T> Collector<T, ArrayList<T>, ArrayList<T>> toList() {
-		Supplier<ArrayList<T>> supplier = ArrayList<T>::new;
-		BiConsumer<ArrayList<T>, T> accumulator = ArrayList<T>::add;
-		BinaryOperator<ArrayList<T>> combiner = (r1, r2) -> r1.addAll(r2);
-		return Collector.of(supplier, accumulator, combiner, IDENTITY_FINISH);
+		return Collector.of(ArrayList::new, ArrayList<T>::add, ArrayList<T>::addAll, IDENTITY_FINISH);
 	}
 	public static <T> Collector<T, HashSet<T>, HashSet<T>> toSet() {
-		Supplier<HashSet<T>> supplier = HashSet<T>::new;
-		BiConsumer<HashSet<T>, T> accumulator = HashSet<T>::add;
-		BinaryOperator<HashSet<T>> combiner = (r1, r2) -> r1.addAll(r2);
-		return Collector.of(supplier, accumulator, combiner, IDENTITY_FINISH);
+		return Collector.of(HashSet::new, HashSet<T>::add, HashSet<T>::addAll, IDENTITY_FINISH);
 	}
 	public static Collector<CharSequence, ?, String> joining() {
 		return java.util.stream.Collectors.joining();

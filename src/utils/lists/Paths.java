@@ -1,4 +1,4 @@
-package utils.lists2;
+package utils.lists;
 
 import java.net.URI;
 import java.nio.file.Path;

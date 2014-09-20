@@ -2,9 +2,9 @@ package utils.streams2;
 
 import java.util.Comparator;
 import java.util.stream.Stream;
-import utils.lists2.ArrayList;
-import utils.lists2.Arrays;
-import utils.lists2.HashMap;
+import utils.lists.ArrayList;
+import utils.lists.Arrays;
+import utils.lists.HashMap;
 import utils.streams.functions.BiFunction;
 import utils.streams.functions.BinaryOperator;
 import utils.streams.functions.Consumer;

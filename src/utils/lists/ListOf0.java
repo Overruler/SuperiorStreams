@@ -1,11 +1,11 @@
-package utils.lists2;
+package utils.lists;
 
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import utils.lists2.Collections;
+import utils.lists.Collections;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExFunction;
 import utils.streams.functions.ExObjIntConsumer;

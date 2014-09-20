@@ -6,9 +6,9 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.stream.Collector;
 import java.util.stream.IntStream;
-import utils.lists2.ArrayList;
-import utils.lists2.HashMap;
-import utils.lists2.HashSet;
+import utils.lists.ArrayList;
+import utils.lists.HashMap;
+import utils.lists.HashSet;
 import utils.streams.functions.BiConsumer;
 import utils.streams.functions.BiFunction;
 import utils.streams.functions.BinaryOperator;
@@ -145,13 +145,11 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 		return terminalAsObj(s -> s.toArray(), maker(), classOfE());
 	}
 	public ArrayList<Integer> toList() throws E {
-		Collector<Integer, ArrayList<Integer>, ArrayList<Integer>> collection =
-			Collectors.<Integer, ArrayList<Integer>> toCollection(ArrayList::new);
+		Collector<Integer, ArrayList<Integer>, ArrayList<Integer>> collection = Collectors.toList();
 		return terminalAsObj(s -> s.boxed().collect(collection), maker(), classOfE());
 	}
 	public HashSet<Integer> toSet() throws E {
-		Collector<Integer, HashSet<Integer>, HashSet<Integer>> collection =
-			Collectors.<Integer, HashSet<Integer>> toCollection(HashSet::new);
+		Collector<Integer, HashSet<Integer>, HashSet<Integer>> collection = Collectors.toSet();
 		return terminalAsObj(s -> s.boxed().collect(collection), maker(), classOfE());
 	}
 	public <L> L toList(Function<int[], L> intoList) throws E {

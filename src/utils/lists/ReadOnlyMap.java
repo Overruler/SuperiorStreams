@@ -1,4 +1,4 @@
-package utils.lists2;
+package utils.lists;
 
 public interface ReadOnlyMap<K, V> {
 	boolean containsKey(K key);

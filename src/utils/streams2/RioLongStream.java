@@ -1,8 +1,8 @@
 package utils.streams2;
 
 import java.io.IOException;
-import utils.lists2.Arrays;
-import utils.lists2.HashMap;
+import utils.lists.Arrays;
+import utils.lists.HashMap;
 import utils.streams.functions.BiFunction;
 import utils.streams.functions.Consumer;
 import utils.streams.functions.Function;

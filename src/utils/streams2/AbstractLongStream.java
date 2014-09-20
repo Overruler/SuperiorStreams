@@ -8,9 +8,9 @@ import java.util.stream.Collector;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-import utils.lists2.ArrayList;
-import utils.lists2.HashMap;
-import utils.lists2.HashSet;
+import utils.lists.ArrayList;
+import utils.lists.HashMap;
+import utils.lists.HashSet;
 import utils.streams.functions.BiConsumer;
 import utils.streams.functions.BiFunction;
 import utils.streams.functions.BinaryOperator;
@@ -141,13 +141,11 @@ DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, 
 		return terminalAsObj(s -> s.toArray(), maker(), classOfE());
 	}
 	public ArrayList<Long> toList() throws E {
-		Collector<Long, ArrayList<Long>, ArrayList<Long>> collector =
-			Collectors.<Long, ArrayList<Long>> toCollection(ArrayList::new);
+		Collector<Long, ArrayList<Long>, ArrayList<Long>> collector = Collectors.toList();
 		return terminalAsObj(s -> s.boxed().collect(collector), maker(), classOfE());
 	}
 	public HashSet<Long> toSet() throws E {
-		Collector<Long, HashSet<Long>, HashSet<Long>> collector =
-			Collectors.<Long, HashSet<Long>> toCollection(HashSet::new);
+		Collector<Long, HashSet<Long>, HashSet<Long>> collector = Collectors.toSet();
 		return terminalAsObj(s -> s.boxed().collect(collector), maker(), classOfE());
 	}
 	public <L> L toList(Function<long[], L> intoList) throws E {

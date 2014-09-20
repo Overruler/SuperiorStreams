@@ -4,9 +4,9 @@ import java.util.DoubleSummaryStatistics;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.stream.Collector;
-import utils.lists2.ArrayList;
-import utils.lists2.HashMap;
-import utils.lists2.HashSet;
+import utils.lists.ArrayList;
+import utils.lists.HashMap;
+import utils.lists.HashSet;
 import utils.streams.functions.BiConsumer;
 import utils.streams.functions.BiFunction;
 import utils.streams.functions.BinaryOperator;
@@ -139,11 +139,11 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		return terminalAsObj(s -> s.toArray(), maker(), classOfE());
 	}
 	public ArrayList<Double> toList() throws E {
-		Collector<Double, ?, ArrayList<Double>> collector = Collectors.toCollection(ArrayList::new);
+		Collector<Double, ?, ArrayList<Double>> collector = Collectors.toList();
 		return terminalAsObj(s -> s.boxed().collect(collector), maker(), classOfE());
 	}
 	public HashSet<Double> toSet() throws E {
-		Collector<Double, ?, HashSet<Double>> collector = Collectors.toCollection(HashSet::new);
+		Collector<Double, ?, HashSet<Double>> collector = Collectors.toSet();
 		return terminalAsObj(s -> s.boxed().collect(collector), maker(), classOfE());
 	}
 	public <L> L toList(Function<double[], L> intoList) throws E {

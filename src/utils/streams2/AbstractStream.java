@@ -10,9 +10,9 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import static java.util.stream.Collector.*;
-import utils.lists2.ArrayList;
-import utils.lists2.HashMap;
-import utils.lists2.HashSet;
+import utils.lists.ArrayList;
+import utils.lists.HashMap;
+import utils.lists.HashSet;
 import utils.streams.functions.BiConsumer;
 import utils.streams.functions.BinaryOperator;
 import utils.streams.functions.Consumer;
@@ -154,11 +154,11 @@ implements Streamable<T, E> {//*E*
 		return terminalAsObj(s -> s.toArray(allocator), maker(), classOfE());
 	}
 	public ArrayList<T> toList() throws E {
-		Collector<T, ?, ArrayList<T>> collection = Collectors.toCollection(ArrayList<T>::new);
+		Collector<T, ?, ArrayList<T>> collection = Collectors.toList();
 		return terminalAsObj(s -> s.collect(collection), maker(), classOfE());
 	}
 	public HashSet<T> toSet() throws E {
-		Collector<T, ?, HashSet<T>> collection = Collectors.toCollection(HashSet<T>::new);
+		Collector<T, ?, HashSet<T>> collection = Collectors.toSet();
 		return terminalAsObj(s -> s.collect(collection), maker(), classOfE());
 	}
 	public long count() throws E {
@@ -180,9 +180,7 @@ implements Streamable<T, E> {//*E*
 	public HashMap<Boolean, ArrayList<T>> partition(PREDICATE allowed) throws E {
 		Predicate<? super T> predicate = castToPredicates(allowed);
 		Collector<T, Object, HashMap<Boolean, ArrayList<T>>> collector =
-			collectingAndThen(
-				partitioningBy(predicate, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
-				m -> new HashMap<>(m));
+			collectingAndThen(partitioningBy(predicate, Collectors.toList()), m -> new HashMap<>(m));
 		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
 	}
 	public final @SafeVarargs HashMap<Boolean, ArrayList<T>> partition(
@@ -194,9 +192,7 @@ implements Streamable<T, E> {//*E*
 		}
 		Predicate<? super T> predicate = allow2;
 		Collector<T, Object, HashMap<Boolean, ArrayList<T>>> collector =
-			collectingAndThen(
-				partitioningBy(predicate, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
-				m -> new HashMap<>(m));
+			collectingAndThen(partitioningBy(predicate, Collectors.toList()), m -> new HashMap<>(m));
 		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
 	}
 	public <R> R collect(Supplier<R> initial, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner) throws E {

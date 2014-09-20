@@ -1,8 +1,8 @@
-package utils.lists2;
+package utils.lists;
 
 import java.util.Iterator;
 import java.util.Objects;
-import utils.lists2.HashMap.Entry;
+import utils.lists.HashMap.Entry;
 import utils.streams.functions.ExBiConsumer;
 import utils.streams.functions.ExBiFunction;
 import utils.streams.functions.ExFunction;
