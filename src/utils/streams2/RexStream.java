@@ -171,20 +171,20 @@ ExToDoubleBiFunction<A, ? super T, E>> {//*E*
 	}
 	public <K, L, M> M toMultiMap(
 		ExBiFunction<A, ? super T, ? extends K, E> classifier,
-		Function<HashMap<K, L>, M> intoMap,
-		Function<ArrayList<T>, L> intoList) throws E {
-		return toMultiMapInternal(castToClassifier(classifier), intoMap, intoList);
+		Function<ArrayList<T>, L> intoList,
+		Function<HashMap<K, L>, M> intoMap) throws E {
+		return toMultiMapInternal(castToClassifier(classifier), intoList, intoMap);
 	}
 	public final @SafeVarargs <K, L, M> M toMultiMap(
 		Function<? super T, ? extends K> classifier,
-		Function<HashMap<K, L>, M> intoMap,
 		Function<ArrayList<T>, L> intoList,
+		Function<HashMap<K, L>, M> intoMap,
 		Predicate<T>... allowed) throws E {
 		if(allowed != null && allowed.length > 0) {
 			RexStream<E, A, T> stream = filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length));
-			return stream.toMultiMapInternal(classifier, intoMap, intoList);
+			return stream.toMultiMapInternal(classifier, intoList, intoMap);
 		}
-		return toMultiMapInternal(classifier, intoMap, intoList);
+		return toMultiMapInternal(classifier, intoList, intoMap);
 	}
 	public <K, V> HashMap<K, ArrayList<V>> toMultiMap(
 		ExBiFunction<A, ? super T, ? extends K, E> keyMapper,

@@ -139,9 +139,9 @@ IOToDoubleBiFunction<A, Integer>> {//*E*
 	}
 	public <K, L, M> M toMultiMap(
 		IOBiFunction<A, Integer, ? extends K> classifier,
-		Function<HashMap<K, L>, M> intoMap,
-		Function<int[], L> intoList) throws IOException {
-		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
+		Function<int[], L> intoList,
+		Function<HashMap<K, L>, M> intoMap) throws IOException {
+		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
 	}
 	public IOIntStream toIO() {
 		return new IOIntStream(() -> supplierAC.get().user);

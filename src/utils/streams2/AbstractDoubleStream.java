@@ -149,14 +149,14 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 	public <L> L toList(Function<double[], L> intoList) throws E {
 		return intoList.apply(toArray());
 	}
-	public <K, L, M, CLASSIFIER> M toMultiMapInternal(
+	protected <K, L, M, CLASSIFIER> M toMultiMapInternal(
 		CLASSIFIER classifier,
 		Function<CLASSIFIER, DoubleFunction<? extends K>> cast,
-		Function<HashMap<K, L>, M> intoMap,
-		Function<double[], L> intoList) throws E {
+		Function<double[], L> intoList,
+		Function<HashMap<K, L>, M> intoMap) throws E {
 		return terminalAsMapToList(cast.apply(classifier), intoMap, intoList, maker(), classOfE());
 	}
-	public <K, CLASSIFIER> HashMap<K, double[]> toMapInternal(
+	protected <K, CLASSIFIER> HashMap<K, double[]> toMapInternal(
 		CLASSIFIER classifier,
 		Function<CLASSIFIER, DoubleFunction<? extends K>> cast) throws E {
 		return terminalAsMapToList(

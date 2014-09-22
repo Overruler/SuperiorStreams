@@ -141,22 +141,22 @@ ToDoubleFunction<? super T>> {//*E*
 	}
 	public <K, L, M> M toMultiMap(
 		Function<? super T, ? extends K> classifier,
-		Function<HashMap<K, L>, M> intoMap,
-		Function<ArrayList<T>, L> intoList) {
-		return toMultiMapInternal(castToClassifier(classifier), intoMap, intoList);
+		Function<ArrayList<T>, L> intoList,
+		Function<HashMap<K, L>, M> intoMap) {
+		return toMultiMapInternal(castToClassifier(classifier), intoList, intoMap);
 	}
 	public final @SafeVarargs <K, L, M> M toMultiMap(
 		Function<? super T, ? extends K> classifier,
-		Function<HashMap<K, L>, M> intoMap,
 		Function<ArrayList<T>, L> intoList,
+		Function<HashMap<K, L>, M> intoMap,
 		Predicate<T>... allowed) {
 		if(allowed != null && allowed.length > 0) {
 			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).toMultiMapInternal(
 				classifier,
-				intoMap,
-				intoList);
+				intoList,
+				intoMap);
 		}
-		return toMultiMapInternal(classifier, intoMap, intoList);
+		return toMultiMapInternal(classifier, intoList, intoMap);
 	}
 	public <K, V> HashMap<K, ArrayList<V>> toMultiMap(
 		Function<? super T, ? extends K> keyMapper,

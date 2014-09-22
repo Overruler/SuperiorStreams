@@ -138,22 +138,22 @@ ToDoubleFunction<? super float[]>> {//*E*
 	}
 	public <K, L, M> M toMultiMap(
 		Function<? super float[], ? extends K> classifier,
-		Function<HashMap<K, L>, M> intoMap,
-		Function<ArrayList<float[]>, L> intoList) {
-		return toMultiMapInternal(castToClassifier(classifier), intoMap, intoList);
+		Function<ArrayList<float[]>, L> intoList,
+		Function<HashMap<K, L>, M> intoMap) {
+		return toMultiMapInternal(castToClassifier(classifier), intoList, intoMap);
 	}
 	public final @SafeVarargs <K, L, M> M toMultiMap(
 		Function<? super float[], ? extends K> classifier,
-		Function<HashMap<K, L>, M> intoMap,
 		Function<ArrayList<float[]>, L> intoList,
+		Function<HashMap<K, L>, M> intoMap,
 		Predicate<float[]>... allowed) {
 		if(allowed != null && allowed.length > 0) {
 			return filter(allowed[0], Arrays.copyOfRange(allowed, 1, allowed.length)).toMultiMapInternal(
 				classifier,
-				intoMap,
-				intoList);
+				intoList,
+				intoMap);
 		}
-		return toMultiMapInternal(classifier, intoMap, intoList);
+		return toMultiMapInternal(classifier, intoList, intoMap);
 	}
 	private static <K> Function<? super float[], ? extends K> castToClassifier(
 		Function<? super float[], ? extends K> classifier) {

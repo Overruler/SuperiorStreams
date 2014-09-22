@@ -120,9 +120,9 @@ IOToDoubleFunction<Integer>> {//*E*
 	}
 	public <K, L, M> M toMultiMap(
 		IOIntFunction<? extends K> classifier,
-		Function<HashMap<K, L>, M> intoMap,
-		Function<int[], L> intoList) throws IOException {
-		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
+		Function<int[], L> intoList,
+		Function<HashMap<K, L>, M> intoMap) throws IOException {
+		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
 	}
 	public static IOIntStream iterate(int seed, IOIntUnaryOperator function) {
 		return new IOIntStream(() -> java.util.stream.IntStream.iterate(seed, function.uncheck()));

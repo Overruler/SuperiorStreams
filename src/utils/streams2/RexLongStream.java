@@ -145,9 +145,9 @@ ExToDoubleBiFunction<A, Long, E>> {//*E*
 	}
 	public <K, L, M> M toMultiMap(
 		ExBiFunction<A, Long, ? extends K, E> classifier,
-		Function<HashMap<K, L>, M> intoMap,
-		Function<long[], L> intoList) throws E {
-		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
+		Function<long[], L> intoList,
+		Function<HashMap<K, L>, M> intoMap) throws E {
+		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
 	}
 	private <K> Function<ExBiFunction<A, Long, ? extends K, E>, LongFunction<? extends K>> castToClassifier() {
 		return c -> t -> c.uncheck(classOfE()).apply(getCached(), t);

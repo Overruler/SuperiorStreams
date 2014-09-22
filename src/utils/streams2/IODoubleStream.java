@@ -121,9 +121,9 @@ IOToDoubleFunction<Double>> {//*E*
 	}
 	public <K, L, M> M toMultiMap(
 		IODoubleFunction<? extends K> classifier,
-		Function<HashMap<K, L>, M> intoMap,
-		Function<double[], L> intoList) throws IOException {
-		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
+		Function<double[], L> intoList,
+		Function<HashMap<K, L>, M> intoMap) throws IOException {
+		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
 	}
 	public static IODoubleStream iterate(double seed, IODoubleUnaryOperator function) {
 		return new IODoubleStream(() -> java.util.stream.DoubleStream.iterate(seed, function.uncheck()));

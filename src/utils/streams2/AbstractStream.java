@@ -227,10 +227,10 @@ implements Streamable<T, E> {//*E*
 		return terminalAsMapToList(classifier, Function.identity(), Function.identity(), maker(), classOfE());
 	}
 	protected <M, L, K> M toMultiMapInternal(
-		Function<? super T, ? extends K> apply,
-		Function<HashMap<K, L>, M> intoMap,
-		Function<ArrayList<T>, L> intoList) throws E {
-		return terminalAsMapToList(apply, intoMap, intoList, maker(), classOfE());
+		Function<? super T, ? extends K> intoKey,
+		Function<ArrayList<T>, L> intoList,
+		Function<HashMap<K, L>, M> intoMap) throws E {
+		return terminalAsMapToList(intoKey, intoMap, intoList, maker(), classOfE());
 	}
 	public T reduce(T start, BINARY_OPERATOR add) throws E {
 		BinaryOperator<T> accumulator = castToBinaryOperators(add);

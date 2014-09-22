@@ -114,9 +114,9 @@ ToDoubleFunction<Integer>> {//*E*
 	}
 	public <K, L, M> M toMultiMap(
 		IntFunction<? extends K> classifier,
-		Function<HashMap<K, L>, M> intoMap,
-		Function<int[], L> intoList) {
-		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
+		Function<int[], L> intoList,
+		Function<HashMap<K, L>, M> intoMap) {
+		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
 	}
 	public IOIntStream toIO() {
 		return new IOIntStream(supplier);

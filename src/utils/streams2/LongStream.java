@@ -113,9 +113,9 @@ ToDoubleFunction<Long>> {//*E*
 	}
 	public <K, L, M> M toMultiMap(
 		LongFunction<? extends K> classifier,
-		Function<HashMap<K, L>, M> intoMap,
-		Function<long[], L> intoList) throws RuntimeException {
-		return toMultiMapInternal(classifier, castToClassifier(), intoMap, intoList);
+		Function<long[], L> intoList,
+		Function<HashMap<K, L>, M> intoMap) throws RuntimeException {
+		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
 	}
 	public IOLongStream toIO() {
 		return new IOLongStream(supplier);
