@@ -10,6 +10,22 @@ import utils.streams.functions.ExUnaryOperator;
 import utils.streams2.WrapperException;
 
 public class HashMap<K, V> implements ReadWriteMap<K, V, Entry<K, V>, HashMap<K, V>> {
+	public static class IllegalMergeException extends IllegalStateException {
+		private Object value1;
+		private Object value2;
+		Object key;
+
+		public <T> IllegalMergeException(T value1, T value2) {
+			this.value1 = value1;
+			this.value2 = value2;
+		}
+		public @Override String getMessage() {
+			if(key != null) {
+				return String.format("Merging key %s and values %s & %s", key, value1, value2);
+			}
+			return String.format("Merging value %s & %s", value1, value2);
+		}
+	}
 	public static class EntrySet<K, V> implements Collection<Entry<K, V>, EntrySet<K, V>> {
 		private final java.util.Set<java.util.Map.Entry<K, V>> wrapped;
 		private final HashMap<K, V> original;
@@ -325,6 +341,9 @@ public class HashMap<K, V> implements ReadWriteMap<K, V, Entry<K, V>, HashMap<K,
 			wrapped.merge(key, value, remapper.uncheck(classOfE));
 		} catch(WrapperException e) {
 			throw WrapperException.show(e, classOfE);
+		} catch(IllegalMergeException e) {
+			e.key = key;
+			throw e;
 		}
 		return this;
 	}

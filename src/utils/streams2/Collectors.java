@@ -255,7 +255,7 @@ public final class Collectors {
 		Function<? super T, ? extends K> keyMapper,
 		Function<? super T, ? extends U> valueMapper) {
 		BinaryOperator<U> throwingMerger = (u, v) -> {
-			throw new IllegalStateException(String.format("Duplicate %s & %s", u, v));
+			throw new HashMap.IllegalMergeException(u, v);
 		};
 		return toMap(keyMapper, valueMapper, throwingMerger, HashMap::new);
 	}
