@@ -16,6 +16,7 @@
 package utils.lists;
 
 import java.util.Comparator;
+import java.util.function.Function;
 import utils.streams.functions.ExObjIntConsumer;
 import utils.streams.functions.ExUnaryOperator;
 
@@ -55,6 +56,9 @@ public interface ReadWriteList<T, C extends ReadWriteList<T, C>> extends Collect
 			self = self.set(i, two).set(j, one);
 		}
 		return self;
+	}
+	default <U extends Comparable<? super U>> C sort(Function<? super T, ? extends U> by) {
+		return sort(Comparator.comparing(by));
 	}
 	public C add(int index, T element);
 	public C remove(int index);
