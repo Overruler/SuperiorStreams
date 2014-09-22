@@ -133,18 +133,27 @@ public class HashSet<T> implements Collection<T, HashSet<T>> {
 		return this;
 	}
 	public @Override HashSet<T> addAll(Iterable<T> c) {
+		if(c == this) {
+			return this;
+		}
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
 		wrapped.addAll(java.util.Arrays.asList(array));
 		return this;
 	}
 	public @Override HashSet<T> retainAll(Iterable<T> c) {
+		if(c == this) {
+			return this;
+		}
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
 		wrapped.retainAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
 		return this;
 	}
 	public @Override HashSet<T> removeAll(Iterable<T> c) {
+		if(c == this) {
+			return clear();
+		}
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) c.stream().toArray();
 		wrapped.removeAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));

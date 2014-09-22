@@ -1,6 +1,5 @@
 package utils.lists;
 
-import java.util.Iterator;
 import utils.streams.functions.ExConsumer;
 import utils.streams.functions.ExPredicate;
 import utils.streams.functions.ExUnaryOperator;
@@ -22,21 +21,27 @@ public interface Collection<T, C extends Collection<T, C>> extends Iterable<T> {
 	}
 	default C clear() {
 		C self = identity();
-		while(self.notEmpty()) {
-			self = self.remove(self.iterator().next());
+		for(T item : toList()) {
+			self = self.remove(item);
 		}
 		return self;
 	}
 	default C retainAll(Iterable<T> items) {
+		if(items == this) {
+			return identity();
+		}
 		C self = identity();
-		for(T item : items) {
-			if(self.contains(item) == false) {
+		for(T item : toList()) {
+			if(items.contains(item) == false) {
 				self = self.remove(item);
 			}
 		}
 		return self;
 	}
 	default C removeAll(Iterable<T> items) {
+		if(items == this) {
+			return clear();
+		}
 		C self = identity();
 		for(T item : items) {
 			if(self.contains(item)) {
@@ -46,22 +51,22 @@ public interface Collection<T, C extends Collection<T, C>> extends Iterable<T> {
 		return self;
 	}
 	default <E extends Exception> C filter(ExPredicate<T, E> filter) throws E {
-		for(Iterator<T> iter = iterator(); iter.hasNext();) {
-			T item = iter.next();
+		C self = identity();
+		for(T item : toList()) {
 			if(filter.test(item) == false) {
-				iter.remove();
+				self = self.remove(item);
 			}
 		}
-		return identity();
+		return self;
 	}
 	default <E extends Exception> C removeIf(ExPredicate<T, E> filter) throws E {
-		for(Iterator<T> iter = iterator(); iter.hasNext();) {
-			T item = iter.next();
+		C self = identity();
+		for(T item : toList()) {
 			if(filter.test(item)) {
-				iter.remove();
+				self = self.remove(item);
 			}
 		}
-		return identity();
+		return self;
 	}
 	default <E extends Exception> C each(ExConsumer<T, E> action) throws E {
 		for(T item : this) {

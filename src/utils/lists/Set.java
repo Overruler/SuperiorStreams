@@ -136,7 +136,7 @@ class CSet<T> implements Set<T> {
 		return wrapped.contains(o);
 	}
 	public @Override boolean containsAll(Iterable<T> c) {
-		return wrapped.containsAll(new java.util.HashSet<>(c.toJavaUtilCollection()));
+		return wrapped.containsAll(c.toJavaUtilCollection());
 	}
 	public @Override Set<T> add(T item) {
 		java.util.HashSet<T> copy = copy();
@@ -154,27 +154,32 @@ class CSet<T> implements Set<T> {
 		return next(copy);
 	}
 	public @Override Set<T> clear() {
-		return new CSet<>();
+		return Set.of();
 	}
 	public @Override Set<T> addAll(Iterable<T> c) {
+		if(c == this) {
+			return this;
+		}
 		java.util.HashSet<T> copy = copy();
 		@SuppressWarnings("unchecked")
-		T[] array = (T[]) c.stream().toArray();
+		T[] array = (T[]) c.toArray();
 		copy.addAll(java.util.Arrays.asList(array));
 		return next(copy);
 	}
 	public @Override Set<T> retainAll(Iterable<T> c) {
+		if(c == this) {
+			return this;
+		}
 		java.util.HashSet<T> copy = copy();
-		@SuppressWarnings("unchecked")
-		T[] array = (T[]) c.stream().toArray();
-		copy.retainAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
+		copy.retainAll(java.util.Arrays.asList(c.toArray()));
 		return next(copy);
 	}
 	public @Override Set<T> removeAll(Iterable<T> c) {
+		if(c == this) {
+			return clear();
+		}
 		java.util.HashSet<T> copy = copy();
-		@SuppressWarnings("unchecked")
-		T[] array = (T[]) c.stream().toArray();
-		copy.removeAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
+		copy.removeAll(java.util.Arrays.asList(c.toArray()));
 		return next(copy);
 	}
 	public @Override <U, E extends Exception> Set<U> map(ExFunction<T, U, E> mapper) throws E {
