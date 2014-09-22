@@ -9,6 +9,7 @@ import java.util.stream.Collector;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 import static java.util.stream.Collector.*;
 import utils.lists.ArrayList;
 import utils.lists.HashMap;
@@ -224,7 +225,7 @@ implements Streamable<T, E> {//*E*
 		return terminalAsObj(s -> s.mapToDouble(mapper).average(), maker(), classOfE());
 	}
 	protected <K> HashMap<K, ArrayList<T>> toMapInternal(Function<? super T, ? extends K> classifier) throws E {
-		return terminalAsMapToList(classifier, Function.identity(), Function.identity(), maker(), classOfE());
+		return terminalAsMapToList(classifier, maker(), classOfE());
 	}
 	protected <M, L, K> M toMultiMapInternal(
 		Function<? super T, ? extends K> intoKey,
@@ -367,25 +368,27 @@ implements Streamable<T, E> {//*E*
 			throw unwrapCause(classOfE, e);
 		}
 	}
-	private static <T, E extends Exception, K, L, M> M terminalAsMapToList(
+	private static <T, E extends Exception, K> HashMap<K, ArrayList<T>> terminalAsMapToList(
 		Function<? super T, ? extends K> classifier,
+		Supplier<Stream<T>> maker,
+		Class<E> classOfE) throws E {
+		try(java.util.stream.Stream<T> s = maker.get()) {
+			return s.collect(groupingBy(classifier, HashMap<K, ArrayList<T>>::new, Collectors.toList()));
+		} catch(RuntimeException e) {
+			throw unwrapCause(classOfE, e);
+		}
+	}
+	private static <T, E extends Exception, K, L, M> M terminalAsMapToList(
+		Function<? super T, ? extends K> key,
 		Function<HashMap<K, L>, M> intoMap,
 		Function<ArrayList<T>, L> intoList,
 		Supplier<java.util.stream.Stream<T>> supplier,
 		Class<E> classOfE) throws E {
-		Supplier<HashMap<K, L>> supply1 = () -> new HashMap<>();
-		Supplier<ArrayList<T>> supply2 = () -> new ArrayList<>();
-		BiConsumer<ArrayList<T>, T> accumulator2 = (left, value) -> left.add(value);
-		BinaryOperator<ArrayList<T>> combiner2 = (left, right) -> {
-			left.addAll(right);
-			return left;
-		};
-		Collector<T, ?, M> collectingAndThen =
-			collectingAndThen(
-				groupingBy(classifier, supply1, collectingAndThen(of(supply2, accumulator2, combiner2), intoList)),
-				intoMap);
+		Collector<T, ArrayList<T>, L> asList = of(ArrayList<T>::new, ArrayList<T>::add, ArrayList<T>::addAll, intoList);
+		Collector<T, HashMap<K, ArrayList<T>>, HashMap<K, L>> grouped = groupingBy(key, HashMap<K, L>::new, asList);
+		Collector<T, HashMap<K, ArrayList<T>>, M> asMap = collectingAndThen(grouped, intoMap);
 		try(java.util.stream.Stream<T> s = supplier.get()) {
-			return s.collect(collectingAndThen);
+			return s.collect(asMap);
 		} catch(RuntimeException e) {
 			throw unwrapCause(classOfE, e);
 		}
