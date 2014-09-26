@@ -125,6 +125,9 @@ public class HashMap<K, V> implements ReadWriteMap<K, V, Entry<K, V>, HashMap<K,
 			super(key, entry.getValue());
 			this.entry = entry;
 		}
+		public Pair<K, V> toPair() {
+			return this;
+		}
 		public Entry<K, V> keepingValue(K newKey) {
 			return new Entry<>(entry, newKey);
 		}
