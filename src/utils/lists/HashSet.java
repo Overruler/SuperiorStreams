@@ -142,21 +142,41 @@ public class HashSet<T> implements Collection<T, HashSet<T>> {
 		return this;
 	}
 	public @Override HashSet<T> retainAll(Iterable<T> c) {
-		if(c == this) {
+		if(c == this || size() == 0) {
 			return this;
 		}
-		@SuppressWarnings("unchecked")
-		T[] array = (T[]) c.stream().toArray();
-		wrapped.retainAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
+		if(size() == 1) {
+			if(c.contains(iterator().next())) {
+				return this;
+			}
+			return clear();
+		}
+		ArrayList<T> arrayList = new ArrayList<>(size());
+		for(T t : c) {
+			if(contains(t)) {
+				arrayList.add(t);
+			}
+		}
+		clear();
+		addAll(arrayList);
 		return this;
 	}
 	public @Override HashSet<T> removeAll(Iterable<T> c) {
 		if(c == this) {
 			return clear();
 		}
-		@SuppressWarnings("unchecked")
-		T[] array = (T[]) c.stream().toArray();
-		wrapped.removeAll(new java.util.HashSet<>(java.util.Arrays.asList(array)));
+		if(size() == 0) {
+			return this;
+		}
+		if(size() == 1) {
+			if(c.contains(iterator().next())) {
+				return clear();
+			}
+			return this;
+		}
+		for(T t : c) {
+			remove(t);
+		}
 		return this;
 	}
 	public @Override <U, E extends Exception> HashSet<U> map(ExFunction<T, U, E> mapper) throws E {

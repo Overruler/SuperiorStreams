@@ -167,19 +167,40 @@ class CSet<T> implements Set<T> {
 		return next(copy);
 	}
 	public @Override Set<T> retainAll(Iterable<T> c) {
-		if(c == this) {
+		if(c == this || size() == 0) {
 			return this;
 		}
-		java.util.HashSet<T> copy = copy();
-		copy.retainAll(java.util.Arrays.asList(c.toArray()));
-		return next(copy);
+		if(size() == 1) {
+			if(c.contains(iterator().next())) {
+				return this;
+			}
+			return clear();
+		}
+		ArrayList<T> arrayList = new ArrayList<>(size());
+		for(T t : c) {
+			if(contains(t)) {
+				arrayList.add(t);
+			}
+		}
+		return arrayList.toSet();
 	}
 	public @Override Set<T> removeAll(Iterable<T> c) {
 		if(c == this) {
 			return clear();
 		}
+		if(size() == 0) {
+			return this;
+		}
+		if(size() == 1) {
+			if(c.contains(iterator().next())) {
+				return clear();
+			}
+			return this;
+		}
 		java.util.HashSet<T> copy = copy();
-		copy.removeAll(java.util.Arrays.asList(c.toArray()));
+		for(T t : c) {
+			copy.remove(t);
+		}
 		return next(copy);
 	}
 	public @Override <U, E extends Exception> Set<U> map(ExFunction<T, U, E> mapper) throws E {
