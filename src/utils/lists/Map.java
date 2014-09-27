@@ -59,6 +59,14 @@ public class Map<K, V> implements ReadWriteMap<K, V, Pair<K, V>, Map<K, V>> {
 		return wrapped.hashCode();
 	}
 	public @Override boolean equals(Object o) {
+		if(o instanceof HashMap) {
+			HashMap<?, ?> hashMap = (HashMap<?, ?>) o;
+			return wrapped.equals(hashMap.wrapped);
+		}
+		if(o instanceof Map) {
+			Map<?, ?> map = (Map<?, ?>) o;
+			return wrapped.equals(map.wrapped);
+		}
 		return wrapped.equals(o);
 	}
 	public @Override boolean contains(Pair<K, V> o) {

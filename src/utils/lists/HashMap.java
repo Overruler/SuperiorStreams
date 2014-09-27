@@ -205,6 +205,14 @@ public class HashMap<K, V> implements ReadWriteMap<K, V, Entry<K, V>, HashMap<K,
 		return wrapped.hashCode();
 	}
 	public @Override boolean equals(Object o) {
+		if(o instanceof HashMap) {
+			HashMap<?, ?> hashMap = (HashMap<?, ?>) o;
+			return wrapped.equals(hashMap.wrapped);
+		}
+		if(o instanceof Map) {
+			Map<?, ?> map = (Map<?, ?>) o;
+			return wrapped.equals(map.wrapped);
+		}
 		return wrapped.equals(o);
 	}
 	public @Override boolean contains(Entry<K, V> o) {
