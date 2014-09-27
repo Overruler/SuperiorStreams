@@ -2,6 +2,7 @@ package utils.lists;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Properties;
 import utils.lists.HashMap.Entry;
 import utils.streams.functions.ExBiConsumer;
 import utils.streams.functions.ExBiFunction;
@@ -161,6 +162,9 @@ public class HashMap<K, V> implements ReadWriteMap<K, V, Entry<K, V>, HashMap<K,
 
 	public static <K, V> HashMap<K, V> from(java.util.Map<K, V> source) {
 		return new HashMap<>(source);
+	}
+	public static HashMap<String, String> fromProperties(Properties source) {
+		return List.from(source.stringPropertyNames()).stream().toMap(s -> s, s -> source.getProperty(s));
 	}
 	public static <K, V> HashMap<K, V> of() {
 		return new HashMap<>();

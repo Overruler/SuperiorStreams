@@ -2,6 +2,7 @@ package utils.lists;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Properties;
 import utils.streams.functions.ExBiConsumer;
 import utils.streams.functions.ExBiFunction;
 import utils.streams.functions.ExFunction;
@@ -15,6 +16,9 @@ public class Map<K, V> implements ReadWriteMap<K, V, Pair<K, V>, Map<K, V>> {
 	}
 	public static <K, V> Map<K, V> from(java.util.Map<K, V> source) {
 		return new Map<>(source);
+	}
+	public static Map<String, String> fromProperties(Properties source) {
+		return HashMap.fromProperties(source).toMap();
 	}
 	public static <K, V> Map<K, V> of() {
 		return new Map<>();
