@@ -64,11 +64,7 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 	protected abstract LS asLS(Function<DoubleStream, LongStream> convert);
 	protected abstract SELF asSELF(Function<DoubleStream, DoubleStream> convert);
 	protected static <T> double toDouble(T t) {
-		try {
-			return t instanceof Double ? (int) t : t == null ? 0 : Double.parseDouble(String.valueOf(t));
-		} catch(NumberFormatException ignored) {
-			return 0;
-		}
+		return t instanceof Double ? (int) t : t == null ? 0 : Double.parseDouble(String.valueOf(t));
 	}
 	public SELF filter(PREDICATE allowed) {
 		DoublePredicate predicate = castToPredicates(allowed);

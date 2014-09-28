@@ -723,8 +723,8 @@ public class ArrayList<T> implements ReadWriteList<T, ArrayList<T>> {
 			}
 			try {
 				original.set(lastIndex, o);
-			} catch(IndexOutOfBoundsException ignored) {
-				throw new ConcurrentModificationException();
+			} catch(IndexOutOfBoundsException e) {
+				throw new ConcurrentModificationException(e);
 			}
 		}
 		public @Override void add(T o) {

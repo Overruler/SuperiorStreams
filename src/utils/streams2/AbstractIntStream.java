@@ -62,11 +62,7 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 	protected abstract LS asLS(Function<java.util.stream.IntStream, java.util.stream.LongStream> convert);
 	protected abstract DS asDS(Function<java.util.stream.IntStream, java.util.stream.DoubleStream> convert);
 	protected static <T> int toInt(T t) {
-		try {
-			return t instanceof Integer ? (int) t : t == null ? 0 : Integer.parseInt(String.valueOf(t));
-		} catch(NumberFormatException ignored) {
-			return 0;
-		}
+		return t instanceof Integer ? (int) t : t == null ? 0 : Integer.parseInt(String.valueOf(t));
 	}
 	public SELF filter(PREDICATE allowed) {
 		IntPredicate predicate = castToPredicates(allowed);

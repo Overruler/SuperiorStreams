@@ -139,7 +139,8 @@ public class Streams {
 					field.setAccessible(false);
 				}
 			}
-		} catch(NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ignored) {}
+		} catch(@SuppressWarnings("unused") NoSuchFieldException | SecurityException | IllegalArgumentException
+			| IllegalAccessException ignored) {}
 		throw exception;
 	}
 	public static IOStream<Path> filesList(String name) {

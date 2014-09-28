@@ -22,8 +22,8 @@ import utils.lists.HashMap;
 import utils.lists.HashSet;
 import utils.lists.List;
 import utils.lists.Map;
-import utils.lists.Set;
 import utils.lists.Pair;
+import utils.lists.Set;
 import utils.streams.functions.BiPredicate;
 import utils.streams.functions.BinaryOperator;
 import utils.streams.functions.ExConsumer;
@@ -36,7 +36,6 @@ import utils.streams.functions.Predicate;
 import utils.streams.functions.Supplier;
 
 public class Streams {
-
 	public static @SafeVarargs <T> Stream<T> of(T... array) {
 		return Stream.of(array.clone());
 	}
@@ -130,7 +129,8 @@ public class Streams {
 					field.setAccessible(false);
 				}
 			}
-		} catch(NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ignored) {}
+		} catch(@SuppressWarnings("unused") NoSuchFieldException | SecurityException | IllegalArgumentException
+			| IllegalAccessException ignored) {}
 		throw exception;
 	}
 	public static IOStream<Path> filesList(String name) {
