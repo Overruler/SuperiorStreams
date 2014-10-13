@@ -151,15 +151,7 @@ public class HashSet<T> implements Collection<T, HashSet<T>> {
 			}
 			return clear();
 		}
-		ArrayList<T> arrayList = new ArrayList<>(size());
-		for(T t : c) {
-			if(contains(t)) {
-				arrayList.add(t);
-			}
-		}
-		clear();
-		addAll(arrayList);
-		return this;
+		return removeAll(toHashSet().removeAll(c));
 	}
 	public @Override HashSet<T> removeAll(Iterable<T> c) {
 		if(c == this) {
