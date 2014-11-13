@@ -115,11 +115,11 @@ IOToDoubleFunction<Long>> {//*E*
 		}
 		return flatMapInternal(mapper2, cast());
 	}
-	public <K> HashMap<K, long[]> toMap(IOLongFunction<? extends K> classifier) throws IOException {
+	public <K> HashMap<K, long[]> toMap(IOLongFunction<K> classifier) throws IOException {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(
-		IOLongFunction<? extends K> classifier,
+		IOLongFunction<K> classifier,
 		Function<long[], L> intoList,
 		Function<HashMap<K, L>, M> intoMap) throws IOException {
 		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
@@ -130,7 +130,7 @@ IOToDoubleFunction<Long>> {//*E*
 	public static IOLongStream generate(IOLongSupplier supplier) {
 		return new IOLongStream(() -> java.util.stream.LongStream.generate(supplier.uncheck()));
 	}
-	private <K> Function<IOLongFunction<? extends K>, LongFunction<? extends K>> castToClassifier() {
+	private <K> Function<IOLongFunction<K>, LongFunction<K>> castToClassifier() {
 		return c -> c.uncheck(classOfE());
 	}
 	private static <R> LongFunction<? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(

@@ -108,11 +108,11 @@ ToDoubleFunction<Long>> {//*E*
 		}
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public <K> HashMap<K, long[]> toMap(LongFunction<? extends K> classifier) throws RuntimeException {
+	public <K> HashMap<K, long[]> toMap(LongFunction<K> classifier) throws RuntimeException {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(
-		LongFunction<? extends K> classifier,
+		LongFunction<K> classifier,
 		Function<long[], L> intoList,
 		Function<HashMap<K, L>, M> intoMap) throws RuntimeException {
 		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
@@ -141,7 +141,7 @@ ToDoubleFunction<Long>> {//*E*
 	public static LongStream rangeClosed(long startInclusive, long endInclusive) {
 		return new LongStream(() -> java.util.stream.LongStream.rangeClosed(startInclusive, endInclusive));
 	}
-	private static <K> Function<LongFunction<? extends K>, LongFunction<? extends K>> castToClassifier() {
+	private static <K> Function<LongFunction<K>, LongFunction<K>> castToClassifier() {
 		return c -> c;
 	}
 	private static <R> LongFunction<? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(

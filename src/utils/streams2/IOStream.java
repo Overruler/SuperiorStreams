@@ -41,7 +41,7 @@ IOFunction<? super T, ? extends IntStream>,
 IOFunction<? super T, ? extends LongStream>,
 IOFunction<? super T, ? extends DoubleStream>,
 IOToIntFunction<? super T>,
-IOToLongFunction<? super T>,
+IOToLongFunction<T>,
 IOToDoubleFunction<? super T>> {//*E*
 	public IOStream(Supplier<java.util.stream.Stream<T>> supplier) {
 		super(supplier);
@@ -82,7 +82,7 @@ IOToDoubleFunction<? super T>> {//*E*
 	protected @Override ToIntFunction<? super T> castToInt(IOToIntFunction<? super T> mapper) {
 		return mapper.uncheck(classOfE());
 	}
-	protected @Override ToLongFunction<? super T> castToLong(IOToLongFunction<? super T> mapper) {
+	protected @Override ToLongFunction<T> castToLong(IOToLongFunction<T> mapper) {
 		return mapper.uncheck(classOfE());
 	}
 	protected @Override ToDoubleFunction<? super T> castToDouble(IOToDoubleFunction<? super T> mapper) {

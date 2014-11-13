@@ -339,8 +339,8 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 			return result;
 		};
 		Collector<Integer, int[][], L> collectingAndThen = collectingAndThen(toContainer, intoList.compose(before));
-		Collector<Integer, ?, M> collectMap =
-			collectingAndThen(groupingBy(classifier::apply, HashMap<K, L>::new, collectingAndThen), intoMap);
+		Collector<Integer, ?, M> collectMap = null;
+		//			collectingAndThen(groupingBy(classifier::apply, HashMap<K, L>::new, collectingAndThen), intoMap);
 		try(IntStream s = supplier.get()) {
 			return s.boxed().collect(collectMap);
 		} catch(RuntimeException e) {

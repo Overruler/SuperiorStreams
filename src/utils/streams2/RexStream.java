@@ -37,7 +37,7 @@ ExBiFunction<A, ? super T, ? extends java.util.stream.IntStream, E>,
 ExBiFunction<A, ? super T, ? extends java.util.stream.LongStream, E>,
 ExBiFunction<A, ? super T, ? extends java.util.stream.DoubleStream, E>,
 ExToIntBiFunction<A, ? super T, E>,
-ExToLongBiFunction<A, ? super T, E>,
+ExToLongBiFunction<A, T, E>,
 ExToDoubleBiFunction<A, ? super T, E>> {//*E*
 	private final Supplier<AutoCloseableStrategy<A, java.util.stream.Stream<T>>> supplierAC;
 	private final Class<E> classOfE;
@@ -100,7 +100,7 @@ ExToDoubleBiFunction<A, ? super T, E>> {//*E*
 	protected @Override ToIntFunction<? super T> castToInt(ExToIntBiFunction<A, ? super T, E> mapper) {
 		return t -> mapper.uncheck(classOfE).applyAsInt(getCached(), t);
 	}
-	protected @Override ToLongFunction<? super T> castToLong(ExToLongBiFunction<A, ? super T, E> mapper) {
+	protected @Override ToLongFunction<T> castToLong(ExToLongBiFunction<A, T, E> mapper) {
 		return t -> mapper.uncheck(classOfE).applyAsLong(getCached(), t);
 	}
 	protected @Override ToDoubleFunction<? super T> castToDouble(ExToDoubleBiFunction<A, ? super T, E> mapper) {

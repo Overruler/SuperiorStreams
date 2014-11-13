@@ -136,11 +136,11 @@ IOToDoubleBiFunction<A, Double>> {//*E*
 		}
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public <K> HashMap<? extends K, double[]> toMap(IOBiFunction<A, Double, ? extends K> classifier) throws IOException {
+	public <K> HashMap<K, double[]> toMap(IOBiFunction<A, Double, K> classifier) throws IOException {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(
-		IOBiFunction<A, Double, ? extends K> classifier,
+		IOBiFunction<A, Double, K> classifier,
 		Function<double[], L> intoList,
 		Function<HashMap<K, L>, M> intoMap) throws IOException {
 		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
@@ -148,7 +148,7 @@ IOToDoubleBiFunction<A, Double>> {//*E*
 	public IODoubleStream toIO() {
 		return new IODoubleStream(() -> supplierAC.get().user);
 	}
-	private <K> Function<IOBiFunction<A, Double, ? extends K>, DoubleFunction<? extends K>> castToClassifier() {
+	private <K> Function<IOBiFunction<A, Double, K>, DoubleFunction<K>> castToClassifier() {
 		return c -> t -> c.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> DoubleFunction<? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(

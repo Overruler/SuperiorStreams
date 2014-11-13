@@ -110,11 +110,11 @@ ToDoubleFunction<Double>> {//*E*
 		}
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public <K> HashMap<K, double[]> toMap(DoubleFunction<? extends K> classifier) {
+	public <K> HashMap<K, double[]> toMap(DoubleFunction<K> classifier) {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(
-		DoubleFunction<? extends K> classifier,
+		DoubleFunction<K> classifier,
 		Function<double[], L> intoList,
 		Function<HashMap<K, L>, M> intoMap) {
 		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
@@ -137,7 +137,7 @@ ToDoubleFunction<Double>> {//*E*
 	public static DoubleStream generate(DoubleSupplier supplier) {
 		return new DoubleStream(() -> java.util.stream.DoubleStream.generate(supplier));
 	}
-	private static <K> Function<DoubleFunction<? extends K>, DoubleFunction<? extends K>> castToClassifier() {
+	private static <K> Function<DoubleFunction<K>, DoubleFunction<K>> castToClassifier() {
 		return c -> c;
 	}
 	private static <R> DoubleFunction<? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(

@@ -179,28 +179,28 @@ implements Streamable<T, E> {//*E*
 		Objects.requireNonNull(after);
 		return asSELF(s -> Stream.concat(s, after.maker().get()));
 	}
-	public HashMap<Boolean, ArrayList<T>> partition(PREDICATE allowed) throws E {
-		Predicate<? super T> predicate = castToPredicates(allowed);
-		Collector<T, Object, HashMap<Boolean, ArrayList<T>>> collector =
-			collectingAndThen(
-				partitioningBy(predicate, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
-				m -> new HashMap<>(m));
-		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
-	}
-	public final @SafeVarargs HashMap<Boolean, ArrayList<T>> partition(
-		Predicate<? super T> allow,
-		Predicate<? super T>... allowed) throws E {
-		Predicate<T> allow2 = allow::test;
-		for(Predicate<? super T> predicate : allowed) {
-			allow2 = allow2.and(predicate);
-		}
-		Predicate<? super T> predicate = allow2;
-		Collector<T, Object, HashMap<Boolean, ArrayList<T>>> collector =
-			collectingAndThen(
-				partitioningBy(predicate, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
-				m -> new HashMap<>(m));
-		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
-	}
+	//	public HashMap<Boolean, ArrayList<T>> partition(PREDICATE allowed) throws E {
+	//		Predicate<? super T> predicate = castToPredicates(allowed);
+	//		Collector<T, Object, HashMap<Boolean, ArrayList<T>>> collector =
+	//			collectingAndThen(
+	//				partitioningBy(predicate, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
+	//				m -> new HashMap<>(m));
+	//		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
+	//	}
+	//	public final @SafeVarargs HashMap<Boolean, ArrayList<T>> partition(
+	//		Predicate<? super T> allow,
+	//		Predicate<? super T>... allowed) throws E {
+	//		Predicate<T> allow2 = allow::test;
+	//		for(Predicate<? super T> predicate : allowed) {
+	//			allow2 = allow2.and(predicate);
+	//		}
+	//		Predicate<? super T> predicate = allow2;
+	//		Collector<T, Object, HashMap<Boolean, ArrayList<T>>> collector =
+	//			collectingAndThen(
+	//				partitioningBy(predicate, Collectors.<T, ArrayList<T>> toCollection(ArrayList<T>::new)),
+	//				m -> new HashMap<>(m));
+	//		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
+	//	}
 	public <R> R collect(Supplier<R> initial, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner) throws E {
 		return terminalAsObj(s -> s.collect(initial, accumulator, combiner), maker(), classOfE());
 	}
@@ -219,12 +219,12 @@ implements Streamable<T, E> {//*E*
 		Comparator<? super T> comparator2 = castToComparators(comparator);
 		return terminalAsObj(s -> s.max(comparator2), maker(), classOfE());
 	}
-	public SummaryStatistics<T> summaryStatistics(TO_LONG attribute) throws E {
-		ToLongFunction<? super T> attribute2 = castToLong(attribute);
-		Collector<? super T, SummaryStatistics<T>, SummaryStatistics<T>> collector =
-			SummaryStatistics.collector(attribute2);
-		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
-	}
+	//	public SummaryStatistics<T> summaryStatistics(TO_LONG attribute) throws E {
+	//		ToLongFunction<? super T> attribute2 = castToLong(attribute);
+	//		Collector<? super T, SummaryStatistics<T>, SummaryStatistics<T>> collector =
+	//			SummaryStatistics.collector(attribute2);
+	//		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
+	//	}
 	public OptionalDouble average(TO_DOUBLE attribute) throws E {
 		ToDoubleFunction<? super T> mapper = castToDouble(attribute);
 		return terminalAsObj(s -> s.mapToDouble(mapper).average(), maker(), classOfE());

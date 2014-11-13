@@ -180,7 +180,7 @@ implements Streamable<T, E> {//*E*
 	}
 	public HashMap<Boolean, ArrayList<T>> partition(PREDICATE allowed) throws E {
 		Predicate<? super T> predicate = castToPredicates(allowed);
-		Collector<T, Object, HashMap<Boolean, ArrayList<T>>> collector =
+		Collector<T, ?, HashMap<Boolean, ArrayList<T>>> collector =
 			collectingAndThen(partitioningBy(predicate, Collectors.toList()), m -> new HashMap<>(m));
 		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
 	}
@@ -192,7 +192,7 @@ implements Streamable<T, E> {//*E*
 			allow2 = allow2.and(predicate);
 		}
 		Predicate<? super T> predicate = allow2;
-		Collector<T, Object, HashMap<Boolean, ArrayList<T>>> collector =
+		Collector<T, ?, HashMap<Boolean, ArrayList<T>>> collector =
 			collectingAndThen(partitioningBy(predicate, Collectors.toList()), m -> new HashMap<>(m));
 		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
 	}
@@ -215,7 +215,7 @@ implements Streamable<T, E> {//*E*
 		return terminalAsObj(s -> s.max(comparator2), maker(), classOfE());
 	}
 	public SummaryStatistics<T> summaryStatistics(TO_LONG attribute) throws E {
-		ToLongFunction<? super T> attribute2 = castToLong(attribute);
+		ToLongFunction<T> attribute2 = castToLong(attribute);
 		Collector<? super T, SummaryStatistics<T>, SummaryStatistics<T>> collector =
 			SummaryStatistics.collector(attribute2);
 		return terminalAsObj(s -> s.collect(collector), maker(), classOfE());
@@ -321,7 +321,7 @@ implements Streamable<T, E> {//*E*
 	protected abstract Function<? super T, ? extends IntStream> castToIntStream(TO_IS mapper);
 	protected abstract Function<? super T, ? extends DoubleStream> castToDoubleStream(TO_DS mapper);
 	protected abstract ToIntFunction<? super T> castToInt(TO_INT mapper);
-	protected abstract ToLongFunction<? super T> castToLong(TO_LONG mapper);
+	protected abstract ToLongFunction<T> castToLong(TO_LONG mapper);
 	protected abstract Function<? super T, ? extends LongStream> castToLongStream(TO_LS mapper);
 	protected abstract ToDoubleFunction<? super T> castToDouble(TO_DOUBLE mapper);
 	protected abstract java.util.stream.Stream<T> castToStream(STREAM stream);
@@ -372,8 +372,10 @@ implements Streamable<T, E> {//*E*
 		Function<? super T, ? extends K> classifier,
 		Supplier<Stream<T>> maker,
 		Class<E> classOfE) throws E {
+		Collector<T, HashMap<K, ArrayList<T>>, HashMap<K, ArrayList<T>>> collector =
+			groupingBy(classifier, HashMap<K, ArrayList<T>>::new, Collectors.toList());
 		try(java.util.stream.Stream<T> s = maker.get()) {
-			return s.collect(groupingBy(classifier, HashMap<K, ArrayList<T>>::new, Collectors.toList()));
+			return s.collect(collector);
 		} catch(RuntimeException e) {
 			throw unwrapCause(classOfE, e);
 		}

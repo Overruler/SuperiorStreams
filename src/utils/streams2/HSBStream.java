@@ -33,7 +33,7 @@ Function<? super float[], ? extends java.util.stream.IntStream>,
 Function<? super float[], ? extends java.util.stream.LongStream>,
 Function<? super float[], ? extends java.util.stream.DoubleStream>,
 ToIntFunction<? super float[]>,
-ToLongFunction<? super float[]>,
+ToLongFunction<float[]>,
 ToDoubleFunction<? super float[]>> {//*E*
 	private final int w;
 	private final int h;
@@ -83,7 +83,7 @@ ToDoubleFunction<? super float[]>> {//*E*
 	protected @Override ToIntFunction<? super float[]> castToInt(ToIntFunction<? super float[]> mapper) {
 		return mapper;
 	}
-	protected @Override ToLongFunction<? super float[]> castToLong(ToLongFunction<? super float[]> mapper) {
+	protected @Override ToLongFunction<float[]> castToLong(ToLongFunction<float[]> mapper) {
 		return mapper;
 	}
 	protected @Override ToDoubleFunction<? super float[]> castToDouble(ToDoubleFunction<? super float[]> mapper) {

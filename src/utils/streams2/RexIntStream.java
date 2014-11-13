@@ -137,16 +137,16 @@ ExToDoubleBiFunction<A, Integer, E>> {//*E*
 		}
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public <K> HashMap<K, int[]> toMap(ExBiFunction<A, Integer, ? extends K, E> classifier) throws E {
+	public <K> HashMap<K, int[]> toMap(ExBiFunction<A, Integer, K, E> classifier) throws E {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(
-		ExBiFunction<A, Integer, ? extends K, E> classifier,
+		ExBiFunction<A, Integer, K, E> classifier,
 		Function<int[], L> intoList,
 		Function<HashMap<K, L>, M> intoMap) throws E {
 		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
 	}
-	private <K> Function<ExBiFunction<A, Integer, ? extends K, E>, IntFunction<? extends K>> castToClassifier() {
+	private <K> Function<ExBiFunction<A, Integer, K, E>, IntFunction<K>> castToClassifier() {
 		return c -> t -> c.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> IntFunction<? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(

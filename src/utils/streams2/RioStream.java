@@ -37,7 +37,7 @@ IOBiFunction<A, ? super T, ? extends java.util.stream.IntStream>,
 IOBiFunction<A, ? super T, ? extends java.util.stream.LongStream>,
 IOBiFunction<A, ? super T, ? extends java.util.stream.DoubleStream>,
 IOToIntBiFunction<A, ? super T>,
-IOToLongBiFunction<A, ? super T>,
+IOToLongBiFunction<A, T>,
 IOToDoubleBiFunction<A, ? super T>> {//*E*
 	private final Supplier<AutoCloseableStrategy<A, java.util.stream.Stream<T>>> supplierAC;
 
@@ -95,7 +95,7 @@ IOToDoubleBiFunction<A, ? super T>> {//*E*
 	protected @Override ToIntFunction<? super T> castToInt(IOToIntBiFunction<A, ? super T> mapper) {
 		return t -> mapper.uncheck(classOfE()).applyAsInt(getCached(), t);
 	}
-	protected @Override ToLongFunction<? super T> castToLong(IOToLongBiFunction<A, ? super T> mapper) {
+	protected @Override ToLongFunction<T> castToLong(IOToLongBiFunction<A, T> mapper) {
 		return t -> mapper.uncheck(classOfE()).applyAsLong(getCached(), t);
 	}
 	protected @Override ToDoubleFunction<? super T> castToDouble(IOToDoubleBiFunction<A, ? super T> mapper) {

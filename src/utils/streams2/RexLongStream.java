@@ -140,16 +140,16 @@ ExToDoubleBiFunction<A, Long, E>> {//*E*
 		}
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public <K> HashMap<? extends K, long[]> toMap(ExBiFunction<A, Long, ? extends K, E> classifier) throws E {
+	public <K> HashMap<K, long[]> toMap(ExBiFunction<A, Long, K, E> classifier) throws E {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(
-		ExBiFunction<A, Long, ? extends K, E> classifier,
+		ExBiFunction<A, Long, K, E> classifier,
 		Function<long[], L> intoList,
 		Function<HashMap<K, L>, M> intoMap) throws E {
 		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
 	}
-	private <K> Function<ExBiFunction<A, Long, ? extends K, E>, LongFunction<? extends K>> castToClassifier() {
+	private <K> Function<ExBiFunction<A, Long, K, E>, LongFunction<K>> castToClassifier() {
 		return c -> t -> c.uncheck(classOfE()).apply(getCached(), t);
 	}
 	private <R> LongFunction<? extends Stream<? extends R>> castToFlatMapFunctions(

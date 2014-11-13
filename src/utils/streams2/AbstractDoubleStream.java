@@ -147,14 +147,14 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 	}
 	protected <K, L, M, CLASSIFIER> M toMultiMapInternal(
 		CLASSIFIER classifier,
-		Function<CLASSIFIER, DoubleFunction<? extends K>> cast,
+		Function<CLASSIFIER, DoubleFunction<K>> cast,
 		Function<double[], L> intoList,
 		Function<HashMap<K, L>, M> intoMap) throws E {
 		return terminalAsMapToList(cast.apply(classifier), intoMap, intoList, maker(), classOfE());
 	}
 	protected <K, CLASSIFIER> HashMap<K, double[]> toMapInternal(
 		CLASSIFIER classifier,
-		Function<CLASSIFIER, DoubleFunction<? extends K>> cast) throws E {
+		Function<CLASSIFIER, DoubleFunction<K>> cast) throws E {
 		return terminalAsMapToList(
 			cast.apply(classifier),
 			Function.identity(),
@@ -285,7 +285,7 @@ CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, TO_D
 		}
 	}
 	private static <K, L, M, E extends Exception> M terminalAsMapToList(
-		DoubleFunction<? extends K> classifier,
+		DoubleFunction<K> classifier,
 		Function<HashMap<K, L>, M> intoMap,
 		Function<double[], L> intoList,
 		Supplier<java.util.stream.DoubleStream> supplier,

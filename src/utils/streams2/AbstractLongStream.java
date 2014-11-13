@@ -149,14 +149,14 @@ DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, 
 	}
 	protected <K, L, M, CLASSIFIER> M toMultiMapInternal(
 		CLASSIFIER classifier,
-		Function<CLASSIFIER, LongFunction<? extends K>> cast,
+		Function<CLASSIFIER, LongFunction<K>> cast,
 		Function<long[], L> intoList,
 		Function<HashMap<K, L>, M> intoMap) throws E {
 		return terminalAsMapToList(cast.apply(classifier), intoMap, intoList, maker(), classOfE());
 	}
 	protected <K, CLASSIFIER> HashMap<K, long[]> toMapInternal(
 		CLASSIFIER classifier,
-		Function<CLASSIFIER, LongFunction<? extends K>> cast) throws E {
+		Function<CLASSIFIER, LongFunction<K>> cast) throws E {
 		return terminalAsMapToList(
 			cast.apply(classifier),
 			Function.identity(),
@@ -277,7 +277,7 @@ DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, 
 		}
 	}
 	private static <K, L, M, E extends Exception> M terminalAsMapToList(
-		LongFunction<? extends K> classifier,
+		LongFunction<K> classifier,
 		Function<HashMap<K, L>, M> intoMap,
 		Function<long[], L> intoList,
 		Supplier<LongStream> supplier,
@@ -324,7 +324,7 @@ DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, 
 			return result;
 		};
 		Collector<Long, long[][], L> collectingAndThen = collectingAndThen(toContainer, intoList.compose(before));
-		Collector<Long, ?, M> collectMap =
+		Collector<Long, HashMap<K, long[][]>, M> collectMap =
 			collectingAndThen(groupingBy(classifier::apply, HashMap<K, L>::new, collectingAndThen), intoMap);
 		try(LongStream s = supplier.get()) {
 			return s.boxed().collect(collectMap);

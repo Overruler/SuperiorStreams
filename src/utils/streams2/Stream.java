@@ -31,7 +31,7 @@ Function<? super T, ? extends java.util.stream.IntStream>,
 Function<? super T, ? extends java.util.stream.LongStream>,
 Function<? super T, ? extends java.util.stream.DoubleStream>,
 ToIntFunction<? super T>,
-ToLongFunction<? super T>,
+ToLongFunction<T>,
 ToDoubleFunction<? super T>> {//*E*
 	public Stream(Supplier<java.util.stream.Stream<T>> supplier) {
 		super(supplier);
@@ -72,7 +72,7 @@ ToDoubleFunction<? super T>> {//*E*
 	protected @Override ToIntFunction<? super T> castToInt(ToIntFunction<? super T> mapper) {
 		return mapper;
 	}
-	protected @Override ToLongFunction<? super T> castToLong(ToLongFunction<? super T> mapper) {
+	protected @Override ToLongFunction<T> castToLong(ToLongFunction<T> mapper) {
 		return mapper;
 	}
 	protected @Override ToDoubleFunction<? super T> castToDouble(ToDoubleFunction<? super T> mapper) {
@@ -177,7 +177,7 @@ ToDoubleFunction<? super T>> {//*E*
 		return new IOStream<>(supplier);
 	}
 	public static <T> Stream<T> of() {
-		return new Stream<>(() -> java.util.stream.Stream.empty());
+		return new Stream<>(() -> java.util.stream.Stream.<T>empty());
 	}
 	public static <T> Stream<T> of(T value) {
 		return new Stream<>(() -> java.util.stream.Stream.of(value));

@@ -109,11 +109,11 @@ ToDoubleFunction<Integer>> {//*E*
 		}
 		return flatMapInternal(castToFlatMapFunctions(mapper), cast());
 	}
-	public <K> HashMap<K, int[]> toMap(IntFunction<? extends K> classifier) {
+	public <K> HashMap<K, int[]> toMap(IntFunction<K> classifier) {
 		return toMapInternal(classifier, castToClassifier());
 	}
 	public <K, L, M> M toMultiMap(
-		IntFunction<? extends K> classifier,
+		IntFunction<K> classifier,
 		Function<int[], L> intoList,
 		Function<HashMap<K, L>, M> intoMap) {
 		return toMultiMapInternal(classifier, castToClassifier(), intoList, intoMap);
@@ -145,7 +145,7 @@ ToDoubleFunction<Integer>> {//*E*
 	public static IntStream rangeClosed(int startInclusive, int endInclusive) {
 		return new IntStream(() -> java.util.stream.IntStream.rangeClosed(startInclusive, endInclusive));
 	}
-	private static <K> Function<IntFunction<? extends K>, IntFunction<? extends K>> castToClassifier() {
+	private static <K> Function<IntFunction<K>, IntFunction<K>> castToClassifier() {
 		return c -> c;
 	}
 	private static <R> IntFunction<? extends java.util.stream.Stream<? extends R>> castToFlatMapFunctions(

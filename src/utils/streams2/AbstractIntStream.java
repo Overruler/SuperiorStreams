@@ -153,14 +153,14 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 	}
 	protected <K, L, M, CLASSIFIER> M toMultiMapInternal(
 		CLASSIFIER classifier,
-		Function<CLASSIFIER, IntFunction<? extends K>> cast,
+		Function<CLASSIFIER, IntFunction<K>> cast,
 		Function<int[], L> intoList,
 		Function<HashMap<K, L>, M> intoMap) throws E {
 		return terminalAsMapToList(cast.apply(classifier), intoMap, intoList, maker(), classOfE());
 	}
 	protected <K, CLASSIFIER> HashMap<K, int[]> toMapInternal(
 		CLASSIFIER classifier,
-		Function<CLASSIFIER, IntFunction<? extends K>> cast) throws E {
+		Function<CLASSIFIER, IntFunction<K>> cast) throws E {
 		return terminalAsMapToList(
 			cast.apply(classifier),
 			Function.identity(),
@@ -291,7 +291,7 @@ LS, DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LO
 		}
 	}
 	private static <K, L, M, E extends Exception> M terminalAsMapToList(
-		IntFunction<? extends K> classifier,
+		IntFunction<K> classifier,
 		Function<HashMap<K, L>, M> intoMap,
 		Function<int[], L> intoList,
 		Supplier<java.util.stream.IntStream> supplier,
