@@ -324,8 +324,8 @@ DS, CONSUMER, PREDICATE, BINARY_OPERATOR, TO_IS, TO_LS, TO_DS, TO_INT, TO_LONG, 
 			return result;
 		};
 		Collector<Long, long[][], L> collectingAndThen = collectingAndThen(toContainer, intoList.compose(before));
-		Collector<Long, ?, M> collectMap = null;
-//			collectingAndThen(groupingBy(classifier::apply, HashMap<K, L>::new, collectingAndThen), intoMap);
+		Collector<Long, ?, M> collectMap =
+			collectingAndThen(groupingBy(classifier::apply, HashMap<K, L>::new, collectingAndThen), intoMap);
 		try(LongStream s = supplier.get()) {
 			return s.boxed().collect(collectMap);
 		} catch(RuntimeException e) {
