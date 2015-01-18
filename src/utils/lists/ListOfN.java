@@ -244,7 +244,7 @@ class ListOfN<T> implements List<T> {
 		return new ListOfN<>(array);
 	}
 	public @Override T get(int index) {
-		index = ArrayList.adjustIndexToPositiveInts(index, size());
+		index = ArrayList.adjustIndexToPositiveInts(index, size() - 1);
 		return items[index];
 	}
 	public @Override int indexOf(Object item) {
