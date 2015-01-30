@@ -150,9 +150,9 @@ IOToDoubleFunction<? super T>> {//*E*
 	}
 	public <K, L, M> M toMultiMap(
 		IOFunction<? super T, ? extends K> classifier,
-		Function<ArrayList<T>, L> intoList,
-		Function<HashMap<K, L>, M> intoMap) throws IOException {
-		return toMultiMapInternal(castToClassifier(classifier), intoList, intoMap);
+		IOFunction<ArrayList<T>, L> intoList,
+		IOFunction<HashMap<K, L>, M> intoMap) throws IOException {
+		return toMultiMapInternal(castToClassifier(classifier), intoList.uncheck(), intoMap.uncheck());
 	}
 	public final @SafeVarargs <K, L, M> M toMultiMap(
 		Function<? super T, ? extends K> classifier,
